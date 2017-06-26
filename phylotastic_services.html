@@ -1,0 +1,230 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>phylotastic_services package &#8212; Phylotastic-services 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="phylotastic-services-package">
+<h1>phylotastic_services package<a class="headerlink" href="#phylotastic-services-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-phylotastic_services.extract_names">
+<span id="phylotastic-services-extract-names-module"></span><h2>phylotastic_services.extract_names module<a class="headerlink" href="#module-phylotastic_services.extract_names" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phylotastic_services.extract_names.extract_names_TEXT">
+<code class="descclassname">phylotastic_services.extract_names.</code><code class="descname">extract_names_TEXT</code><span class="sig-paren">(</span><em>inputTEXT</em>, <em>sEngine=0</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.extract_names.extract_names_TEXT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts scientific names from free-form text</p>
+<blockquote>
+<div><p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">extract_names_TEXT</span><span class="p">(</span><span class="s2">&quot;Formica polyctena is a species of European red wood ant in the genus Formica.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;parameters&quot;: {&quot;engine&quot;: 0, &quot;best_match_only&quot;: false, &quot;data_source_ids&quot;: [], &quot;detect_language&quot;: true, &quot;preferred_data_sources&quot;: [], &quot;all_data_sources&quot;: false, &quot;return_content&quot;: false}, &quot;execution_time&quot;: &quot;0.48&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-06-26T13:14:39.213865&quot;, &quot;scientificNames&quot;: [&quot;Formica polyctena&quot;], &quot;service_url&quot;: &quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/fn/names_text?text=Formica polyctena is a species of European red wood ant in the genus Formica.&quot;, &quot;service_url_doc&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-2&quot;, &quot;total_names&quot;: 1, &quot;message&quot;: &quot;Success&quot;, &quot;input_text&quot;: &quot;Formica polyctena is a species of European red wood ant in the genus Formica.&quot;}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inputTEXT</strong> (<em>str.</em>) – Text content to extract scientific names from.</li>
+<li><strong>sEngine</strong> (<em>int.</em>) – Name discovery engine to be used for extracting names. 1 for TaxonFinder, 2 for NetiNeti, or 0 (default) for both</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with a list of names as the value of the <code class="docutils literal"><span class="pre">scientificNames</span></code> property.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.extract_names.extract_names_URL">
+<code class="descclassname">phylotastic_services.extract_names.</code><code class="descname">extract_names_URL</code><span class="sig-paren">(</span><em>inputURL</em>, <em>sEngine=0</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.extract_names.extract_names_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts scientific names from a web URL</p>
+<blockquote>
+<div><p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">extract_names_URL</span><span class="p">(</span><span class="s2">&quot;https://en.wikipedia.org/wiki/Plain_pigeon&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;parameters&quot;: {&quot;engine&quot;: 0, &quot;best_match_only&quot;: false, &quot;data_source_ids&quot;: [], &quot;detect_language&quot;: true, &quot;preferred_data_sources&quot;: [], &quot;all_data_sources&quot;: false, &quot;return_content&quot;: false}, &quot;execution_time&quot;: &quot;1.44&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-06-26T12:29:22.770155&quot;, &quot;input_url&quot;: &quot;https://en.wikipedia.org/wiki/Plain_pigeon&quot;, &quot;scientificNames&quot;: [&quot;Patagioenas inornata wetmorei&quot;, &quot;Animalia&quot;, &quot;Chordata&quot;, &quot;Aves&quot;, &quot;Columbiformes&quot;, &quot;Columbidae&quot;, &quot;Patagioenas&quot;, &quot;Patagioenas inornata&quot;, &quot;Columba inornata&quot;, &quot;P. flavirostria&quot;, &quot;P. oenops&quot;, &quot;Hispaniola&quot;], &quot;service_url&quot;: &quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/fn/names_url?url=https://en.wikipedia.org/wiki/Plain_pigeon&quot;, &quot;service_url_doc&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-1&quot;, &quot;total_names&quot;: 12, &quot;message&quot;: &quot;Success&quot;}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>inputURL</strong> (<em>str.</em>) – A url of a web page from which scientific names need to be extracted.</li>
+<li><strong>sEngine</strong> (<em>int.</em>) – Name discovery engine to be used for extracting names. 1 for TaxonFinder, 2 for NetiNeti, or 0 (default) for both</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with a list of names as the value of the <code class="docutils literal"><span class="pre">scientificNames</span></code> property.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phylotastic_services.resolve_names">
+<span id="phylotastic-services-resolve-names-module"></span><h2>phylotastic_services.resolve_names module<a class="headerlink" href="#module-phylotastic_services.resolve_names" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phylotastic_services.resolve_names.resolve_names_GNR">
+<code class="descclassname">phylotastic_services.resolve_names.</code><code class="descname">resolve_names_GNR</code><span class="sig-paren">(</span><em>inputNamesList</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.resolve_names.resolve_names_GNR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolves scientific names using Global Names Resolver</p>
+<blockquote>
+<div><p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">resolve_names_GNR</span><span class="p">([</span><span class="s2">&quot;Formica exsectoides&quot;</span><span class="p">,</span><span class="s2">&quot;Formica pecefica&quot;</span><span class="p">,</span> <span class="s2">&quot;Setophaga angilae&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;resolvedNames&quot;: [{&quot;match_type&quot;: &quot;Exact&quot;, &quot;resolver_name&quot;: &quot;GNR&quot;, &quot;matched_name&quot;: &quot;Formica exsectoides&quot;, &quot;search_string&quot;: &quot;Formica exsectoides&quot;, &quot;synonyms&quot;: [], &quot;taxon_id&quot;: &quot;609781&quot;}, {&quot;match_type&quot;: &quot;Fuzzy&quot;, &quot;resolver_name&quot;: &quot;GNR&quot;, &quot;matched_name&quot;: &quot;Formica pacifica&quot;, &quot;search_string&quot;: &quot;Formica pecefica&quot;, &quot;synonyms&quot;: [], &quot;taxon_id&quot;: &quot;6876591&quot;}, {&quot;match_type&quot;: &quot;Fuzzy&quot;, &quot;resolver_name&quot;: &quot;GNR&quot;, &quot;matched_name&quot;: &quot;Setophaga angelae&quot;, &quot;search_string&quot;: &quot;Setophaga angilae&quot;, &quot;synonyms&quot;: [], &quot;taxon_id&quot;: &quot;24836501&quot;}], &quot;parameters&quot;: {&quot;with_vernaculars&quot;: false, &quot;best_match_only&quot;: true, &quot;data_sources&quot;: [], &quot;with_context&quot;: false, &quot;header_only&quot;: false, &quot;resolve_once&quot;: false, &quot;preferred_data_sources&quot;: [], &quot;with_canonical_ranks&quot;: false}, &quot;execution_time&quot;: &quot;0.70&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-06-26T14:28:02.414901&quot;, &quot;total_names&quot;: 3, &quot;input_query&quot;: [&quot;Formica exsectoides&quot;, &quot;Formica pecefica&quot;, &quot;Setophaga angilae&quot;], &quot;service_url_doc&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-4&quot;, &quot;message&quot;: &quot;Success&quot;}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputNamesList</strong> (<em>A list of str.</em>) – A list of scientific names to be resolved.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A json formatted string – with a list of dict objects as the value of the <code class="docutils literal"><span class="pre">resolvedNames</span></code> property.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.resolve_names.resolve_names_OT">
+<code class="descclassname">phylotastic_services.resolve_names.</code><code class="descname">resolve_names_OT</code><span class="sig-paren">(</span><em>inputNamesList</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.resolve_names.resolve_names_OT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resolves scientific names using Open Tree of Life TNRS</p>
+<blockquote>
+<div><p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">resolve_names_OT</span><span class="p">([</span><span class="s2">&quot;Formica polyctena&quot;</span><span class="p">,</span> <span class="s2">&quot;Tetramorium caespitum&quot;</span><span class="p">,</span><span class="s2">&quot;Carebara diversa&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;total_names&quot;: 3, &quot;resolvedNames&quot;: [{&quot;match_type&quot;: &quot;Exact&quot;, &quot;resolver_name&quot;: &quot;OT&quot;, &quot;matched_name&quot;: &quot;Tetramorium caespitum&quot;, &quot;search_string&quot;: &quot;tetramorium caespitum&quot;, &quot;synonyms&quot;: [&quot;Tetramorium caespitum&quot;], &quot;taxon_id&quot;: 214421}, {&quot;match_type&quot;: &quot;Exact&quot;, &quot;resolver_name&quot;: &quot;OT&quot;, &quot;matched_name&quot;: &quot;Formica polyctena&quot;, &quot;search_string&quot;: &quot;formica polyctena&quot;, &quot;synonyms&quot;: [&quot;Formica polyctenum&quot;, &quot;Formica polyctena&quot;], &quot;taxon_id&quot;: 815730}, {&quot;match_type&quot;: &quot;Exact&quot;, &quot;resolver_name&quot;: &quot;OT&quot;, &quot;matched_name&quot;: &quot;Carebara diversa&quot;, &quot;search_string&quot;: &quot;carebara diversa&quot;, &quot;synonyms&quot;: [&quot;Pheidologeton diversus&quot;, &quot;Carebara diversus&quot;, &quot;Carebara diversa&quot;], &quot;taxon_id&quot;: 842045}], &quot;input_query&quot;: [&quot;Formica polyctena&quot;, &quot;Tetramorium caespitum&quot;, &quot;Carebara diversa&quot;], &quot;service_url_doc&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-3&quot;, &quot;execution_time&quot;: &quot;0.55&quot;, &quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;creation_time&quot;: &quot;2017-06-26T14:24:17.800451&quot;}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputNamesList</strong> (<em>A list of str.</em>) – A list of scientific names to be resolved.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A json formatted string – with a list of dict objects as the value of the <code class="docutils literal"><span class="pre">resolvedNames</span></code> property.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-phylotastic_services">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-phylotastic_services" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">phylotastic_services package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-phylotastic_services.extract_names">phylotastic_services.extract_names module</a></li>
+<li><a class="reference internal" href="#module-phylotastic_services.resolve_names">phylotastic_services.resolve_names module</a></li>
+<li><a class="reference internal" href="#module-phylotastic_services">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/phylotastic_services.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Abu Saleh Md Tayeen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/phylotastic_services.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -12,6 +12,30 @@ phylotastic\_services\.extract\_names module
     :undoc-members:
     :show-inheritance:
 
+phylotastic\_services\.get\_info module
+---------------------------------------
+
+.. automodule:: phylotastic_services.get_info
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+phylotastic\_services\.get\_species module
+------------------------------------------
+
+.. automodule:: phylotastic_services.get_species
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+phylotastic\_services\.get\_tree module
+---------------------------------------
+
+.. automodule:: phylotastic_services.get_tree
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 phylotastic\_services\.resolve\_names module
 --------------------------------------------
 

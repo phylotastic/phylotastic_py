@@ -375,6 +375,63 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-phylotastic_services.study_tree">
+<span id="phylotastic-services-study-tree-module"></span><h2>phylotastic_services.study_tree module<a class="headerlink" href="#module-phylotastic_services.study_tree" title="Permalink to this headline">¶</a></h2>
+<p><strong>study_tree</strong> Module is for getting phylogenetic tree metadata(supporting studies) or to compare trees or to retrieve tree chronogram</p>
+<dl class="function">
+<dt id="phylotastic_services.study_tree.compare_trees">
+<code class="descclassname">phylotastic_services.study_tree.</code><code class="descname">compare_trees</code><span class="sig-paren">(</span><em>tree1</em>, <em>tree2</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.study_tree.compare_trees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compares two phylogenetic trees using Robinson-Foulds distance.</p>
+<blockquote>
+<div><p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">compare_trees</span><span class="p">(</span><span class="n">tree1</span><span class="o">=</span><span class="s2">&quot;(((((((EU368025_Uncult_marine_euk_FS14JA72_30Mar05_5m:0.00329,EU368020_Uncult_marine_euk_FS04GA95_01Aug05_5m:-0.00002):0.00002,EU368013_Uncult_marine_euk_FS01D014_01Aug05_65m:-0.00002):0.00010,(EU368034_Uncult_marine_euk_OC413NSS_Q007_15m:-0.00000,(EU368007_Uncult_marine_euk_FS01B026_30Mar05_5m:-0.00001,EU368004_Uncult_marine_euk_FS01AA94_01Aug05_5m:0.00328):0.00000):0.00317):0.00725,(EU368005_Uncult_marine_euk_FS01B033_30Mar05_5m:-0.00002,(EF172850_Uncult_euk_SSRPB47:-0.00003,EU368022_Uncult_marine_euk_FS04H169_01Aug05_89m:0.00166):0.00002):0.00597):0.00202,((DQ060523_Uncult_marine_euk_NOR46.29:0.01559,(HQ868826_Uncult_euk_SHAX1073:0.00155,EU368038_Uncult_marine_euk_EN351CTD040_4mN11:0.00172):0.00429):0.00017,(EU368023_Uncult_marine_euk_FS04H153_01Aug05_89m:0.00504,(DQ222879_Uncult_photo_euk_RA000907.18:0.00166,HM858468_Uncult_marine_euk_MO.011.5m.00036:-0.00003):0.00152):0.00566):0.00662):0.00941,(HQ868882_Uncult_euk_SHAX1135:0.00170,HQ868810_Uncult_euk_SHAX1056:-0.00007):0.02449):0.00648,(EU368021_Uncult_marine_euk_FS04GA46_01Aug05_5m:0.02285,(HQ869075_Uncult_euk_SHAX587:0.00000,HQ869035_Uncult_euk_SHAX540:0.00000):0.04720):0.01029,HQ156863_Uncult_marine_ciliate_170609_08:0.17059);&quot;</span><span class="p">,</span> <span class="n">tree2</span><span class="o">=</span><span class="s2">&quot;((HQ869075_Uncult_euk_SHAX587:0.00000,HQ869035_Uncult_euk_SHAX540:0.00000):0.04484,(EU368021_Uncult_marine_euk_FS04GA46_01Aug05_5m:0.02285,(((((EU368005_Uncult_marine_euk_FS01B033_30Mar05_5m:-0.00002,(EF172850_Uncult_euk_SSRPB47:-0.00003,EU368022_Uncult_marine_euk_FS04H169_01Aug05_89m:0.00166):0.00002):0.00597,(((EU368025_Uncult_marine_euk_FS14JA72_30Mar05_5m:0.00329,EU368020_Uncult_marine_euk_FS04GA95_01Aug05_5m:-0.00002):0.00002,EU368013_Uncult_marine_euk_FS01D014_01Aug05_65m:-0.00002):0.00010,(EU368034_Uncult_marine_euk_OC413NSS_Q007_15m:-0.00000,(EU368007_Uncult_marine_euk_FS01B026_30Mar05_5m:-0.00001,EU368004_Uncult_marine_euk_FS01AA94_01Aug05_5m:0.00328):0.00000):0.00317):0.00725):0.00202,((DQ060523_Uncult_marine_euk_NOR46.29:0.01559,(HQ868826_Uncult_euk_SHAX1073:0.00155,EU368038_Uncult_marine_euk_EN351CTD040_4mN11:0.00172):0.00429):0.00017,(EU368023_Uncult_marine_euk_FS04H153_01Aug05_89m:0.00504,(DQ222879_Uncult_photo_euk_RA000907.18:0.00166,HM858468_Uncult_marine_euk_MO.011.5m.00036:-0.00003):0.00152):0.00566):0.00662):0.00941,(HQ868882_Uncult_euk_SHAX1135:0.00170,HQ868810_Uncult_euk_SHAX1056:-0.00007):0.02449):0.00648,HQ156863_Uncult_marine_ciliate_170609_08:0.17059):0.01029):0.00236);&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [{&quot;species_info_link&quot;: &quot;http://eol.org/328672?action=overview&amp;controller=taxa&quot;, &quot;searched_name&quot;: &quot;Panthera leo&quot;, &quot;eol_id&quot;: 328672, &quot;matched_name&quot;: &quot;Panthera leo (Linnaeus, 1758)&quot;}, {&quot;species_info_link&quot;: &quot;http://eol.org/328606?action=overview&amp;controller=taxa&quot;, &quot;searched_name&quot;: &quot;Panthera onca&quot;, &quot;eol_id&quot;: 328606, &quot;matched_name&quot;: &quot;Panthera onca (Linnaeus, 1758)&quot;}]}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tree1</strong> (<em>string.</em>) – First phylogenetic tree in newick format.</li>
+<li><strong>tree2</strong> (<em>string.</em>) – Second phylogenetic tree in newick format.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with a boolean value in <code class="docutils literal"><span class="pre">are_same_tree</span></code> property indicating whether two trees are same or not.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.study_tree.get_studies_tree">
+<code class="descclassname">phylotastic_services.study_tree.</code><code class="descname">get_studies_tree</code><span class="sig-paren">(</span><em>taxa</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.study_tree.get_studies_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets supporting studies information from Open Tree of Life for a phylogenetic tree retrieved using a list of taxa.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">get_studies_tree</span><span class="p">(</span><span class="n">taxa</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Setophaga striata&quot;</span><span class="p">,</span> <span class="s2">&quot;Setophaga magnolia&quot;</span><span class="p">,</span> <span class="s2">&quot;Setophaga angelae&quot;</span><span class="p">,</span> <span class="s2">&quot;Setophaga plumbea&quot;</span><span class="p">,</span> <span class="s2">&quot;Setophaga virens&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;execution_time&quot;: 2.07, &quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;studies&quot;: [{&quot;PublicationYear&quot;: 2010, &quot;FocalCladeTaxonName&quot;: &quot;Parulidae&quot;, &quot;Publication&quot;: &quot;Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree6024&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1016/j.ympev.2010.07.018&quot;, &quot;DataRepository&quot;: &quot;&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;pg_2591&quot;}, {&quot;PublicationYear&quot;: 2015, &quot;FocalCladeTaxonName&quot;: &quot;Passeriformes&quot;, &quot;Publication&quot;: &quot;Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree1&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1642/auk-14-110.1&quot;, &quot;DataRepository&quot;: &quot;http://datadryad.org/resource/doi:10.5061/dryad.pb787&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;ot_770&quot;}]}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>taxa</strong> (<em>A list of strings.</em>) – A list of taxa (of a phylogenetic tree) for which to supporting studies.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A json formatted string – with a list of species objects containing links to EOL.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-phylotastic_services">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-phylotastic_services" title="Permalink to this headline">¶</a></h2>
 <p>Python library to access phylotastic services.</p>
@@ -396,6 +453,7 @@
 <li><a class="reference internal" href="#module-phylotastic_services.get_species">phylotastic_services.get_species module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.get_tree">phylotastic_services.get_tree module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.resolve_names">phylotastic_services.resolve_names module</a></li>
+<li><a class="reference internal" href="#module-phylotastic_services.study_tree">phylotastic_services.study_tree module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services">Module contents</a></li>
 </ul>
 </li>

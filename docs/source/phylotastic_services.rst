@@ -44,6 +44,14 @@ phylotastic\_services\.resolve\_names module
     :undoc-members:
     :show-inheritance:
 
+phylotastic\_services\.study\_tree module
+-----------------------------------------
+
+.. automodule:: phylotastic_services.study_tree
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

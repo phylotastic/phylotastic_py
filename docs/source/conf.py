@@ -164,3 +164,13 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
+#-----------------------------------------------------------
+from mock import Mock as MagicMock
+
+class Mock(MagicMock):  
+    @classmethod
+    def __getattr__(cls, name):
+            return MagicMock()
+
+MOCK_MODULES = ['ete3', 'dendropy', 'itolapi']  
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)  

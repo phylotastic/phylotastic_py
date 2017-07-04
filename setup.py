@@ -19,7 +19,8 @@ setup(name='phylotastic_services',
       install_requires=[
           'ete3',
  	      'itolapi',
-          'dendropy'
+          'dendropy',
+          'mock'
       ],
       include_package_data=False,
       zip_safe=False)

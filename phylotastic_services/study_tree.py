@@ -269,8 +269,44 @@ def get_studies_tree(taxa):
     else:
        return json.dumps(final_result)
 
+#-------------------------------------------------
+def get_chronogram_tree(tree=None):
+ 	"""Gets chronogram of a phylogenetic tree using Phylotastic datelife.
+    
+    Example:
+	
+    >>> import phylotastic_services
+    >>> result = phylotastic_services.get_chronogram_tree(tree="(((((Canis lupus pallipes,Melursus ursinus)Caniformia,((Panthera tigris,Panthera pardus)Panthera,Herpestes fuscus))Carnivora,(Macaca mulatta,Homo sapiens)Catarrhini)Boreoeutheria,Elephas maximus)Eutheria,Haliastur indus)Amniota;")
+    >>> print result
+    {"execution_time": "4.27", "status_code": 200, "creation_time": "2017-07-03T11:51:53.384258", "scaled_tree": "((((Homo sapiens:29.126382,Macaca mulatta:29.126382):69.773618,(((Panthera pardus:6.4,Panthera tigris:6.4):34.300001,Herpestes fuscus:40.700001):24.199999,(Canis lupus pallipes:16.775,Melursus ursinus:16.775):48.125):34):10.65,Elephas maximus:109.55):17.078571,Haliastur indus:126.628571);", "input_tree": "(((((Canis lupus pallipes,Melursus ursinus)Caniformia,((Panthera tigris,Panthera pardus)Panthera,Herpestes fuscus))Carnivora,(Macaca mulatta,Homo sapiens)Catarrhini)Boreoeutheria,Elephas maximus)Eutheria,Haliastur indus)Amniota;", "message": "Success", "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-20"}
+
+    :param tree: A phylogenetic tree in newick format. 
+    :type tree: string.  
+    :returns: A json formatted string -- with a newick formatted tree including branch lengths as the value of the ``scaled_tree`` property. 
+
+    """
+ 	datelife_url = "http://phylo.cs.nmsu.edu:5009/phylotastic_ws/sc/scale"
+    
+ 	if tree is None:
+ 		return json.dumps({"status": 500, "message": "No Tree provided as input"})
+ 
+ 	payload = {
+        'newick': tree
+    }
+
+ 	jsonPayload = json.dumps(payload)
+   
+ 	response = requests.post(datelife_url, data=jsonPayload, headers=headers)
+    
+ 	if response.status_code == requests.codes.ok:
+ 		final_result = response.text
+ 	else:	  
+ 		final_result = json.dumps({"status": 500, "message": "Unable to connect to datelife service"})
+
+ 	return final_result
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #if __name__ == '__main__':
 	#taxalist = ["Setophaga striata", "Setophaga magnolia", "Setophaga angelae", "Setophaga plumbea", "Setophaga virens"]
 	#print get_studies_tree(taxalist)
-    
+    #print get_chronogram_tree("(((((Canis lupus pallipes,Melursus ursinus)Caniformia,((Panthera tigris,Panthera pardus)Panthera,Herpestes fuscus))Carnivora,(Macaca mulatta,Homo sapiens)Catarrhini)Boreoeutheria,Elephas maximus)Eutheria,Haliastur indus)Amniota;")

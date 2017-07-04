@@ -322,6 +322,299 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-phylotastic_services.list_species">
+<span id="phylotastic-services-list-species-module"></span><h2>phylotastic_services.list_species module<a class="headerlink" href="#module-phylotastic_services.list_species" title="Permalink to this headline">¶</a></h2>
+<p><strong>list_species</strong> Module is for manipulating (insert into, update on or delete from list server) a list of species</p>
+<dl class="class">
+<dt id="phylotastic_services.list_species.List">
+<em class="property">class </em><code class="descclassname">phylotastic_services.list_species.</code><code class="descname">List</code><span class="sig-paren">(</span><em>title=None</em>, <em>description=None</em>, <em>author=None</em>, <em>date_published=None</em>, <em>curator=None</em>, <em>curation_date=None</em>, <em>source=None</em>, <em>keywords=None</em>, <em>focal_clade=None</em>, <em>extra_info=None</em>, <em>origin=None</em>, <em>is_public=None</em>, <em>species_list=None</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.list_species.List" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>List</strong> class is used to store information of a list. A list
+consists of a collection of Species objects and metadata about the list.</p>
+<blockquote>
+<div><blockquote>
+<div><strong>List</strong> <em>properties</em> are described below.</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PROPERTY(type)</th>
+<th class="head">DESCRIPTION</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>title(str.)</td>
+<td>title of the new list</td>
+</tr>
+<tr class="row-odd"><td>description(str.)</td>
+<td>description of the new list</td>
+</tr>
+<tr class="row-even"><td>author(str.)</td>
+<td>a list of names of the authors who prepared the new list</td>
+</tr>
+<tr class="row-odd"><td>date_published(str.)</td>
+<td>date when the new list is being posted (format: mm-dd-yyyy)</td>
+</tr>
+<tr class="row-even"><td>curator(str.)</td>
+<td>name of the curator of the new list</td>
+</tr>
+<tr class="row-odd"><td>curation_date(str.)</td>
+<td>date when the new list is being curated (format: mm-dd-yyyy)</td>
+</tr>
+<tr class="row-even"><td>source(str.)</td>
+<td>source of the new list (url, publication)</td>
+</tr>
+<tr class="row-odd"><td>keywords(str.)</td>
+<td>keywords related to the new list</td>
+</tr>
+<tr class="row-even"><td>focal_clade(str.)</td>
+<td>focal_clade of the new list</td>
+</tr>
+<tr class="row-odd"><td>extra_info(str.)</td>
+<td>extra information about the new list</td>
+</tr>
+<tr class="row-even"><td>origin(str.)</td>
+<td>the origin from where the new list is being posted. (Permitted values: “script” or “webapp” or “mobileapp”)</td>
+</tr>
+<tr class="row-odd"><td>is_public(bool.)</td>
+<td>true if the new list posted can be viewed by public. Otherwise false</td>
+</tr>
+<tr class="row-even"><td>species_list(obj)</td>
+<td>a list of species objects</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a <strong>List</strong> object which represents a new list.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">species_obj1</span><span class="o">=</span><span class="n">Species</span><span class="p">(</span><span class="s2">&quot;Acer ginnala&quot;</span><span class="p">,</span> <span class="s2">&quot;Amur maple&quot;</span><span class="p">,</span> <span class="s2">&quot;Maxim.&quot;</span><span class="p">,</span> <span class="s2">&quot;Aceraceae&quot;</span><span class="p">,</span><span class="s2">&quot;Sapindales&quot;</span><span class="p">,</span> <span class="s2">&quot;Streptophyta&quot;</span><span class="p">,</span> <span class="s2">&quot;ICN&quot;</span><span class="p">)</span> <span class="c1">#creates a species object</span>
+<span class="n">species_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">species_obj1</span><span class="p">]</span> <span class="c1"># create a list of species objects</span>
+<span class="n">list_obj</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="s2">&quot;Illinois Invasive Plants&quot;</span><span class="p">,</span> <span class="s2">&quot;This list contains the invasive species, with their Family and Order&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Invasive.org  Center for Invasive Species and Ecosystem Health&quot;</span><span class="p">],</span> <span class="s2">&quot;06-25-2017&quot;</span><span class="p">,</span> <span class="s2">&quot;HD Laughinghouse&quot;</span><span class="p">,</span> <span class="s2">&quot;2-25-2016&quot;</span><span class="p">,</span> <span class="s2">&quot;http://www.invasive.org/species/list.cfm?id=152&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Plants&quot;</span><span class="p">,</span> <span class="s2">&quot; invasive species&quot;</span><span class="p">,</span> <span class="s2">&quot; Illinois&quot;</span><span class="p">],</span> <span class="s2">&quot;Embryophyta&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">species_list</span><span class="p">)</span> <span class="c1">#create a list object</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="phylotastic_services.list_species.Species">
+<em class="property">class </em><code class="descclassname">phylotastic_services.list_species.</code><code class="descname">Species</code><span class="sig-paren">(</span><em>Sc_name</em>, <em>Vn_name</em>, <em>Sc_name_author</em>, <em>Family</em>, <em>Order</em>, <em>Phylum</em>, <em>Nm_code</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.list_species.Species" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Species</strong> class is used to create an instance of a species. A species instance
+consists of data about a particular species.</p>
+<blockquote>
+<div><blockquote>
+<div><strong>Species</strong> <em>properties</em> are described below.</div></blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="37%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PROPERTY(type)</th>
+<th class="head">DESCRIPTION</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>scientific_name(str.)</td>
+<td>scientific name of the species</td>
+</tr>
+<tr class="row-odd"><td>vernacular_name(str.)</td>
+<td>vernacular name of the species</td>
+</tr>
+<tr class="row-even"><td>scientific_name_authorship(str.)</td>
+<td>authorship of the scientific name of the species</td>
+</tr>
+<tr class="row-odd"><td>family(str.)</td>
+<td>the taxonomic rank family where the species belongs to</td>
+</tr>
+<tr class="row-even"><td>order(str.)</td>
+<td>the taxonomic rank order where the species belongs to</td>
+</tr>
+<tr class="row-odd"><td>phylum(str.)</td>
+<td>the taxonomic rank phylum where the species belongs to</td>
+</tr>
+<tr class="row-even"><td>nomenclature_code(str.)</td>
+<td>he nomenclatural code of the species</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a <strong>Species</strong> object which represents a species.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">species_obj1</span><span class="o">=</span><span class="n">Species</span><span class="p">(</span><span class="s2">&quot;Acer ginnala&quot;</span><span class="p">,</span> <span class="s2">&quot;Amur maple&quot;</span><span class="p">,</span> <span class="s2">&quot;Maxim.&quot;</span><span class="p">,</span> <span class="s2">&quot;Aceraceae&quot;</span><span class="p">,</span><span class="s2">&quot;Sapindales&quot;</span><span class="p">,</span> <span class="s2">&quot;Streptophyta&quot;</span><span class="p">,</span> <span class="s2">&quot;ICN&quot;</span><span class="p">)</span> <span class="c1">#creates a species object</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.list_species.get_list_info">
+<code class="descclassname">phylotastic_services.list_species.</code><code class="descname">get_list_info</code><span class="sig-paren">(</span><em>userId=None</em>, <em>listId=None</em>, <em>accessToken=None</em>, <em>verbose=None</em>, <em>content=None</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.list_species.get_list_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets lists of species that exist in the species list server.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">get_list_info</span><span class="p">(</span><span class="n">userId</span><span class="o">=</span><span class="s2">&quot;abusalehmdtayeen@gmail.com&quot;</span><span class="p">,</span> <span class="n">listId</span><span class="o">=</span><span class="mi">57</span><span class="p">,</span> <span class="n">accessToken</span><span class="o">=</span><span class="s2">&quot;ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;list&quot;: {&quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;list_species&quot;: [&quot;Acer ginnala&quot;, &quot;Achyranthes japonica&quot;], &quot;list_id&quot;: 57}, &quot;message&quot;: &quot;Success&quot;, &quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;status_code&quot;: 200}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>userId</strong> (<em>string.</em>) – Unique id (a valid gmail address) of a user.</li>
+<li><strong>listId</strong> (<em>integer.</em>) – Unique id of the list that needs to be retrieved.</li>
+<li><strong>accessToken</strong> (<em>string.</em>) – Access token for the user with userId (valid gmail address).</li>
+<li><strong>verbose</strong> (<em>boolean</em>) – By default <em>false</em> and allows to show minimal meta-data of the list.</li>
+<li><strong>content</strong> (<em>boolean</em>) – By default <em>true</em> and allows to show the species collection of the list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with list object as a value of the <code class="docutils literal"><span class="pre">list</span></code> property.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.list_species.insert_list_info">
+<code class="descclassname">phylotastic_services.list_species.</code><code class="descname">insert_list_info</code><span class="sig-paren">(</span><em>userId</em>, <em>listObj</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.list_species.insert_list_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a new list of species into the species list server.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">species_obj1</span> <span class="o">=</span> <span class="n">Species</span><span class="p">(</span><span class="s2">&quot;Acer ginnala&quot;</span><span class="p">,</span> <span class="s2">&quot;Amur maple&quot;</span><span class="p">,</span> <span class="s2">&quot;Maxim.&quot;</span><span class="p">,</span> <span class="s2">&quot;Aceraceae&quot;</span><span class="p">,</span><span class="s2">&quot;Sapindales&quot;</span><span class="p">,</span> <span class="s2">&quot;Streptophyta&quot;</span><span class="p">,</span> <span class="s2">&quot;ICN&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">species_list1</span> <span class="o">=</span> <span class="p">[</span><span class="n">species_obj1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">list_obj</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="s2">&quot;Illinois Invasive Plants&quot;</span><span class="p">,</span> <span class="s2">&quot;This list contains the invasive species, with their Family and Order&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Invasive.org  Center for Invasive Species and Ecosystem Health&quot;</span><span class="p">],</span> <span class="s2">&quot;06-25-2017&quot;</span><span class="p">,</span> <span class="s2">&quot;HD Laughinghouse&quot;</span><span class="p">,</span> <span class="s2">&quot;2-25-2016&quot;</span><span class="p">,</span> <span class="s2">&quot;http://www.invasive.org/species/list.cfm?id=152&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Plants&quot;</span><span class="p">,</span> <span class="s2">&quot; invasive species&quot;</span><span class="p">,</span> <span class="s2">&quot; Illinois&quot;</span><span class="p">],</span> <span class="s2">&quot;Embryophyta&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">species_list1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">insert_list_info</span><span class="p">(</span><span class="s2">&quot;abusalehmdtayeen@gmail.com&quot;</span><span class="p">,</span> <span class="n">list_obj</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;list_id&quot;: 57}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>userId</strong> (<em>string.</em>) – Unique id (a valid gmail address) of a user.</li>
+<li><strong>listObj</strong> (<em>object.</em>) – An instance of the <strong>List</strong> class.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with an integer of the list created as a value of the <code class="docutils literal"><span class="pre">list_id</span></code> property.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.list_species.remove_list_info">
+<code class="descclassname">phylotastic_services.list_species.</code><code class="descname">remove_list_info</code><span class="sig-paren">(</span><em>userId</em>, <em>listId</em>, <em>accessToken</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.list_species.remove_list_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes an existing list from species list server.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">remove_list_info</span><span class="p">(</span><span class="n">userId</span><span class="o">=</span><span class="s2">&quot;abusalehmdtayeen@gmail.com&quot;</span><span class="p">,</span> <span class="n">listId</span><span class="o">=</span><span class="mi">57</span><span class="p">,</span> <span class="n">accessToken</span><span class="o">=</span><span class="s2">&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;status_code&quot;: 200, &quot;list_id&quot;: 57, &quot;date_removed&quot;: &quot;2017-07-03T20:40:24.561842&quot;, &quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;message&quot;: &quot;Success&quot;}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>userId</strong> (<em>string.</em>) – Unique id (a valid gmail address) of a user.</li>
+<li><strong>listId</strong> (<em>integer.</em>) – Unique id of the list that needs to be retrieved.</li>
+<li><strong>accessToken</strong> (<em>string.</em>) – Access token for the user with userId (valid gmail address).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with title of the list removed as a value of the <code class="docutils literal"><span class="pre">list_title</span></code> property.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.list_species.update_list_data">
+<code class="descclassname">phylotastic_services.list_species.</code><code class="descname">update_list_data</code><span class="sig-paren">(</span><em>userId</em>, <em>listId</em>, <em>speciesList</em>, <em>accessToken</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.list_species.update_list_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates data/content of an existing list in the species list server.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">species_obj1</span> <span class="o">=</span> <span class="n">Species</span><span class="p">(</span><span class="s2">&quot;Acer ginnala&quot;</span><span class="p">,</span> <span class="s2">&quot;Amur maple&quot;</span><span class="p">,</span> <span class="s2">&quot;Maxim.&quot;</span><span class="p">,</span> <span class="s2">&quot;Aceraceae&quot;</span><span class="p">,</span><span class="s2">&quot;Sapindales&quot;</span><span class="p">,</span> <span class="s2">&quot;Streptophyta&quot;</span><span class="p">,</span> <span class="s2">&quot;ICN&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">species_obj2</span> <span class="o">=</span> <span class="n">Species</span><span class="p">(</span><span class="s2">&quot;Achyranthes japonica&quot;</span><span class="p">,</span> <span class="s2">&quot;Japanses chaff flower&quot;</span><span class="p">,</span> <span class="s2">&quot;(Miq.) Nakal&quot;</span><span class="p">,</span> <span class="s2">&quot;Amaranthaceae&quot;</span><span class="p">,</span> <span class="s2">&quot;Caryophyllales&quot;</span><span class="p">,</span> <span class="s2">&quot;Streptophyta&quot;</span><span class="p">,</span> <span class="s2">&quot;ICN&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">species_list2</span> <span class="o">=</span> <span class="p">[</span><span class="n">species_obj1</span><span class="p">,</span> <span class="n">species_obj2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">update_list_data</span><span class="p">(</span><span class="s2">&quot;abusalehmdtayeen@gmail.com&quot;</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="n">species_list2</span><span class="p">,</span><span class="s2">&quot;ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;date_modified&quot;: &quot;2017-07-03T20:08:02.532157&quot;, &quot;status_code&quot;: 200, &quot;old_species&quot;: [{&quot;family&quot;: &quot;Aceraceae&quot;, &quot;scientific_name&quot;: &quot;Acer ginnala&quot;, &quot;scientific_name_authorship&quot;: &quot;Maxim.&quot;, &quot;order&quot;: &quot;Sapindales&quot;, &quot;vernacular_name&quot;: &quot;Amur maple&quot;, &quot;phylum&quot;: &quot;Streptophyta&quot;, &quot;nomenclature_code&quot;: &quot;ICN&quot;, &quot;class&quot;: &quot;&quot;}], &quot;new_species&quot;: [{&quot;family&quot;: &quot;Aceraceae&quot;, &quot;scientific_name&quot;: &quot;Acer ginnala&quot;, &quot;scientific_name_authorship&quot;: &quot;Maxim.&quot;, &quot;vernacular_name&quot;: &quot;Amur maple&quot;, &quot;phylum&quot;: &quot;Streptophyta&quot;, &quot;nomenclature_code&quot;: &quot;ICN&quot;, &quot;order&quot;: &quot;Sapindales&quot;}, {&quot;family&quot;: &quot;Amaranthaceae&quot;, &quot;scientific_name&quot;: &quot;Achyranthes japonica&quot;, &quot;scientific_name_authorship&quot;: &quot;(Miq.) Nakal&quot;, &quot;vernacular_name&quot;: &quot;Japanses chaff flower&quot;, &quot;phylum&quot;: &quot;Streptophyta&quot;, &quot;nomenclature_code&quot;: &quot;ICN&quot;, &quot;order&quot;: &quot;Caryophyllales&quot;}], &quot;list_id&quot;: 57, &quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;message&quot;: &quot;Success&quot;}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>userId</strong> (<em>string.</em>) – Unique id (a valid gmail address) of a user.</li>
+<li><strong>listId</strong> (<em>integer.</em>) – Unique id of the list that needs to be modified.</li>
+<li><strong>speciesList</strong> (A list of instances of the <strong>Species</strong> class) – A list of species objects.</li>
+<li><strong>accessToken</strong> (<em>string.</em>) – Access token for the user with userId (valid gmail address).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with new species object as a value of the <code class="docutils literal"><span class="pre">new_species</span></code> property.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.list_species.update_list_metadata">
+<code class="descclassname">phylotastic_services.list_species.</code><code class="descname">update_list_metadata</code><span class="sig-paren">(</span><em>userId</em>, <em>listId</em>, <em>listObj</em>, <em>accessToken</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.list_species.update_list_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates metadata of an existing list in the species list server.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">list_obj</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;This list contains the invasive species&quot;</span><span class="p">,</span> <span class="n">is_public</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">update_list_metadata</span><span class="p">(</span><span class="s2">&quot;abusalehmdtayeen@gmail.com&quot;</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="n">list_obj</span><span class="p">,</span> <span class="s2">&quot;ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;date_modified&quot;: &quot;2017-07-03T19:55:46.430503&quot;, &quot;status_code&quot;: 200, &quot;modified_content&quot;: {&quot;list_description&quot;: &quot;This list contains the invasive species&quot;, &quot;is_list_public&quot;: false}, &quot;list_id&quot;: 57, &quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;message&quot;: &quot;Success&quot;}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>userId</strong> (<em>string.</em>) – Unique id (a valid gmail address) of a user.</li>
+<li><strong>listId</strong> (<em>integer.</em>) – Unique id of the list that needs to be modified.</li>
+<li><strong>listObj</strong> (<em>object.</em>) – An instance of the <strong>List</strong> class.</li>
+<li><strong>accessToken</strong> (<em>string.</em>) – Access token for the user with userId (valid gmail address).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with modified list object as a value of the <code class="docutils literal"><span class="pre">modified_content</span></code> property.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-phylotastic_services.resolve_names">
 <span id="phylotastic-services-resolve-names-module"></span><h2>phylotastic_services.resolve_names module<a class="headerlink" href="#module-phylotastic_services.resolve_names" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -409,6 +702,29 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="phylotastic_services.study_tree.get_chronogram_tree">
+<code class="descclassname">phylotastic_services.study_tree.</code><code class="descname">get_chronogram_tree</code><span class="sig-paren">(</span><em>tree=None</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.study_tree.get_chronogram_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets chronogram of a phylogenetic tree using Phylotastic datelife.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">get_chronogram_tree</span><span class="p">(</span><span class="n">tree</span><span class="o">=</span><span class="s2">&quot;(((((Canis lupus pallipes,Melursus ursinus)Caniformia,((Panthera tigris,Panthera pardus)Panthera,Herpestes fuscus))Carnivora,(Macaca mulatta,Homo sapiens)Catarrhini)Boreoeutheria,Elephas maximus)Eutheria,Haliastur indus)Amniota;&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
+<span class="go">{&quot;execution_time&quot;: &quot;4.27&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-03T11:51:53.384258&quot;, &quot;scaled_tree&quot;: &quot;((((Homo sapiens:29.126382,Macaca mulatta:29.126382):69.773618,(((Panthera pardus:6.4,Panthera tigris:6.4):34.300001,Herpestes fuscus:40.700001):24.199999,(Canis lupus pallipes:16.775,Melursus ursinus:16.775):48.125):34):10.65,Elephas maximus:109.55):17.078571,Haliastur indus:126.628571);&quot;, &quot;input_tree&quot;: &quot;(((((Canis lupus pallipes,Melursus ursinus)Caniformia,((Panthera tigris,Panthera pardus)Panthera,Herpestes fuscus))Carnivora,(Macaca mulatta,Homo sapiens)Catarrhini)Boreoeutheria,Elephas maximus)Eutheria,Haliastur indus)Amniota;&quot;, &quot;message&quot;: &quot;Success&quot;, &quot;service_documentation&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-20&quot;}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tree</strong> (<em>string.</em>) – A phylogenetic tree in newick format.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A json formatted string – with a newick formatted tree including branch lengths as the value of the <code class="docutils literal"><span class="pre">scaled_tree</span></code> property.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="phylotastic_services.study_tree.get_studies_tree">
 <code class="descclassname">phylotastic_services.study_tree.</code><code class="descname">get_studies_tree</code><span class="sig-paren">(</span><em>taxa</em><span class="sig-paren">)</span><a class="headerlink" href="#phylotastic_services.study_tree.get_studies_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets supporting studies information from Open Tree of Life for a phylogenetic tree retrieved using a list of taxa.</p>
@@ -452,6 +768,7 @@
 <li><a class="reference internal" href="#module-phylotastic_services.get_info">phylotastic_services.get_info module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.get_species">phylotastic_services.get_species module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.get_tree">phylotastic_services.get_tree module</a></li>
+<li><a class="reference internal" href="#module-phylotastic_services.list_species">phylotastic_services.list_species module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.resolve_names">phylotastic_services.resolve_names module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.study_tree">phylotastic_services.study_tree module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services">Module contents</a></li>

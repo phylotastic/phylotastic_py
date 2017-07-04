@@ -36,6 +36,14 @@ phylotastic\_services\.get\_tree module
     :undoc-members:
     :show-inheritance:
 
+phylotastic\_services\.list\_species module
+-------------------------------------------
+
+.. automodule:: phylotastic_services.list_species
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 phylotastic\_services\.resolve\_names module
 --------------------------------------------
 

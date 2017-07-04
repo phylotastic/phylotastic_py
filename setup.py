@@ -18,6 +18,8 @@ setup(name='phylotastic_services',
       packages=find_packages(),
       install_requires=[
           'ete3',
+ 	      'itolapi',
+          'dendropy'
       ],
       include_package_data=False,
       zip_safe=False)

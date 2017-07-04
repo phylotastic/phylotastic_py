@@ -172,5 +172,5 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return MagicMock()
 
-MOCK_MODULES = ['ete3', 'dendropy', 'itolapi']  
+MOCK_MODULES = ['ete3', 'dendropy', 'dendropy.calculate.treecompare', 'itolapi', 'itolapi.Itol', 'itolapi.ItolExport', 'ete3.Tree', 'ete3.TreeStyle', 'ete3.parser.newick.NewickError']  
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)  

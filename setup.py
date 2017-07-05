@@ -17,10 +17,9 @@ setup(name='phylotastic_services',
       license='MIT',
       packages=find_packages(),
       install_requires=[
-          'ete3',
+          'ete3>=3.0.0b35',
  	      'itolapi',
-          'dendropy',
-          'mock'
+          'dendropy'
       ],
       include_package_data=False,
       zip_safe=False)

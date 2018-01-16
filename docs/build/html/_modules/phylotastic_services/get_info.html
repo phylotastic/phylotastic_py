@@ -1,0 +1,342 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>phylotastic_services.get_info &#8212; Phylotastic-services 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for phylotastic_services.get_info</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">**get_info** Module is for getting data (image urls, eol info links) about species </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span> 
+<span class="kn">import</span> <span class="nn">urllib</span>
+
+<span class="c1">#----------------------------------------------</span>
+<span class="n">EOL_API_Key</span> <span class="o">=</span> <span class="s2">&quot;b6499be78b900c60fb28d38715650e826240ba7b&quot;</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+
+<span class="c1">#----------------------------------------------</span>
+<span class="k">def</span> <span class="nf">match_species</span><span class="p">(</span><span class="n">speciesName</span><span class="p">):</span>
+ 	<span class="n">search_url</span> <span class="o">=</span> <span class="s2">&quot;http://eol.org/api/search/1.0.json&quot;</span>    
+ 	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+ 		<span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">EOL_API_Key</span><span class="p">,</span>
+ 		<span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">speciesName</span><span class="p">,</span>
+ 		<span class="s1">&#39;page&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+ 		<span class="s1">&#39;exact&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ 		<span class="s1">&#39;filter_by_taxon_concept_id&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+ 		<span class="s1">&#39;filter_by_hierarchy_entry_id&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+ 		<span class="s1">&#39;filter_by_string&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+ 		<span class="s1">&#39;cache_ttl&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">}</span>
+ 	<span class="n">encoded_payload</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+ 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">search_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">encoded_payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> 
+    
+ 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
+ 		<span class="n">data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+ 		<span class="c1">#length = len(data_json[&#39;results&#39;]) </span>
+ 		<span class="n">numResults</span> <span class="o">=</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;totalResults&#39;</span><span class="p">]</span>   
+ 	
+ 	<span class="k">if</span> <span class="n">numResults</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="kc">None</span> 
+ 	<span class="k">else</span><span class="p">:</span> 
+ 		<span class="k">return</span> <span class="n">data_json</span>
+
+<span class="c1">#--------------------------------------------</span>
+<div class="viewcode-block" id="get_eolurls_species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_info.get_eolurls_species">[docs]</a><span class="k">def</span> <span class="nf">get_eolurls_species</span><span class="p">(</span><span class="n">inputSpecies</span><span class="p">):</span>
+ 	<span class="sd">&quot;&quot;&quot;Gets information urls of a list of species from EOL.</span>
+<span class="sd">    </span>
+<span class="sd">	Example:</span>
+<span class="sd">	</span>
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_eolurls_species([&quot;Panthera leo&quot;, &quot;Panthera onca&quot;])</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [{&quot;species_info_link&quot;: &quot;http://eol.org/328672?action=overview&amp;controller=taxa&quot;, &quot;searched_name&quot;: &quot;Panthera leo&quot;, &quot;eol_id&quot;: 328672, &quot;matched_name&quot;: &quot;Panthera leo (Linnaeus, 1758)&quot;}, {&quot;species_info_link&quot;: &quot;http://eol.org/328606?action=overview&amp;controller=taxa&quot;, &quot;searched_name&quot;: &quot;Panthera onca&quot;, &quot;eol_id&quot;: 328606, &quot;matched_name&quot;: &quot;Panthera onca (Linnaeus, 1758)&quot;}]}</span>
+
+<span class="sd">    :param inputSpecies: A list of species for which to get EOL links. </span>
+<span class="sd">    :type inputTaxon: A list of strings.  </span>
+<span class="sd">    :returns: A json formatted string -- with a list of species objects containing links to EOL. </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+ 	<span class="n">post</span><span class="o">=</span><span class="kc">False</span>
+ 	<span class="n">response</span> <span class="o">=</span> <span class="p">{}</span>	
+ 	<span class="n">outputSpeciesList</span> <span class="o">=</span> <span class="p">[]</span>
+
+ 	<span class="k">for</span> <span class="n">inSpecies</span> <span class="ow">in</span> <span class="n">inputSpecies</span><span class="p">:</span>
+ 		<span class="n">species_obj</span> <span class="o">=</span> <span class="p">{}</span>
+ 		<span class="n">url_species</span> <span class="o">=</span> <span class="p">[]</span>	 	
+ 		<span class="n">match_species_json</span> <span class="o">=</span> <span class="n">match_species</span><span class="p">(</span><span class="n">inSpecies</span><span class="p">)</span>
+ 		<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;searched_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inSpecies</span>	 	
+ 		<span class="k">if</span> <span class="n">match_species_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>		 	
+ 			<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;matched_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+ 		<span class="k">else</span><span class="p">:</span> 	
+ 		 	<span class="n">species_info_link</span> <span class="o">=</span> <span class="n">match_species_json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;link&#39;</span><span class="p">]</span>
+ 			<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;matched_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_species_json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+ 			<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;eol_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_species_json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>			
+ 			<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;species_info_link&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species_info_link</span> 
+ 				
+ 		<span class="n">outputSpeciesList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">species_obj</span><span class="p">)</span>	
+ 	
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outputSpeciesList</span>
+
+ 	<span class="k">if</span> <span class="n">post</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">response</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 	 	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+
+
+<span class="c1">#--------------------------------------------   </span>
+<span class="k">def</span> <span class="nf">get_species_info</span><span class="p">(</span><span class="n">speciesId</span><span class="p">):</span>
+ 	<span class="n">page_url</span> <span class="o">=</span> <span class="s2">&quot;http://eol.org/api/pages/1.0.json&quot;</span>    
+ 	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+ 		<span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">EOL_API_Key</span><span class="p">,</span>
+ 		<span class="s1">&#39;batch&#39;</span> <span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+ 		<span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">speciesId</span><span class="p">,</span>
+ 		<span class="s1">&#39;images_per_page&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+ 		<span class="s1">&#39;images_page&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+ 		<span class="s1">&#39;videos_per_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;videos_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;sounds_per_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;sounds_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;maps_per_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;maps_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;texts_per_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;texts_page&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+ 		<span class="s1">&#39;iucn&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="c1">#include the IUCN Red List status object</span>
+ 		<span class="s1">&#39;subjects&#39;</span><span class="p">:</span> <span class="s2">&quot;overview&quot;</span><span class="p">,</span>  <span class="c1">#&#39;overview&#39; to return the overview text (if exists)</span>
+ 		<span class="s1">&#39;licenses&#39;</span><span class="p">:</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+ 		<span class="s1">&#39;details&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="c1">#include all metadata for data objects</span>
+ 		<span class="s1">&#39;common_names&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+ 		<span class="s1">&#39;synonyms&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+ 		<span class="s1">&#39;references&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+ 		<span class="s1">&#39;taxonomy&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+ 		<span class="s1">&#39;vetted&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1"># only trusted and unreviewed content will be returned (untrusted content will not be returned)</span>
+ 		<span class="s1">&#39;cache_ttl&#39;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+ 		<span class="s1">&#39;language&#39;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span>
+    <span class="p">}</span>
+ 	<span class="n">encoded_payload</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+ 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">page_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">encoded_payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> 
+    
+ 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
+ 		<span class="n">species_info_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+ 		<span class="k">return</span> <span class="n">species_info_json</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="kc">None</span>
+ 		
+<span class="c1">#--------------------------------------------</span>
+<span class="k">def</span> <span class="nf">get_imageObjects</span><span class="p">(</span><span class="n">dataObjectsInfo</span><span class="p">):</span>
+ 	<span class="n">species_imageobj_list</span> <span class="o">=</span> <span class="p">[]</span>
+ 	<span class="k">for</span> <span class="n">dt_obj</span> <span class="ow">in</span> <span class="n">dataObjectsInfo</span><span class="p">:</span>
+ 		<span class="k">if</span> <span class="n">dt_obj</span><span class="p">[</span><span class="s1">&#39;dataType&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;http://purl.org/dc/dcmitype/StillImage&#39;</span><span class="p">:</span>
+ 			<span class="n">img_obj</span> <span class="o">=</span> <span class="n">create_image_obj</span><span class="p">(</span><span class="n">dt_obj</span><span class="p">)</span>
+ 			<span class="n">species_imageobj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">img_obj</span><span class="p">)</span>
+
+ 	<span class="k">return</span> <span class="n">species_imageobj_list</span>
+
+<span class="c1">#----------------------------------------------</span>
+<span class="k">def</span> <span class="nf">create_image_obj</span><span class="p">(</span><span class="n">dataObject</span><span class="p">):</span>
+ 	<span class="c1">#print dataObject</span>
+ 	<span class="n">image_obj</span> <span class="o">=</span> <span class="p">{}</span>
+ 	<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;source&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;source&#39;</span> <span class="ow">in</span> <span class="n">dataObject</span> <span class="k">else</span> <span class="kc">None</span>
+ 	<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;vettedStatus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;vettedStatus&#39;</span><span class="p">]</span>
+ 	<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;dataRating&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;dataRating&#39;</span><span class="p">]</span>
+ 	<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;mediaURL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;mediaURL&#39;</span><span class="p">]</span>
+ 	<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;eolMediaURL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;eolMediaURL&#39;</span><span class="p">]</span>
+ 	<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;eolThumbnailURL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;eolThumbnailURL&#39;</span><span class="p">]</span>
+ 	<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;license&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;license&#39;</span><span class="p">]</span>
+ 	<span class="k">if</span> <span class="n">dataObject</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s1">&#39;rightsHolder&#39;</span><span class="p">):</span>
+ 		<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;rightsHolder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataObject</span><span class="p">[</span><span class="s1">&#39;rightsHolder&#39;</span><span class="p">]</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 		<span class="n">image_obj</span><span class="p">[</span><span class="s1">&#39;rightsHolder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+ 	<span class="k">return</span> <span class="n">image_obj</span>
+
+<span class="c1">#---------------------------------------------------</span>
+<div class="viewcode-block" id="get_images_species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_info.get_images_species">[docs]</a><span class="k">def</span> <span class="nf">get_images_species</span><span class="p">(</span><span class="n">inputSpecies</span><span class="p">):</span>
+ 	<span class="sd">&quot;&quot;&quot;Gets image urls and corresponding license information of a list of species from EOL</span>
+<span class="sd">    </span>
+<span class="sd">	Example:</span>
+<span class="sd">	</span>
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_images_species([&quot;Rangifer tarandus&quot;])</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;execution_time&quot;: &quot;2.51&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T22:42:48.209751&quot;, &quot;input_query&quot;: [&quot;Rangifer tarandus&quot;], &quot;source_urls&quot;: [&quot;http://eol.org&quot;], &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [{&quot;images&quot;: [{&quot;license&quot;: &quot;http://creativecommons.org/licenses/publicdomain/&quot;, &quot;mediaURL&quot;: &quot;http://www.biolib.cz/IMG/GAL/21652.jpg&quot;, &quot;eolMediaURL&quot;: &quot;http://media.eol.org/content/2014/05/02/09/88803_orig.jpg&quot;, &quot;rightsHolder&quot;: &quot;Nickles, Jon&quot;, &quot;vettedStatus&quot;: &quot;Trusted&quot;, &quot;source&quot;: &quot;http://www.biolib.cz/en/image/id21652/&quot;, &quot;eolThumbnailURL&quot;: &quot;http://media.eol.org/content/2014/05/02/09/88803_98_68.jpg&quot;, &quot;dataRating&quot;: 3.0}, {&quot;license&quot;: &quot;http://creativecommons.org/licenses/by-nc-sa/3.0/&quot;, &quot;mediaURL&quot;: &quot;http://calphotos.berkeley.edu/imgs/256x384/6666_6666/1007/6477.jpeg&quot;, &quot;eolMediaURL&quot;: &quot;http://media.eol.org/content/2011/08/07/07/12395_orig.jpg&quot;, &quot;rightsHolder&quot;: &quot;2007 California Academy of Sciences&quot;, &quot;vettedStatus&quot;: &quot;Trusted&quot;, &quot;source&quot;: &quot;http://calphotos.berkeley.edu/cgi/img_query?seq_num=27882&amp;one=T&quot;, &quot;eolThumbnailURL&quot;: &quot;http://media.eol.org/content/2011/08/07/07/12395_98_68.jpg&quot;, &quot;dataRating&quot;: 4.0}, {&quot;license&quot;: &quot;http://creativecommons.org/publicdomain/mark/1.0/&quot;, &quot;mediaURL&quot;: &quot;http://upload.wikimedia.org/wikipedia/commons/f/fd/Caribou.jpg&quot;, &quot;eolMediaURL&quot;: &quot;http://media.eol.org/content/2013/06/18/06/80894_orig.jpg&quot;, &quot;rightsHolder&quot;: &quot;&quot;, &quot;vettedStatus&quot;: &quot;Trusted&quot;, &quot;source&quot;: &quot;http://commons.wikimedia.org/wiki/File:Caribou.jpg&quot;, &quot;eolThumbnailURL&quot;: &quot;http://media.eol.org/content/2013/06/18/06/80894_98_68.jpg&quot;, &quot;dataRating&quot;: 3.45455}, {&quot;license&quot;: &quot;http://creativecommons.org/licenses/by-nc/2.0/&quot;, &quot;mediaURL&quot;: &quot;https://farm1.staticflickr.com/31/56038869_7421be89f6_o.jpg&quot;, &quot;eolMediaURL&quot;: &quot;http://media.eol.org/content/2015/01/12/03/89244_orig.jpg&quot;, &quot;rightsHolder&quot;: &quot;Caleb Slemmons&quot;, &quot;vettedStatus&quot;: &quot;Trusted&quot;, &quot;source&quot;: &quot;https://www.flickr.com/photos/kenai/56038869/&quot;, &quot;eolThumbnailURL&quot;: &quot;http://media.eol.org/content/2015/01/12/03/89244_98_68.jpg&quot;, &quot;dataRating&quot;: 3.0}, {&quot;license&quot;: &quot;http://creativecommons.org/licenses/by-sa/3.0/&quot;, &quot;mediaURL&quot;: &quot;http://upload.wikimedia.org/wikipedia/commons/a/af/20070818-0001-strolling_reindeer.jpg&quot;, &quot;eolMediaURL&quot;: &quot;http://media.eol.org/content/2012/06/13/00/48543_orig.jpg&quot;, &quot;rightsHolder&quot;: &quot;&quot;, &quot;vettedStatus&quot;: &quot;Trusted&quot;, &quot;source&quot;: &quot;http://commons.wikimedia.org/wiki/File:20070818-0001-strolling_reindeer.jpg&quot;, &quot;eolThumbnailURL&quot;: &quot;http://media.eol.org/content/2012/06/13/00/48543_98_68.jpg&quot;, &quot;dataRating&quot;: 3.0}], &quot;searched_name&quot;: &quot;Rangifer tarandus&quot;, &quot;total_images&quot;: 5, &quot;eol_id&quot;: 328653, &quot;matched_name&quot;: &quot;Rangifer tarandus (Linnaeus, 1758)&quot;}], &quot;service_documentation&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-8&quot;}</span>
+
+
+
+<span class="sd">    :param inputSpecies: A list of species for which to get image url information. </span>
+<span class="sd">    :type inputTaxon: A list of strings.  </span>
+<span class="sd">    :returns: A json formatted string -- with a list of species objects containing image urls, license info., eol ids. </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+ 	<span class="n">post</span><span class="o">=</span><span class="kc">False</span>
+ 	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+ 	<span class="c1">#service_url = &quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/si/eol/get_images?species=&quot; + inputSpeciesList</span>
+ 	<span class="n">service_documentation</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-8&quot;</span>
+ 	<span class="n">response</span> <span class="o">=</span> <span class="p">{}</span>	
+ 	<span class="n">outputSpeciesList</span> <span class="o">=</span> <span class="p">[]</span>
+
+ 	<span class="k">for</span> <span class="n">inSpecies</span> <span class="ow">in</span> <span class="n">inputSpecies</span><span class="p">:</span>
+ 		<span class="n">species_obj</span> <span class="o">=</span> <span class="p">{}</span>
+ 		<span class="n">images_species</span> <span class="o">=</span> <span class="p">[]</span>	 	
+ 		<span class="n">match_species_json</span> <span class="o">=</span> <span class="n">match_species</span><span class="p">(</span><span class="n">inSpecies</span><span class="p">)</span>
+ 		<span class="k">if</span> <span class="n">match_species_json</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">species_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+ 		<span class="k">else</span><span class="p">:</span>
+ 			<span class="n">species_id</span> <span class="o">=</span> <span class="n">match_species_json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+ 		<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;searched_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inSpecies</span>	 	
+ 		<span class="k">if</span> <span class="n">species_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>		 	
+ 			<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;matched_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+ 			<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;total_images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+ 		<span class="k">else</span><span class="p">:</span> 	
+ 		 	<span class="n">species_info_json</span> <span class="o">=</span> <span class="n">get_species_info</span><span class="p">(</span><span class="n">species_id</span><span class="p">)</span>
+ 			<span class="k">if</span> <span class="n">species_info_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 				<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;matched_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species_info_json</span><span class="p">[</span><span class="s1">&#39;scientificName&#39;</span><span class="p">]</span>
+ 				<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;eol_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species_id</span>			
+ 				<span class="n">dataObjects_lst</span> <span class="o">=</span> <span class="n">species_info_json</span><span class="p">[</span><span class="s1">&#39;dataObjects&#39;</span><span class="p">]</span> 
+ 				<span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataObjects_lst</span><span class="p">)</span>		
+ 				<span class="k">if</span> <span class="n">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+ 					<span class="n">images_species</span> <span class="o">=</span> <span class="n">get_imageObjects</span><span class="p">(</span><span class="n">dataObjects_lst</span><span class="p">)</span>
+ 					<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;total_images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">images_species</span><span class="p">)</span>
+
+ 		<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">images_species</span>
+ 		<span class="n">outputSpeciesList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">species_obj</span><span class="p">)</span>
+	
+ 	<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+ 	<span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>    
+    <span class="c1">#service result creation time</span>
+ 	<span class="n">creation_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+ 	
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;creation_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creation_time</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">outputSpeciesList</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;source_urls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://eol.org&quot;</span><span class="p">]</span>
+ 	<span class="c1">#final_result[&#39;source_version&#39;] = &quot;ott2.9draft12&quot;</span>
+ 	<span class="c1">#response[&#39;service_url&#39;] = service_url</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;service_documentation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_documentation</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;input_query&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputSpecies</span>
+
+ 	<span class="k">if</span> <span class="n">post</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">response</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 	 	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+
+<span class="c1">#--------------------------------------------------</span>
+<span class="k">def</span> <span class="nf">get_image_species_id</span><span class="p">(</span><span class="n">species_id</span><span class="p">,</span> <span class="n">post</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+ 	<span class="n">response</span> <span class="o">=</span> <span class="p">{}</span>	
+ 	<span class="n">species_obj</span> <span class="o">=</span> <span class="p">{}</span>
+ 	<span class="n">species_info_json</span> <span class="o">=</span> <span class="n">get_species_info</span><span class="p">(</span><span class="n">species_id</span><span class="p">)</span>
+ 	<span class="k">if</span> <span class="n">species_info_json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 		<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;matched_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species_info_json</span><span class="p">[</span><span class="s1">&#39;scientificName&#39;</span><span class="p">]</span>
+ 		<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;eol_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species_id</span>			
+ 		<span class="n">dataObjects_lst</span> <span class="o">=</span> <span class="n">species_info_json</span><span class="p">[</span><span class="s1">&#39;dataObjects&#39;</span><span class="p">]</span> 
+ 		<span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataObjects_lst</span><span class="p">)</span>		
+ 		<span class="k">if</span> <span class="n">length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+ 			<span class="n">images_species</span> <span class="o">=</span> <span class="n">get_imageObjects</span><span class="p">(</span><span class="n">dataObjects_lst</span><span class="p">)</span>
+ 					
+ 		<span class="n">species_obj</span><span class="p">[</span><span class="s1">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">images_species</span>
+ 		
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">species_obj</span>
+
+ 	<span class="k">if</span> <span class="n">post</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">response</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 	 	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+<span class="c1">#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="c1">#if __name__ == &#39;__main__&#39;:</span>
+
+	<span class="c1">#inputSpecies = [&quot;Panthera leo&quot;, &quot;Panthera onca&quot;]</span>
+ 	<span class="c1">#inputSpecies = [&quot;Rangifer tarandus&quot;]</span>
+ 	
+ 	<span class="c1">#print get_images_species(inputSpecies)</span>
+ 	<span class="c1">#print get_eolurls_species(inputSpecies)</span>
+ 	
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Abu Saleh Md Tayeen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

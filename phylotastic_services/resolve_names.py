@@ -14,44 +14,66 @@ base_url = "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/tnrs/"
 
 #~~~~~~~~~~~~~~~~~~~~ (GlobalNamesResolver-TNRS)~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #resolve scientific names
-def resolve_sn_gnr(scNames, post):
+def resolve_sn_gnr(scNames, do_fuzzy_match, multi_match):
+    if do_fuzzy_match:
+       best_match = 'false'
+    else:
+       best_match = 'true'
+
     payload = {
         'names': scNames,
-        'best_match_only': 'true'
+        'best_match_only': best_match
     }
     
-    encoded_payload = urllib.urlencode(payload)
-    response = requests.get(api_url, params=encoded_payload, headers=headers) 
-    
+    #encoded_payload = urllib.urlencode(payload)
+    #response = requests.get(api_url, params=encoded_payload, headers=headers) 
+    response = requests.post(api_url, data=payload)     
+
     resolvedNamesList = [] 
-    
-    if response.status_code == requests.codes.ok:    
-        data_json = json.loads(response.text)
+    data_json = json.loads(response.text)
+
+    if response.status_code == requests.codes.ok:        
         rsnames_list = data_json['data']
         parameters_list = data_json['parameters']   
         for element in rsnames_list:
-            namesList = {}
-            namesList['search_string'] = element['supplied_name_string']
-            namesList['resolver_name'] = 'GNR'
-            if 'results' in element:
-            	rsname = element['results'][0]['canonical_form']       	
-            	namesList['matched_name'] =  rsname
-            	namesList['match_type'] = 'Exact' if element['results'][0]['match_type'] == 1 else 'Fuzzy'
-            	namesList['synonyms'] = []
-            	namesList['taxon_id'] = element['results'][0]['taxon_id']		
-            else:
-                namesList['matched_name'] = ""
-            resolvedNamesList.append(namesList)
+            mult_matches_list = []
+            input_name = element['supplied_name_string']
+            
+            match_list = element['results']
+            for match in match_list:
+                namesList = {}
+                
+                if float(match['score']) >= 0.75:
+                   rsname = match['canonical_form']
+       	           namesList['search_string'] = input_name
+            	   namesList['matched_name'] =  rsname
+            	   namesList['match_type'] = 'Exact' if match['match_type'] == 1 else 'Fuzzy'
+                   namesList['data_source'] = match['data_source_title']      
+            	   namesList['synonyms'] = []
+                   namesList['match_score'] = match['score']  
+            	   namesList['taxon_id'] = match['taxon_id']		
+                   mult_matches_list.append(namesList)	
+                if not(multi_match) and do_fuzzy_match: 
+                   break
 
- 	    status_code = 200
-        message = "Success" 
+            if not do_fuzzy_match and match['match_type'] !=1:
+               continue
+            resolvedNamesList.append({'input_name': input_name, 'matched_results': mult_matches_list})
+		
+        statuscode = 200
+        msg = "Success" 
     else:
-        status_code = 500
-        message = "Error resolving names with GNR"
+        if 'message' in data_json:
+           msg = "GNR Error: "+data_json['message']
+        else:
+           msg = "Error: Response error while resolving names with GNR"
+        if 'status' in data_json:
+           statuscode = data_json['status']
+        
+        statuscode = response.status_code   
 
-    service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-4"
-
-    return {'resolvedNames': resolvedNamesList, 'parameters': parameters_list, "service_url_doc": service_documentation, 'status_code': status_code, 'message': message}
+    #print resolvedNamesList
+    return {'resolvedNames': resolvedNamesList, 'gnr_parameters': parameters_list, 'status_code': statuscode, 'message': msg}
         
 #----------------------------------------------    
 
@@ -76,37 +98,55 @@ def make_api_friendly_list(scNamesList):
 #~~~~~~~~~~~~~~~~~~~~ (OpenTree-TNRS)~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def resolve_sn_ot(scNames, do_fuzzy_match, multi_match):
     opentree_api_url = 'https://api.opentreeoflife.org/v2/tnrs/match_names'
-    
+  
     payload = {
         'names': scNames,
  		'do_approximate_matching': do_fuzzy_match
     }
     jsonPayload = json.dumps(payload)
-   
-    response = requests.post(opentree_api_url, data=jsonPayload, headers=headers)
+
+    #----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool--------------
+    max_tries = 20
+    remaining_tries = max_tries
+    while remaining_tries > 0:
+        try:
+            response = requests.post(opentree_api_url, data=jsonPayload, headers=headers)
+            break
+        except requests.exceptions.ConnectionError:
+            time.sleep(20)
+        remaining_tries = remaining_tries - 1   
     
+    #response = requests.post(opentree_api_url, data=jsonPayload, headers=headers)
+    
+    data_json = json.loads(response.text)
+
     resolvedNamesList = []
 
     if response.status_code == requests.codes.ok:    
-        data_json = json.loads(response.text)
         rsnames_list = data_json['results'] 
         resolvedNamesList = get_resolved_names(rsnames_list, do_fuzzy_match, multi_match)
-        #write_result(resolvedNamesList)
-        status_code = 200
-        message = "Success"
+        statuscode = 200
+        msg = "Success"
     else:
-        status_code = 500
-        message = "Error resolving names with OTL"
-
-    return {'resolvedNames': resolvedNamesList, 'status_code': status_code, 'message': message}
+        if 'message' in data_json:
+           msg = "OToL TNRS Error: "+data_json['message']
+        else:
+           msg = "Error: Response error while resolving names with OToL TNRS"
+        if 'status' in data_json:
+           statuscode = data_json['status']
+        
+        statuscode = response.status_code   
+        
+    return {'resolvedNames': resolvedNamesList, 'status_code': statuscode, 'message': msg}
  
 #-------------------------------------------
 def get_resolved_names(results, do_fuzzy_match, multi_match):
  	resolvedNameslist = []
  	
  	for element in results:
+ 		input_name = element['id']
  		match_list = element['matches']
- 		
+ 		mult_matches_list = []
  		for match_result in match_list:
  			namesList = {}
  			search_str = match_result['search_string']
@@ -115,25 +155,30 @@ def get_resolved_names(results, do_fuzzy_match, multi_match):
  			match_score = match_result['score']
  			ott_id = match_result['ot:ottId']
  			synonyms = match_result['synonyms']
- 			if float(match_score) > 0.5:	     	
+ 			if float(match_score) >= 0.75:	     	
  				namesList['matched_name'] = match_str
  				namesList['search_string'] = search_str	 
  				namesList['match_type'] = 'Exact' if not(match_type) else 'Fuzzy'
+ 				namesList['match_score'] = match_score          
  				namesList['synonyms'] = synonyms
  				namesList['taxon_id'] = ott_id
- 				namesList['resolver_name'] = 'OT'	
- 				resolvedNameslist.append(namesList)
- 				if not(multi_match) and do_fuzzy_match:
- 					break;
+ 				namesList['data_source'] = "Open Tree of Life Reference Taxonomy"
+ 				mult_matches_list.append(namesList)	
+ 			if not(multi_match) and do_fuzzy_match: 
+ 				break
+
+ 		resolvedNameslist.append({'input_name': input_name, 'matched_results': mult_matches_list})
+
  	#print len(resolvedNameslist)
  	return resolvedNameslist
+
 
 #---------------------------------
 def create_sublists(lst, size=200):
 	return [lst[i:i+size] for i in xrange(0, len(lst), size)]
 
 #--------------------------------------------
-def resolve_names_OT(inputNamesList):
+def resolve_names_OT(inputNamesList, do_fuzzy_match, multi_match):
     """Resolves scientific names using Open Tree of Life TNRS
     
 	For example:
@@ -145,51 +190,53 @@ def resolve_names_OT(inputNamesList):
 
     :param inputNamesList: A list of scientific names to be resolved. 
     :type inputNamesList: A list of str. 
+    :param do_fuzzy_match: A boolean value to specify whether to perform approximate string (a.k.a. "fuzzy") matching. By default, it is false. To turn on "fuzzy" matching true must be used.
+    :type do_fuzzy_match: boolean.
+    :param multi_match: A boolean value to specify whether to return multiple match results when fuzzy matching is turned on. By default it is false. If fuzzy matching is turned on and multiple_match is enabled (true), then it will return results of matches with score more than 0.75.
+    :type multi_match: boolean.
     
     :returns: A json formatted string -- with a list of dict objects as the value of the ``resolvedNames`` property. 
 
     """ 
-    FuzzyMatch=True
-    MultiMatch=False
-    post=False
     list_size = 250
     final_result = []
 
     start_time = time.time()
+    
+    status_code = 200
+    message = "Success"
 
     if len(inputNamesList) > list_size:
     	sublists = create_sublists(inputNamesList, list_size)
     	for sublst in sublists:
-    		resolvedResult = resolve_sn_ot(sublst, FuzzyMatch, MultiMatch)
+    		resolvedResult = resolve_sn_ot(sublst, do_fuzzy_match, multi_match)
     		resolvedNameslst = resolvedResult['resolvedNames']
-    		final_result.extend(resolvedNameslst)
-    	status_code = resolvedResult['status_code']
-    	message = resolvedResult['message']  
+    		if resolvedResult['status_code'] != 200:
+    			return {'status_code': resolvedResult['status_code'], 'message': resolvedResult['message']}
+    		final_result.extend(resolvedNameslst)  
     else:
-    	resolvedResult = resolve_sn_ot(inputNamesList, FuzzyMatch, MultiMatch)
+    	resolvedResult = resolve_sn_ot(inputNamesList, do_fuzzy_match, multi_match)
     	final_result = resolvedResult['resolvedNames']
     	status_code = resolvedResult['status_code']
     	message = resolvedResult['message']
 
-    if len(final_result) <= 0 and status_code != 500:
-    	status_code = 204
+    result_len = len(final_result)
+
+    if result_len <= 0 and status_code == 200:
         message = "Could not resolve any name" 
 
     end_time = time.time()
-    result_len = len(final_result)
-  
-    service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-3"
-    execution_time = "{:4.2f}".format(end_time-start_time)
+    
+    #service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-3"
+    execution_time = float("{:4.2f}".format(end_time-start_time))
     #service result creation time
     creation_time = datetime.datetime.now().isoformat()
+    meta_data = {'creation_time': creation_time, 'execution_time': execution_time, 'source_urls':["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tnrs"] }
 
-    if post: 	    
-     	return {'resolvedNames': final_result, 'creation_time': creation_time, 'execution_time': execution_time, 'total_names': result_len, 'status_code': status_code, "service_url_doc": service_documentation, 'input_query': inputNamesList , 'message': message}
-    else: 
-        return json.dumps({'resolvedNames': final_result, 'creation_time': creation_time, 'execution_time': execution_time, 'total_names': result_len, 'status_code': status_code, "service_url_doc": service_documentation, 'input_query': inputNamesList, 'message': message}) 
+    return json.dumps({'resolvedNames': final_result, 'total_names': result_len, 'status_code': status_code, 'message': message, 'meta_data': meta_data})
 
 #-----------------------------------------------------------
-def resolve_names_GNR(inputNamesList): 
+def resolve_names_GNR(inputNamesList, do_fuzzy_match, multi_match): 
     """Resolves scientific names using Global Names Resolver
     
 	For example:
@@ -201,28 +248,33 @@ def resolve_names_GNR(inputNamesList):
 
     :param inputNamesList: A list of scientific names to be resolved. 
     :type inputNamesList: A list of str. 
-    
+    :param do_fuzzy_match: A boolean value to specify whether to perform approximate string (a.k.a. "fuzzy") matching. By default, it is false. To turn on "fuzzy" matching true must be used.
+    :type do_fuzzy_match: boolean.
+    :param multi_match: A boolean value to specify whether to return multiple match results when fuzzy matching is turned on. By default it is false. If fuzzy matching is turned on and multiple_match is enabled (true), then it will return results of matches with score more than 0.75.
+    :type multi_match: boolean.
+
     :returns: A json formatted string -- with a list of dict objects as the value of the ``resolvedNames`` property. 
 
     """
-    post=False
+    
     start_time = time.time()
     api_friendly_list = make_api_friendly_list(inputNamesList)	
-    final_result = resolve_sn_gnr(api_friendly_list, post)    
+    final_result = resolve_sn_gnr(api_friendly_list, do_fuzzy_match, multi_match)    
     end_time = time.time()
     execution_time = end_time-start_time
 
+    result_len = len(final_result['resolvedNames'])
+    if result_len <= 0 and final_result['status_code'] == 200:
+        final_result['message'] = "Could not resolve any name"
+
     #service result creation time
     creation_time = datetime.datetime.now().isoformat()
-    final_result['creation_time'] = creation_time
-    final_result['execution_time'] = "{:4.2f}".format(execution_time)
-    final_result['total_names'] = len(final_result['resolvedNames'])
-    final_result['input_query'] = inputNamesList
+    meta_data = {'creation_time': creation_time, 'execution_time': float("{:4.2f}".format(execution_time)), 'source_urls': ["http://resolver.globalnames.org/"] }
 
-    if post: 	    
-        return final_result
-    else:
-        return json.dumps(final_result)  
-
+    final_result['meta_data'] = meta_data
+    final_result['total_names'] = result_len
+    #final_result['input_names'] = inputNamesList
+    
+    return json.dumps(final_result)
 #------------------------------------------------------
 

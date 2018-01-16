@@ -1,0 +1,458 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>phylotastic_services.list_species &#8212; Phylotastic-services 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for phylotastic_services.list_species</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">**list_species** Module is for manipulating (insert into, update on or delete from list server) a list of species </span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span> 
+<span class="kn">import</span> <span class="nn">urllib</span>
+
+<span class="c1">#----------------------------------------------</span>
+<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://phylo.cs.nmsu.edu:5007/phylotastic_ws/sls&quot;</span> 
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+<span class="c1">#scientific_name_authorship(str.)    authorship of the scientific name of the species</span>
+<span class="c1">#----------------------------------------------</span>
+<div class="viewcode-block" id="Species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.Species">[docs]</a><span class="k">class</span> <span class="nc">Species</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **Species** class is used to create an instance of a species. A species instance</span>
+<span class="sd">    consists of data about a particular species.</span>
+
+<span class="sd"> 	**Species** *properties* are described below.</span>
+
+<span class="sd">     .. table::</span>
+
+<span class="sd">         ================================   ==============================================</span>
+<span class="sd">         PROPERTY(type)                     DESCRIPTION</span>
+<span class="sd">         ================================   ==============================================</span>
+<span class="sd">         scientific_name(str.)               scientific name of the species</span>
+<span class="sd">         vernacular_name(str.)               vernacular name of the species</span>
+<span class="sd">         scientific_name_authorship(str.)    authorship of the scientific name of the species</span>
+<span class="sd">         family(str.)                        the taxonomic rank family where the species belongs to</span>
+<span class="sd">         order(str.)                         the taxonomic rank order where the species belongs to</span>
+<span class="sd">         phylum(str.)                        the taxonomic rank phylum where the species belongs to</span>
+<span class="sd">         nomenclature_code(str.)             he nomenclatural code of the species</span>
+<span class="sd">         ================================   ==============================================</span>
+
+<span class="sd">    :returns: a **Species** object which represents a species.</span>
+
+<span class="sd">    **Example:**</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        species_obj1=Species(&quot;Acer ginnala&quot;, &quot;Amur maple&quot;, &quot;Maxim.&quot;, &quot;Aceraceae&quot;,&quot;Sapindales&quot;, &quot;Streptophyta&quot;, &quot;ICN&quot;) #creates a species object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Sc_name</span><span class="p">,</span> <span class="n">Vn_name</span><span class="p">,</span> <span class="n">Sc_name_author</span><span class="p">,</span> <span class="n">Family</span><span class="p">,</span> <span class="n">Order</span><span class="p">,</span> <span class="n">Phylum</span><span class="p">,</span> <span class="n">Nm_code</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scientific_name</span> <span class="o">=</span> <span class="n">Sc_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vernacular_name</span> <span class="o">=</span> <span class="n">Vn_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scientific_name_authorship</span> <span class="o">=</span> <span class="n">Sc_name_author</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">family</span> <span class="o">=</span> <span class="n">Family</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">Order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phylum</span> <span class="o">=</span> <span class="n">Phylum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nomenclature_code</span> <span class="o">=</span> <span class="n">Nm_code</span>
+
+    <span class="k">def</span> <span class="nf">reprJSON</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">scientific_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scientific_name</span><span class="p">,</span> <span class="n">vernacular_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vernacular_name</span><span class="p">,</span> <span class="n">scientific_name_authorship</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scientific_name_authorship</span><span class="p">,</span> <span class="n">family</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">family</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span><span class="n">phylum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">phylum</span><span class="p">,</span> <span class="n">nomenclature_code</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nomenclature_code</span><span class="p">)</span></div>
+			
+<span class="c1">#--------------------------------------------- </span>
+<div class="viewcode-block" id="List"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.List">[docs]</a><span class="k">class</span> <span class="nc">List</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **List** class is used to store information of a list. A list</span>
+<span class="sd">    consists of a collection of Species objects and metadata about the list.</span>
+
+<span class="sd"> 	**List** *properties* are described below.</span>
+
+<span class="sd">     .. table::</span>
+
+<span class="sd">         ========================  ==============================================</span>
+<span class="sd">         PROPERTY(type)            DESCRIPTION</span>
+<span class="sd">         ========================  ==============================================</span>
+<span class="sd">         title(str.)               title of the new list</span>
+<span class="sd">         description(str.)         description of the new list</span>
+<span class="sd">         author(str.)              a list of names of the authors who prepared the new list</span>
+<span class="sd">         date_published(str.)      date when the new list is being posted (format: mm-dd-yyyy)</span>
+<span class="sd">         curator(str.)             name of the curator of the new list</span>
+<span class="sd">         curation_date(str.)       date when the new list is being curated (format: mm-dd-yyyy)</span>
+<span class="sd">         source(str.)              source of the new list (url, publication)</span>
+<span class="sd">         keywords(str.)            keywords related to the new list</span>
+<span class="sd">         focal_clade(str.)         focal_clade of the new list</span>
+<span class="sd">         extra_info(str.)          extra information about the new list</span>
+<span class="sd">         origin(str.)              the origin from where the new list is being posted. (Permitted values: &quot;script&quot; or &quot;webapp&quot; or &quot;mobileapp&quot;)</span>
+<span class="sd">         is_public(bool.)          true if the new list posted can be viewed by public. Otherwise false</span>
+<span class="sd">         species_list(obj)         a list of species objects  </span>
+<span class="sd">         ========================  ==============================================</span>
+
+<span class="sd">    :returns: a **List** object which represents a new list.</span>
+
+<span class="sd">    **Example:**</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        species_obj1=Species(&quot;Acer ginnala&quot;, &quot;Amur maple&quot;, &quot;Maxim.&quot;, &quot;Aceraceae&quot;,&quot;Sapindales&quot;, &quot;Streptophyta&quot;, &quot;ICN&quot;) #creates a species object</span>
+<span class="sd">        species_list = [species_obj1] # create a list of species objects</span>
+<span class="sd">        list_obj = List(&quot;Illinois Invasive Plants&quot;, &quot;This list contains the invasive species, with their Family and Order&quot;, [&quot;Invasive.org  Center for Invasive Species and Ecosystem Health&quot;], &quot;06-25-2017&quot;, &quot;HD Laughinghouse&quot;, &quot;2-25-2016&quot;, &quot;http://www.invasive.org/species/list.cfm?id=152&quot;, [&quot;Plants&quot;, &quot; invasive species&quot;, &quot; Illinois&quot;], &quot;Embryophyta&quot;, &quot;&quot;, &quot;script&quot;, True, species_list) #create a list object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_published</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">curator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">curation_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">focal_clade</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_public</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">species_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_published</span> <span class="o">=</span> <span class="n">date_published</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curator</span> <span class="o">=</span> <span class="n">curator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curation_date</span> <span class="o">=</span> <span class="n">curation_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="n">keywords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">focal_clade</span> <span class="o">=</span> <span class="n">focal_clade</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_info</span> <span class="o">=</span> <span class="n">extra_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_public</span> <span class="o">=</span> <span class="n">is_public</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_species</span> <span class="o">=</span> <span class="n">species_list</span>
+
+    <span class="k">def</span> <span class="nf">reprJSON</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+ 		<span class="n">list_dict</span> <span class="o">=</span> <span class="p">{}</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_author&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_published</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_date_published&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_published</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_curator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curator</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">curation_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_curation_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curation_date</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_keywords&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">focal_clade</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_focal_clade&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">focal_clade</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_extra_info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_info</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_origin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_public</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;is_list_public&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_public</span>
+ 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_species</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 			<span class="n">list_dict</span><span class="p">[</span><span class="s1">&#39;list_species&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_species</span> 
+
+ 		<span class="k">return</span> <span class="n">list_dict</span></div>
+
+<span class="c1">#----------------------------------------------------</span>
+<span class="k">class</span> <span class="nc">ComplexEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="s1">&#39;reprJSON&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">reprJSON</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------</span>
+<div class="viewcode-block" id="insert_list_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.insert_list_info">[docs]</a><span class="k">def</span> <span class="nf">insert_list_info</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span> <span class="n">listObj</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Inserts a new list of species into the species list server.</span>
+
+<span class="sd">	Example:</span>
+
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd">	&gt;&gt;&gt; species_obj1 = Species(&quot;Acer ginnala&quot;, &quot;Amur maple&quot;, &quot;Maxim.&quot;, &quot;Aceraceae&quot;,&quot;Sapindales&quot;, &quot;Streptophyta&quot;, &quot;ICN&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; species_list1 = [species_obj1]</span>
+<span class="sd">	&gt;&gt;&gt; list_obj = List(&quot;Illinois Invasive Plants&quot;, &quot;This list contains the invasive species, with their Family and Order&quot;, [&quot;Invasive.org  Center for Invasive Species and Ecosystem Health&quot;], &quot;06-25-2017&quot;, &quot;HD Laughinghouse&quot;, &quot;2-25-2016&quot;, &quot;http://www.invasive.org/species/list.cfm?id=152&quot;, [&quot;Plants&quot;, &quot; invasive species&quot;, &quot; Illinois&quot;], &quot;Embryophyta&quot;, &quot;&quot;, &quot;script&quot;, True, species_list1)</span>
+<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.insert_list_info(&quot;abusalehmdtayeen@gmail.com&quot;, list_obj)</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;list_id&quot;: 57}</span>
+
+<span class="sd">	:param userId: Unique id (a valid gmail address) of a user. </span>
+<span class="sd">	:type userId: string.</span>
+<span class="sd">	:param listObj: An instance of the **List** class. </span>
+<span class="sd">	:type listObj: object.</span>
+<span class="sd">  </span>
+<span class="sd">	:returns: A json formatted string -- with an integer of the list created as a value of the ``list_id`` property. </span>
+<span class="sd">	&quot;&quot;&quot;</span>	
+ 	<span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;/insert_list&quot;</span>
+ 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="n">method</span>
+    
+ 	<span class="n">payload_data</span> <span class="o">=</span> <span class="p">{</span>
+ 		<span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">userId</span><span class="p">,</span>
+ 		<span class="s1">&#39;list&#39;</span><span class="p">:</span> <span class="n">listObj</span><span class="o">.</span><span class="n">reprJSON</span><span class="p">()</span>
+ 	<span class="p">}</span>
+ 	<span class="n">jsonPayload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload_data</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">ComplexEncoder</span><span class="p">)</span>
+    
+ 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">jsonPayload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+ 	
+ 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
+ 		<span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error connecting with species list server&quot;</span><span class="p">})</span></div>
+
+<span class="c1">#-----------------------------------------------</span>
+<div class="viewcode-block" id="update_list_metadata"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.update_list_metadata">[docs]</a><span class="k">def</span> <span class="nf">update_list_metadata</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span> <span class="n">listId</span><span class="p">,</span> <span class="n">listObj</span><span class="p">,</span> <span class="n">accessToken</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Updates metadata of an existing list in the species list server.</span>
+
+<span class="sd">	Example:</span>
+
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd">	&gt;&gt;&gt; list_obj = List(description=&quot;This list contains the invasive species&quot;, is_public=False)</span>
+<span class="sd"> 	&gt;&gt;&gt; result = phylotastic_services.update_list_metadata(&quot;abusalehmdtayeen@gmail.com&quot;, 57, list_obj, &quot;ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;date_modified&quot;: &quot;2017-07-03T19:55:46.430503&quot;, &quot;status_code&quot;: 200, &quot;modified_content&quot;: {&quot;list_description&quot;: &quot;This list contains the invasive species&quot;, &quot;is_list_public&quot;: false}, &quot;list_id&quot;: 57, &quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;message&quot;: &quot;Success&quot;}</span>
+
+<span class="sd">	:param userId: Unique id (a valid gmail address) of a user. </span>
+<span class="sd">	:type userId: string.</span>
+<span class="sd">	:param listId: Unique id of the list that needs to be modified. </span>
+<span class="sd">	:type listId: integer.</span>
+<span class="sd">	:param listObj: An instance of the **List** class. </span>
+<span class="sd">	:type listObj: object.</span>
+<span class="sd">	:param accessToken: Access token for the user with userId (valid gmail address). </span>
+<span class="sd">	:type accessToken: string.  </span>
+
+<span class="sd">	:returns: A json formatted string -- with modified list object as a value of the ``modified_content`` property. </span>
+<span class="sd">	&quot;&quot;&quot;</span>		 	
+ 	<span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;/update_list&quot;</span>
+ 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="n">method</span>
+    
+ 	<span class="n">payload_data</span> <span class="o">=</span> <span class="p">{</span>
+ 		<span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">userId</span><span class="p">,</span>
+ 		<span class="s1">&#39;list_id&#39;</span><span class="p">:</span> <span class="n">listId</span><span class="p">,</span>
+ 		<span class="s1">&#39;access_token&#39;</span><span class="p">:</span> <span class="n">accessToken</span><span class="p">,</span>
+ 		<span class="s1">&#39;list&#39;</span><span class="p">:</span> <span class="n">listObj</span><span class="o">.</span><span class="n">reprJSON</span><span class="p">()</span>
+ 	<span class="p">}</span>
+ 	<span class="n">jsonPayload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload_data</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">ComplexEncoder</span><span class="p">)</span>
+    
+ 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">jsonPayload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    
+ 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
+ 		<span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error connecting with species list server&quot;</span><span class="p">})</span></div>
+
+<span class="c1">#-----------------------------------------------</span>
+<div class="viewcode-block" id="update_list_data"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.update_list_data">[docs]</a><span class="k">def</span> <span class="nf">update_list_data</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span> <span class="n">listId</span><span class="p">,</span> <span class="n">speciesList</span><span class="p">,</span> <span class="n">accessToken</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Updates data/content of an existing list in the species list server.</span>
+
+<span class="sd">	Example:</span>
+
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd">	&gt;&gt;&gt; species_obj1 = Species(&quot;Acer ginnala&quot;, &quot;Amur maple&quot;, &quot;Maxim.&quot;, &quot;Aceraceae&quot;,&quot;Sapindales&quot;, &quot;Streptophyta&quot;, &quot;ICN&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; species_obj2 = Species(&quot;Achyranthes japonica&quot;, &quot;Japanses chaff flower&quot;, &quot;(Miq.) Nakal&quot;, &quot;Amaranthaceae&quot;, &quot;Caryophyllales&quot;, &quot;Streptophyta&quot;, &quot;ICN&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; species_list2 = [species_obj1, species_obj2]</span>
+<span class="sd"> 	&gt;&gt;&gt; result = phylotastic_services.update_list_data(&quot;abusalehmdtayeen@gmail.com&quot;, 57, species_list2,&quot;ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;date_modified&quot;: &quot;2017-07-03T20:08:02.532157&quot;, &quot;status_code&quot;: 200, &quot;old_species&quot;: [{&quot;family&quot;: &quot;Aceraceae&quot;, &quot;scientific_name&quot;: &quot;Acer ginnala&quot;, &quot;scientific_name_authorship&quot;: &quot;Maxim.&quot;, &quot;order&quot;: &quot;Sapindales&quot;, &quot;vernacular_name&quot;: &quot;Amur maple&quot;, &quot;phylum&quot;: &quot;Streptophyta&quot;, &quot;nomenclature_code&quot;: &quot;ICN&quot;, &quot;class&quot;: &quot;&quot;}], &quot;new_species&quot;: [{&quot;family&quot;: &quot;Aceraceae&quot;, &quot;scientific_name&quot;: &quot;Acer ginnala&quot;, &quot;scientific_name_authorship&quot;: &quot;Maxim.&quot;, &quot;vernacular_name&quot;: &quot;Amur maple&quot;, &quot;phylum&quot;: &quot;Streptophyta&quot;, &quot;nomenclature_code&quot;: &quot;ICN&quot;, &quot;order&quot;: &quot;Sapindales&quot;}, {&quot;family&quot;: &quot;Amaranthaceae&quot;, &quot;scientific_name&quot;: &quot;Achyranthes japonica&quot;, &quot;scientific_name_authorship&quot;: &quot;(Miq.) Nakal&quot;, &quot;vernacular_name&quot;: &quot;Japanses chaff flower&quot;, &quot;phylum&quot;: &quot;Streptophyta&quot;, &quot;nomenclature_code&quot;: &quot;ICN&quot;, &quot;order&quot;: &quot;Caryophyllales&quot;}], &quot;list_id&quot;: 57, &quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;message&quot;: &quot;Success&quot;}</span>
+
+<span class="sd">	:param userId: Unique id (a valid gmail address) of a user. </span>
+<span class="sd">	:type userId: string.</span>
+<span class="sd">	:param listId: Unique id of the list that needs to be modified. </span>
+<span class="sd">	:type listId: integer.</span>
+<span class="sd">	:param speciesList: A list of species objects. </span>
+<span class="sd">	:type speciesList: A list of instances of the **Species** class</span>
+<span class="sd">	:param accessToken: Access token for the user with userId (valid gmail address). </span>
+<span class="sd">	:type accessToken: string.  </span>
+
+<span class="sd">	:returns: A json formatted string -- with new species object as a value of the ``new_species`` property. </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+ 	<span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;/replace_species&quot;</span>
+ 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="n">method</span>
+    
+ 	<span class="n">payload_data</span> <span class="o">=</span> <span class="p">{</span>
+ 		<span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">userId</span><span class="p">,</span>
+ 		<span class="s1">&#39;list_id&#39;</span><span class="p">:</span> <span class="n">listId</span><span class="p">,</span>
+ 		<span class="s1">&#39;access_token&#39;</span><span class="p">:</span> <span class="n">accessToken</span><span class="p">,</span>
+ 		<span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="n">speciesList</span>
+ 	<span class="p">}</span>
+ 	<span class="n">jsonPayload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload_data</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">ComplexEncoder</span><span class="p">)</span>
+ 	
+ 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">jsonPayload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+ 	
+ 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
+ 		<span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error connecting with species list server&quot;</span><span class="p">})</span></div>
+
+<span class="c1">#---------------------------------------------</span>
+<div class="viewcode-block" id="get_list_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.get_list_info">[docs]</a><span class="k">def</span> <span class="nf">get_list_info</span><span class="p">(</span><span class="n">userId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">listId</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">accessToken</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Gets lists of species that exist in the species list server.</span>
+
+<span class="sd">	Example:</span>
+
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd"> 	&gt;&gt;&gt; result = phylotastic_services.get_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=57, accessToken=&quot;ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;list&quot;: {&quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;list_species&quot;: [&quot;Acer ginnala&quot;, &quot;Achyranthes japonica&quot;], &quot;list_id&quot;: 57}, &quot;message&quot;: &quot;Success&quot;, &quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;status_code&quot;: 200}</span>
+
+<span class="sd">	:param userId: Unique id (a valid gmail address) of a user. </span>
+<span class="sd">	:type userId: string.</span>
+<span class="sd">	:param listId: Unique id of the list that needs to be retrieved. </span>
+<span class="sd">	:type listId: integer.</span>
+<span class="sd">	:param accessToken: Access token for the user with userId (valid gmail address). </span>
+<span class="sd">	:type accessToken: string.</span>
+<span class="sd">	:param verbose: By default *false* and allows to show minimal meta-data of the list. </span>
+<span class="sd">	:type verbose: boolean  </span>
+<span class="sd">	:param content: By default *true* and allows to show the species collection of the list </span>
+<span class="sd">	:type content: boolean  </span>
+
+<span class="sd">	:returns: A json formatted string -- with list object as a value of the ``list`` property. </span>
+<span class="sd">	&quot;&quot;&quot;</span>	
+ 	<span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;/get_list&quot;</span>
+ 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="n">method</span>
+    
+ 	<span class="n">payload_data</span> <span class="o">=</span> <span class="p">{}</span>
+ 	<span class="k">if</span> <span class="n">userId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 		<span class="n">payload_data</span><span class="p">[</span><span class="s1">&#39;user_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">userId</span>
+ 	<span class="k">if</span> <span class="n">listId</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 		<span class="n">payload_data</span><span class="p">[</span><span class="s1">&#39;list_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">listId</span>
+ 	<span class="k">if</span> <span class="n">accessToken</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+ 		<span class="n">payload_data</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accessToken</span><span class="p">,</span>
+ 	<span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>	
+ 		<span class="n">payload_data</span><span class="p">[</span><span class="s1">&#39;verbose&#39;</span><span class="p">]</span><span class="o">=</span> <span class="n">verbose</span>
+ 	<span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>	
+ 		<span class="n">payload_data</span><span class="p">[</span><span class="s1">&#39;content&#39;</span><span class="p">]</span><span class="o">=</span> <span class="n">content</span>
+ 	
+ 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload_data</span><span class="p">)</span> 
+
+ 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
+ 		<span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error connecting with species list server&quot;</span><span class="p">})</span></div>
+	
+<span class="c1">#----------------------------------------------</span>
+<div class="viewcode-block" id="remove_list_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.remove_list_info">[docs]</a><span class="k">def</span> <span class="nf">remove_list_info</span><span class="p">(</span><span class="n">userId</span><span class="p">,</span> <span class="n">listId</span><span class="p">,</span> <span class="n">accessToken</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Removes an existing list from species list server.</span>
+
+<span class="sd">	Example:</span>
+
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd"> 	&gt;&gt;&gt; result = phylotastic_services.remove_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=57, accessToken=&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;user_id&quot;: &quot;abusalehmdtayeen@gmail.com&quot;, &quot;status_code&quot;: 200, &quot;list_id&quot;: 57, &quot;date_removed&quot;: &quot;2017-07-03T20:40:24.561842&quot;, &quot;list_title&quot;: &quot;Illinois Invasive Plants&quot;, &quot;message&quot;: &quot;Success&quot;}</span>
+
+<span class="sd">	:param userId: Unique id (a valid gmail address) of a user. </span>
+<span class="sd">	:type userId: string.</span>
+<span class="sd">	:param listId: Unique id of the list that needs to be retrieved. </span>
+<span class="sd">	:type listId: integer.</span>
+<span class="sd">	:param accessToken: Access token for the user with userId (valid gmail address). </span>
+<span class="sd">	:type accessToken: string.</span>
+<span class="sd">	</span>
+<span class="sd">	:returns: A json formatted string -- with title of the list removed as a value of the ``list_title`` property. </span>
+<span class="sd">	&quot;&quot;&quot;</span>	
+ 	<span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;/remove_list&quot;</span>
+ 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="n">method</span>
+    
+ 	<span class="n">payload_data</span> <span class="o">=</span> <span class="p">{</span>
+ 		<span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">userId</span><span class="p">,</span>
+ 		<span class="s1">&#39;list_id&#39;</span><span class="p">:</span> <span class="n">listId</span><span class="p">,</span>
+ 		<span class="s1">&#39;access_token&#39;</span><span class="p">:</span> <span class="n">accessToken</span>
+ 	<span class="p">}</span>
+ 	
+ 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload_data</span><span class="p">)</span> 
+
+ 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
+ 		<span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+ 	<span class="k">else</span><span class="p">:</span>
+ 		<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Error connecting with species list server&quot;</span><span class="p">})</span></div>
+
+<span class="c1">#--------------------------------------------   </span>
+
+<span class="c1">#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="c1">#if __name__ == &#39;__main__&#39;:</span>
+
+	<span class="c1">#species_obj1 = Species(&quot;Acer ginnala&quot;, &quot;Amur maple&quot;, &quot;Maxim.&quot;, &quot;Aceraceae&quot;,&quot;Sapindales&quot;, &quot;Streptophyta&quot;, &quot;ICN&quot;)</span>
+ 	<span class="c1">#species_obj2 = Species(&quot;Achyranthes japonica&quot;, &quot;Japanses chaff flower&quot;, &quot;(Miq.) Nakal&quot;, &quot;Amaranthaceae&quot;, &quot;Caryophyllales&quot;, &quot;Streptophyta&quot;, &quot;ICN&quot;)</span>
+ 	<span class="c1">#species_list1 = [species_obj1]</span>
+ 	<span class="c1">#species_list2 = [species_obj1, species_obj2]</span>
+ 	<span class="c1">#list_obj = List(&quot;Illinois Invasive Plants&quot;, &quot;This list contains the invasive species, with their Family and Order&quot;, [&quot;Invasive.org  Center for Invasive Species and Ecosystem Health&quot;], &quot;06-25-2017&quot;, &quot;HD Laughinghouse&quot;, &quot;2-25-2016&quot;, &quot;http://www.invasive.org/species/list.cfm?id=152&quot;, [&quot;Plants&quot;, &quot; invasive species&quot;, &quot; Illinois&quot;], &quot;Embryophyta&quot;, &quot;&quot;, &quot;script&quot;, True, species_list1)</span>
+ 	
+ 	<span class="c1">#print insert_list_info(&quot;abusalehmdtayeen@gmail.com&quot;, list_obj)</span>
+
+ 	<span class="c1">#list_obj = List(description=&quot;This list contains the invasive species&quot;, is_public=False)</span>
+ 	<span class="c1">#print update_list_metadata(&quot;abusalehmdtayeen@gmail.com&quot;, 57, list_obj, &quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+ 	
+ 	<span class="c1">#print update_list_data(&quot;abusalehmdtayeen@gmail.com&quot;, 57, species_list2, &quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+ 	<span class="c1">#print get_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=57, accessToken=&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+ 	<span class="c1">#print get_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, content=False, accessToken=&quot;ya29.Glt8BP7TxEO5-ME5NiaO-bk0h-Mk06KCRLkwh7DIvsm6SZ_ReVArG_ySECvdVFagncyGA6u0CKLul53QsK6-Wo2ffNQITKdYGhOHLqjmjIDaXNIPHU84-aMFoPF7&quot;)</span>
+ 	<span class="c1">#print remove_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=57, accessToken=&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Abu Saleh Md Tayeen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

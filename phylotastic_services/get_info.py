@@ -6,14 +6,26 @@ import requests
 import time
 import datetime 
 import urllib
+from os.path import dirname, abspath
+import ConfigParser
 
 #----------------------------------------------
-EOL_API_Key = "b6499be78b900c60fb28d38715650e826240ba7b"
 headers = {'content-type': 'application/json'}
+
+#-----------------------------------------
+def get_api_key():
+	config = ConfigParser.ConfigParser()
+	current_dir = dirname(abspath(__file__))
+	config.read(current_dir + "/"+ "service.cfg")
+	
+	api_key = config.get('EOL', 'api_key')
+
+	return api_key
 
 #----------------------------------------------
 def match_species(speciesName):
- 	search_url = "http://eol.org/api/search/1.0.json"    
+ 	search_url = "http://eol.org/api/search/1.0.json" 
+ 	EOL_API_Key = get_api_key()    
  	payload = {
  		'key': EOL_API_Key,
  		'q': speciesName,
@@ -41,6 +53,8 @@ def match_species(speciesName):
 def get_eolurls_species(inputSpecies):
  	"""Gets information urls of a list of species from EOL.
     
+	**Note**> maximum ``50`` species allowed as input. 
+
 	Example:
 	
 	>>> import phylotastic_services
@@ -152,6 +166,8 @@ def create_image_obj(dataObject):
 def get_images_species(inputSpecies):
  	"""Gets image urls and corresponding license information of a list of species from EOL
     
+	**Note**> maximum ``30`` species allowed as input. 
+	
 	Example:
 	
 	>>> import phylotastic_services

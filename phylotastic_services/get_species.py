@@ -102,7 +102,7 @@ def check_species_by_country(species, country):
 def get_all_species(inputTaxon):
  	"""Gets all species that belong to a particular taxon
     
-    **Note**> It will take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. 
+    **Note**> Maximum taxonomic rank allowed: ``family``. It may take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. 
 
 	Example:
 	
@@ -164,12 +164,12 @@ def get_all_species(inputTaxon):
 def get_country_species(inputTaxon, inputCountry):
  	"""Gets all species that belong to a particular taxon and established in a particular country.
     
-    **Note**> It will take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. 
+    **Note**> Maximum taxonomic rank allowed: ``family``. It may take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. 
 
 	Example:
 	
 	>>> import phylotastic_services
-	>>> result = phylotastic_services.get_country_species("Vulpes")
+	>>> result = phylotastic_services.get_country_species("Vulpes", "Nepal")
 	>>> print result
 	{"execution_time": "16.23", "status_code": 200, "creation_time": "2017-07-02T18:20:12.978379", "taxon": "Vulpes", "total_names": 2, "country": "Nepal", "service_url": "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/country_species?taxon=Vulpes&country=Nepal", "message": "Success", "species": ["Vulpes bengalensis", "Vulpes ferrilata"], "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7"}
 

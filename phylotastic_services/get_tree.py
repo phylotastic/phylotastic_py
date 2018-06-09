@@ -17,6 +17,10 @@ from ete3 import Tree, TreeStyle
 from ete3.parser.newick import NewickError
 from resolve_names import resolve_names_OT
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+#Suppress warning for using a version of Requests which vendors urllib3 inside
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 megatree_plants = ["R20120829", "smith2011", "zanne2014"]
 megatree_mammals = ["binindaemonds2007"]
@@ -37,7 +41,7 @@ def get_inducedSubtree(ottIdList):
     jsonPayload = json.dumps(payload_data)
     
     response = requests.post(resource_url, data=jsonPayload, headers=headers)
-        
+    
     newick_tree_str = ""
     inducedtree_info = {}
 
@@ -52,14 +56,15 @@ def get_inducedSubtree(ottIdList):
          	error_json = json.loads(response.text)
          	error_msg = error_json['message']
          	if 'Not enough valid node or ott ids' in error_msg:
- 				inducedtree_info['message'] = "Not enough valid node or ott ids provided to construct a subtree (there must be at least two)"
+ 				inducedtree_info['message'] = error_msg#"Error: Response error from OpenTreeofLife- 'Not enough valid node or ott ids provided to construct a subtree (there must be at least two)'"
          	else:
  		 		inducedtree_info['message'] = error_msg
-         	inducedtree_info['status_code'] = 204
+         	
      	except ValueError:
-     		inducedtree_info['message'] =  "induced_subtree method: Decoding of JSON error message failed"
-     		inducedtree_info['status_code'] = 500 	
-    
+     		inducedtree_info['message'] =  "Error: Decoding of JSON error message from induced_subtree method failed"
+     		 	
+        inducedtree_info['status_code'] = response.status_code
+
     inducedtree_info['newick'] = newick_tree_str
  	
     return inducedtree_info
@@ -71,7 +76,7 @@ def subtree(ottidList):
     if len(ottidList) < 2:
        result['newick'] = ""
        result['message'] = "Not enough valid nodes provided to construct a subtree (there must be at least two)"
-       result['status_code'] = 204 
+       result['status_code'] = 500 
        return result
     
  	#multiple species
@@ -81,45 +86,44 @@ def subtree(ottidList):
     return result 
 #-----------------------------------------------------------
 #get newick string for tree from OpenTree
-#input- list of resolved scientific names
-def get_tree_OT(resolvedNames, post=False):
- 	start_time = time.time()
-
- 	#service_url = 
- 	service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-5"
+#input: list of resolved scientific names
+def get_tree_OT(resolvedNames):
+ 	start_time = time.time() 
+ 	#service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-5"
 
  	ListSize = len(resolvedNames)
     
  	response = {}
  	if ListSize == 0:
  		response['newick'] = ""
- 		response['message'] = "List of resolved names empty"
- 		response['status_code'] = 204
- 		response['service_documentation'] = service_documentation
- 		if post:
- 			return response;
- 		else:		
- 			return json.dumps(response)
-    
+ 		response['message'] = "Error: List of resolved names empty"
+ 		response['status_code'] = 500
+ 		
+ 		return response
+ 		
  	rsnames = resolvedNames
  	#rsnames = resolvedNames['resolvedNames']
  	ottIdList = []
  	for rname in rsnames:
- 		if rname['resolver_name'] == 'OT':
- 			ottIdList.append(rname['taxon_id'])
+ 		if 'matched_results' in rname:
+ 			for match_result in rname['matched_results']:
+ 				if 'Open Tree of Life' in match_result['data_source']:
+ 					ottIdList.append(match_result['taxon_id'])
+ 					break 			
  		else:
- 			response['newick'] = ""
- 			response['message'] = "Wrong TNRS. Need to resolve with OpenTree TNRS"
- 			response['status_code'] = 204
- 			response['service_documentation'] = service_documentation
- 			if post:
- 				return response;
- 			else:		
- 		 		return json.dumps(response)
- 	     	     
+ 			if rname['resolver_name'] == 'OT':
+ 				ottIdList.append(rname['taxon_id'])
+ 			else:
+ 				response['newick'] = ""
+ 				response['message'] = "Error: wrong TNRS. Need to resolve with OpenTreeofLife TNRS"
+ 				response['status_code'] = 500
+ 			 	return response
+ 			     
     #get induced_subtree
  	final_result = subtree(ottIdList)
  	newick_str = final_result['newick']
+ 	if final_result['status_code'] != 200:	
+ 		return final_result 
  
  	if final_result['newick'] != "":
  		synth_tree_version = get_tree_version()		
@@ -137,38 +141,17 @@ def get_tree_OT(resolvedNames, post=False):
  	execution_time = end_time-start_time
     #service result creation time
  	creation_time = datetime.datetime.now().isoformat()
- 	final_result['creation_time'] = creation_time
- 	final_result['execution_time'] = "{:4.2f}".format(execution_time)
- 	final_result['service_documentation'] = service_documentation
+ 	meta_data = {}
+ 	meta_data['creation_time'] = creation_time
+ 	meta_data['execution_time'] = float("{:4.2f}".format(execution_time))
+ 	#meta_data['service_documentation'] = service_documentation
+ 	meta_data['source_urls'] = ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life"]
 
- 	if post: 	    
- 		return final_result
- 	else:
- 		return json.dumps(final_result) 
+ 	final_result['meta_data'] = meta_data  
+
+ 	return final_result
 
 #--------------------------------------------
-def get_tree_OpenTree(taxa):
- 	"""Gets a phylogenetic tree from a list of taxa using Open Tree of Life
-    
-	Example:
-	
-	>>> import phylotastic_services
-	>>> result = phylotastic_services.get_tree_OpenTree(taxa=["Setophaga strieta", "Setophaga magnolia", "Setophaga angilae", "Setophaga plambea", "Setophaga virens"])
-	>>> print result
-	{"execution_time": "2.15", "status_code": 200, "creation_time": "2017-07-02T12:12:02.157046", "newick": "(Setophaga_magnolia_ott532751,Setophaga_striata_ott60236,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_virens_ott1014098)Setophaga_ott285198;", "message": "Success", "tree_metadata": {"alignment_method": "NA", "character_matrix": "NA", "rooted": true, "supporting_studies": [{"PublicationYear": 2010, "FocalCladeTaxonName": "Parulidae", "Publication": "Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.", "CandidateTreeForSynthesis": "tree6024", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2010.07.018", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "pg_2591"}, {"PublicationYear": 2015, "FocalCladeTaxonName": "Passeriformes", "Publication": "Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1642/auk-14-110.1", "DataRepository": "http://datadryad.org/resource/doi:10.5061/dryad.pb787", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_770"}], "anastomosing": false, "branch_lengths_type": null, "consensus_type": "NA", "inference_method": "induced_subtree from synthetic tree with ID opentree9.1", "branch_support_type": null, "num_tips": 5, "gene_or_species": "species", "topology_id": "NA", "synthetic_tree_id": "opentree9.1"}, "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-5"}
-
-    :param taxa: A list of taxa to be used to get a phylogenetic tree. 
-    :type taxa: A list of strings.  
-    :returns: A json formatted string -- with a phylogenetic tree in newick format as the value of the ``newick`` property. 
-
-    """
- 	nameslist_json = json.loads(resolve_names_OT(taxa))	
- 	nameslist = nameslist_json["resolvedNames"]
- 	service_result = get_tree_OT(nameslist)
-   
- 	return service_result
-
-#-------------------------------------------
 #get supporting studies of the tree from OpenTree
 def get_supporting_studies(ottIdList):
  	resource_url = "http://phylo.cs.nmsu.edu:5006/phylotastic_ws/md/studies"    
@@ -180,18 +163,21 @@ def get_supporting_studies(ottIdList):
  	jsonPayload = json.dumps(payload_data)
     
  	response = requests.post(resource_url, data=jsonPayload, headers=headers)
-        
+ 	
  	studies_info = {}
 
- 	if response.status_code == requests.codes.ok:
- 		data_json = json.loads(response.text)
+ 	data_json = json.loads(response.text)  
+ 	if response.status_code == requests.codes.ok:	
  		studies_info['studies'] = data_json['studies']		
  		studies_info['message'] = data_json['message']
  		studies_info['status_code'] = data_json['status_code']
  	else:
- 		studies_info['studies'] = []		
- 		studies_info['message'] = "Error: getting study info from OpenTree"
- 		studies_info['status_code'] = 500
+ 		studies_info['studies'] = []
+ 		if 'message' in data_json:
+ 			studies_info['message'] = data_json['message']
+ 		else:			
+ 			studies_info['message'] = "Error: Response error while getting study info using Phylotastic"
+ 		studies_info['status_code'] = response.status_code
 
  	return studies_info
 
@@ -225,6 +211,7 @@ def get_tree_version():
  	jsonPayload = json.dumps(payload_data)
     
  	response = requests.post(resource_url, data=jsonPayload, headers=headers)
+ 	#----------------------------------------------
         
  	metadata = {}
  	if response.status_code == requests.codes.ok:
@@ -247,10 +234,33 @@ def get_metadata():
  	tree_metadata['alignment_method'] = "NA"
  	tree_metadata['inference_method'] = "induced_subtree"
 
- 	return tree_metadata	
+ 	return tree_metadata
+	
+#--------------------------------------------
+def get_tree_OpenTree(taxa):
+ 	"""Gets a phylogenetic tree from a list of taxa using Open Tree of Life APIs
+    
+	Example:
+	
+	>>> import phylotastic_services
+	>>> result = phylotastic_services.get_tree_OpenTree(taxa=["Setophaga striata","Setophaga magnolia","Setophaga angelae","Setophaga plumbea","Setophaga virens"])
+	>>> print result
+	{"execution_time": "2.15", "status_code": 200, "creation_time": "2017-07-02T12:12:02.157046", "newick": "(Setophaga_magnolia_ott532751,Setophaga_striata_ott60236,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_virens_ott1014098)Setophaga_ott285198;", "message": "Success", "tree_metadata": {"alignment_method": "NA", "character_matrix": "NA", "rooted": true, "supporting_studies": [{"PublicationYear": 2010, "FocalCladeTaxonName": "Parulidae", "Publication": "Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.", "CandidateTreeForSynthesis": "tree6024", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2010.07.018", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "pg_2591"}, {"PublicationYear": 2015, "FocalCladeTaxonName": "Passeriformes", "Publication": "Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1642/auk-14-110.1", "DataRepository": "http://datadryad.org/resource/doi:10.5061/dryad.pb787", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_770"}], "anastomosing": false, "branch_lengths_type": null, "consensus_type": "NA", "inference_method": "induced_subtree from synthetic tree with ID opentree9.1", "branch_support_type": null, "num_tips": 5, "gene_or_species": "species", "topology_id": "NA", "synthetic_tree_id": "opentree9.1"}, "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-5"}
+
+    :param taxa: A list of taxa to be used to get a phylogenetic tree. 
+    :type taxa: A list of strings.  
+    :returns: A json formatted string -- with a phylogenetic tree in newick format as the value of the ``newick`` property. 
+
+    """
+ 	nameslist_json = json.loads(resolve_names_OT(taxa))	
+ 	nameslist = nameslist_json["resolvedNames"]
+ 	service_result = get_tree_OT(nameslist)
+   
+ 	return service_result
+
+#-------------------------------------------
 
 #=======================================================
-#------------------------------------------
 #get a tree using phylomatic
 def get_phylomatic_tree(megatree_id, taxa):
  	api_url = "http://phylodiversity.net/phylomatic/pmws"    
@@ -268,10 +278,18 @@ def get_phylomatic_tree(megatree_id, taxa):
  
  	response = requests.post(api_url, data=encoded_payload) 
   	
+ 	phylomatic_response = {}
+ 	
  	if response.status_code == requests.codes.ok:
- 		return response.text
+ 		phylomatic_response['response'] = response.text
+ 		phylomatic_response['status_code'] = 200
+ 		phylomatic_response['message'] = "Success"
  	else:
- 		return None
+ 		phylomatic_response['response'] = None
+ 		phylomatic_response['status_code'] = response.status_code
+ 		phylomatic_response['message'] = "Error: Response error while getting tree from phylomatic"
+
+ 	return phylomatic_response
 
 #--------------------------------------------------------
 #infer the taxonomic context from a list of taxonomic names 
@@ -283,16 +301,14 @@ def get_taxa_context(taxaList):
     }
 
  	jsonPayload = json.dumps(payload_data)
-    
- 	response = requests.post(resource_url, data=jsonPayload, headers={'content-type': 'application/json'})
-        
- 	context = ""
- 	
+ 
+ 	response = requests.post(resource_url, data=jsonPayload, headers=headers)
+ 	    	
  	if response.status_code == requests.codes.ok:
  		json_response = json.loads(response.text)
  		context = json_response['context_name']
  	else:
- 		return None
+ 		context = None
 
  	return context
 
@@ -301,12 +317,19 @@ def get_taxa_context(taxaList):
 def get_contexts():
  	resource_url = "https://api.opentreeoflife.org/v2/tnrs/contexts"    
     
- 	response = requests.post(resource_url, headers={'content-type': 'application/json'})
+ 	response = requests.post(resource_url, headers=headers)
  	
  	if response.status_code == requests.codes.ok:
  		return response.text
  	else:
  		return None
+
+#---------------------------------------------
+def process_taxa_list(taxaList):
+ 	taxa = "\n".join(taxaList)
+ 	taxa = taxa.replace(" ", "_")
+
+ 	return taxa
 
 #---------------------------------------------
 def process_phylomatic_result(result):
@@ -320,7 +343,10 @@ def process_phylomatic_result(result):
  	newick_str = result[0: st_indx]
  	if st_indx != -1 and en_indx != -1:
  		newick_str += ";"
- 	
+ 	#print newick_str
+ 	#newick_str = newick_str.replace("_", " ")
+ 	#print newick_str
+
  	return {"newick": newick_str, "note": extra_note}
 
 #---------------------------------------------
@@ -329,13 +355,16 @@ def get_tree_phyloMT(taxaList, post=False):
  	start_time = time.time()	
  	 	
  	context = get_taxa_context(taxaList)
- 	contexts = json.loads(get_contexts())	
- 	for cname, clist in contexts.items():
-	    if context in clist:
- 			context_name = cname
- 			break
- 	
- 	context_l = context_name.lower()
+ 	if context is not None:
+ 		contexts = json.loads(get_contexts())	
+ 		for cname, clist in contexts.items():
+ 			if context in clist:
+ 				context_name = cname
+ 				break
+ 		context_l = context_name.lower()
+	else:
+		context_l = ""
+
  	#find megatree corresponding to this list	
  	if  context_l == "animals":
  		megatree_list = megatree_mammals
@@ -344,8 +373,7 @@ def get_tree_phyloMT(taxaList, post=False):
  	else:
  		megatree_list = None
 
- 	taxa = "\n".join(taxaList)
- 	taxa = taxa.replace(" ", "_")
+ 	taxa = process_taxa_list(taxaList)
 
  	final_result = {}
 
@@ -354,36 +382,35 @@ def get_tree_phyloMT(taxaList, post=False):
 
  	for megatree_id in megatree_list:
  		phylomatic_result = get_phylomatic_tree(megatree_id, taxa)
- 		if phylomatic_result is None:
- 			final_result = {"newick": "", "status_code": 500, "message": "Error: getting tree from phylomatic"}
+ 		if phylomatic_result['response'] is None:
+ 			final_result = {"newick": "", "status_code": phylomatic_result['status_code'], "message": phylomatic_result['message']}
  			break
  		else:
- 			if "No taxa in common" in phylomatic_result:
+ 			if "No taxa in common" in phylomatic_result['response']:
  				continue
  			else:			
- 				processed_result = process_phylomatic_result(phylomatic_result)
+ 				processed_result = process_phylomatic_result(phylomatic_result['response'])
  				final_result = {"newick": processed_result['newick'], "status_code": 200, "message": "Success"}
  				break
 
  	if not(final_result):
- 		final_result = {"newick": "", "status_code": 204, "message": "No tree found in phylomatic"}
+ 		final_result = {"newick": "", "status_code": 200, "message": "No tree found using phylomatic web service"}
 
  	end_time = time.time()
  	execution_time = end_time-start_time
     #service result creation time
  	creation_time = datetime.datetime.now().isoformat()
- 	final_result['creation_time'] = creation_time
- 	final_result['execution_time'] = "{:4.2f}".format(execution_time)
- 	#final_result['service_documentation'] = service_documentation
+ 	source_urls = ["http://phylodiversity.net/phylomatic/"]
+ 	
+	meta_data = {'creation_time': creation_time, 'execution_time': float("{:4.2f}".format(execution_time)), 'source_urls': source_urls}
+ 	final_result['meta_data'] = meta_data 
+ 	final_result['input_taxa'] = taxaList 	 
 
- 	if post: 	    
- 		return final_result
- 	else:
- 		return json.dumps(final_result) 
-
+ 	return final_result    
+ 
 #---------------------------------------------
 def get_tree_Phylomatic(taxa):
- 	"""Gets a phylogenetic tree from a list of taxa using Phylomatic
+ 	"""Gets a phylogenetic tree from a list of taxa using Phylomatic API
     
 	Example:
 	
@@ -414,27 +441,28 @@ def find_taxon_id(taxonName):
  		'email': "tayeen@nmsu.edu"      
     }
  	encoded_payload = urllib.urlencode(payload)
- 	response = requests.get(api_url, params=encoded_payload) 
+ 	response = requests.get(api_url, params=encoded_payload)#, headers={'content-type': 'application/json'}) 
  	
  	ncbi_id_list = []	
  	ncbi_response = {}    
  	ncbi_response['status_code'] = 200
  	ncbi_response['message'] = "Success"
  	
+ 	numResults = 0
+ 
  	if response.status_code == requests.codes.ok:    
  		data_json = json.loads(response.text)
  		numResults = int(data_json['esearchresult']['count']) 
  		if numResults > 0:
  			ncbi_id_list = data_json['esearchresult']['idlist']  
  	else: 
- 		ncbi_response['status_code'] = 500
+ 		ncbi_response['status_code'] = response.status_code
  		ncbi_response['message'] = "Error: Response error from NCBI esearch.fcgi API"
 
 	ncbi_response['taxon_ids'] = ncbi_id_list
  	
- 	if numResults == 0:
-  	 	ncbi_response['message'] = "No match found for term %s" %(taxonName)
- 		ncbi_response['status_code'] = 204
+ 	if numResults == 0 and ncbi_response['status_code'] == 200:
+  	 	ncbi_response['message'] = "No match found for term '%s'" %(taxonName)
  	
  	return ncbi_response 	
 
@@ -553,7 +581,6 @@ def create_file_input_ids(ncbiIdDict):
 def get_tree_phyloT(taxaList, post=False):
  	
  	start_time = time.time()
- 	service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-19"	
  	 	
  	NCBI_dict = get_ncbi_ids(taxaList)
  	temp_file_dir = create_file_input_ids(NCBI_dict)
@@ -574,17 +601,13 @@ def get_tree_phyloT(taxaList, post=False):
  	creation_time = datetime.datetime.now().isoformat()
  	final_result['creation_time'] = creation_time
  	final_result['execution_time'] = "{:4.2f}".format(execution_time)
- 	final_result['service_documentation'] = service_documentation
  	final_result['query_taxa'] = taxaList		
 
- 	if post: 	    
- 		return final_result
- 	else:
- 		return json.dumps(final_result) 
-
+ 	return final_result
+ 	
 #-------------------------------------------
 def get_tree_NCBI(taxa):
- 	"""Gets a phylogenetic tree from a list of taxa based on NCBI taxonomy
+ 	"""Gets a phylogenetic tree from a list of taxa based on NCBI taxonomy using PhyloT
     
 	Example:
 	

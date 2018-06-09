@@ -8,27 +8,27 @@ import datetime
 import urllib
 
 #----------------------------------------------
-base_url = "http://phylo.cs.nmsu.edu:5007/phylotastic_ws/sls" 
+base_url = "http://phylo.cs.nmsu.edu:5005/phylotastic_ws/sls" 
 headers = {'content-type': 'application/json'}
-#scientific_name_authorship(str.)    authorship of the scientific name of the species
 #----------------------------------------------
 class Species:
     """
     **Species** class is used to create an instance of a species. A species instance
     consists of data about a particular species.
 
- 	**Species** *properties* are described below.
+ 	**Species** *properties* are described below with requirement characteristics.
 
      .. table::
 
          ================================   ==============================================
          PROPERTY(type)                     DESCRIPTION
          ================================   ==============================================
-         scientific_name(str.)               scientific name of the species
-         vernacular_name(str.)               vernacular name of the species
+         scientific_name(str.)               scientific name of the species [required]
+         vernacular_name(str.)               vernacular name of the species [required]
          scientific_name_authorship(str.)    authorship of the scientific name of the species
          family(str.)                        the taxonomic rank family where the species belongs to
          order(str.)                         the taxonomic rank order where the species belongs to
+         class(str.)                         the taxonomic rank class where the species belongs to
          phylum(str.)                        the taxonomic rank phylum where the species belongs to
          nomenclature_code(str.)             he nomenclatural code of the species
          ================================   ==============================================
@@ -59,26 +59,26 @@ class List:
     **List** class is used to store information of a list. A list
     consists of a collection of Species objects and metadata about the list.
 
- 	**List** *properties* are described below.
+ 	**List** *properties* are described below with requirement characteristics.
 
      .. table::
 
          ========================  ==============================================
          PROPERTY(type)            DESCRIPTION
          ========================  ==============================================
-         title(str.)               title of the new list
-         description(str.)         description of the new list
-         author(str.)              a list of names of the authors who prepared the new list
-         date_published(str.)      date when the new list is being posted (format: mm-dd-yyyy)
-         curator(str.)             name of the curator of the new list
-         curation_date(str.)       date when the new list is being curated (format: mm-dd-yyyy)
-         source(str.)              source of the new list (url, publication)
-         keywords(str.)            keywords related to the new list
-         focal_clade(str.)         focal_clade of the new list
-         extra_info(str.)          extra information about the new list
-         origin(str.)              the origin from where the new list is being posted. (Permitted values: "script" or "webapp" or "mobileapp")
-         is_public(bool.)          true if the new list posted can be viewed by public. Otherwise false
-         species_list(obj)         a list of species objects  
+         title(str.)               title of the new list [required]
+         description(str.)         description of the new list [optional]
+         author(str.)              a list of names of the authors who prepared the new list [optional]
+         date_published(str.)      date when the new list is being posted (format: mm-dd-yyyy) [optional]
+         curator(str.)             name of the curator of the new list (required) [optional]
+         curation_date(str.)       date when the new list is being curated (format: mm-dd-yyyy) [required] 
+         source(str.)              source of the new list (url, publication) [required]
+         keywords(str.)            keywords related to the new list [optional]
+         focal_clade(str.)         focal_clade of the new list [optional]
+         extra_info(str.)          extra information about the new list [optional]
+         origin(str.)              the origin from where the new list is being posted. (Permitted values: ``script`` or ``webapp`` or ``mobileapp``)[required]
+         is_public(bool.)          ``true`` if the new list posted can be viewed by public. Otherwise ``false`` [optional]
+         species_list(obj)         a list of species objects [required] 
          ========================  ==============================================
 
     :returns: a **List** object which represents a new list.
@@ -363,9 +363,9 @@ def remove_list_info(userId, listId, accessToken):
  	#print insert_list_info("abusalehmdtayeen@gmail.com", list_obj)
 
  	#list_obj = List(description="This list contains the invasive species", is_public=False)
- 	#print update_list_metadata("abusalehmdtayeen@gmail.com", 57, list_obj, "ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")
+ 	#print update_list_metadata("abusalehmdtayeen@gmail.com", 129, list_obj, "ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")
  	
- 	#print update_list_data("abusalehmdtayeen@gmail.com", 57, species_list2, "ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")
- 	#print get_list_info(userId="abusalehmdtayeen@gmail.com", listId=57, accessToken="ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")
+ 	#print update_list_data("abusalehmdtayeen@gmail.com", 129, species_list2, "ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")
+ 	#print get_list_info(userId="abusalehmdtayeen@gmail.com", listId=129, accessToken="ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")
  	#print get_list_info(userId="abusalehmdtayeen@gmail.com", content=False, accessToken="ya29.Glt8BP7TxEO5-ME5NiaO-bk0h-Mk06KCRLkwh7DIvsm6SZ_ReVArG_ySECvdVFagncyGA6u0CKLul53QsK6-Wo2ffNQITKdYGhOHLqjmjIDaXNIPHU84-aMFoPF7")
- 	#print remove_list_info(userId="abusalehmdtayeen@gmail.com", listId=57, accessToken="ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")
+ 	#print remove_list_info(userId="abusalehmdtayeen@gmail.com", listId=129, accessToken="ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH")

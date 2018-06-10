@@ -1,0 +1,41 @@
+from unittest import TestCase
+import json
+import phylotastic_services
+
+class TestResolveNames(TestCase):
+    def test_resolve_names_OT(self):
+        """
+        Testing resolve names using Open Tree of Life TNRS
+        """
+        result = phylotastic_services.resolve_names_OT(["Formica polyctena", "Tetramorium caespitum","Carebara diversa"])
+        self.assertTrue(json.loads(result)[u'total_names'] >= 3)
+        # Check whether result is what it should be according to docs
+        self.assertTrue(u'Tetramorium caespitum' in json.loads(result)[u'resolvedNames'][0]['matched_results'][0]['matched_name'])
+        # Check whether result is what it should be according to docs
+        self.assertTrue(u'Formica polyctena' in json.loads(result)[u'resolvedNames'][1]['matched_results'][0]['matched_name'])
+
+
+    def test_resolve_names_GNR(self):
+        """
+        Testing resolve names using Global Names Resolver
+        """
+        result = phylotastic_services.resolve_names_GNR(["Formica exsectoides","Formica pecefica", "Setophaga angilae"], True)
+        # Check whether the number of names in the result is more than the minimum expected
+        # Check whether the number of names in the result is more than the minimum expected
+        self.assertTrue(json.loads(result)[u'total_names'] >= 3)
+        # Check whether result is what it should be according to docs
+        self.assertTrue(u'Formica exsectoides' in json.loads(result)[u'resolvedNames'][0]['matched_results'][0]['matched_name'])
+        # Check whether result is what it should be according to docs
+        self.assertTrue(u'Formica pacifica' in json.loads(result)[u'resolvedNames'][1]['matched_results'][0]['matched_name'])
+
+    def test_resolve_names_iPlant(self):
+        """
+        Testing resolve names using iplantCollaborative TNRS
+        """
+        result = phylotastic_services.resolve_names_iPlant(["Acanthophyllum albidum","Acanthostachys pitcairnioides","Acanthostyles buniifolius"], True, False)
+        # Check whether the number of names in the result is more than the minimum expected
+        self.assertTrue(json.loads(result)[u'total_names'] >= 3)
+        # Check whether result is what it should be according to docs
+        self.assertTrue(u'Acanthophyllum albidum' in json.loads(result)[u'resolvedNames'][0]['matched_results'][0]['matched_name'])
+
+

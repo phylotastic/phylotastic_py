@@ -146,7 +146,7 @@
 <div class="viewcode-block" id="get_all_species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_species.get_all_species">[docs]</a><span class="k">def</span> <span class="nf">get_all_species</span><span class="p">(</span><span class="n">inputTaxon</span><span class="p">):</span>
  	<span class="sd">&quot;&quot;&quot;Gets all species that belong to a particular taxon</span>
 <span class="sd">    </span>
-<span class="sd">    **Note**&gt; It will take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. </span>
+<span class="sd">    **Note**&gt; Maximum taxonomic rank allowed: ``family``. It may take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. </span>
 
 <span class="sd">	Example:</span>
 <span class="sd">	</span>
@@ -208,12 +208,12 @@
 <div class="viewcode-block" id="get_country_species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_species.get_country_species">[docs]</a><span class="k">def</span> <span class="nf">get_country_species</span><span class="p">(</span><span class="n">inputTaxon</span><span class="p">,</span> <span class="n">inputCountry</span><span class="p">):</span>
  	<span class="sd">&quot;&quot;&quot;Gets all species that belong to a particular taxon and established in a particular country.</span>
 <span class="sd">    </span>
-<span class="sd">    **Note**&gt; It will take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. </span>
+<span class="sd">    **Note**&gt; Maximum taxonomic rank allowed: ``family``. It may take longer time (more than 60s) to return output for input taxons higher than ``genus`` rank. </span>
 
 <span class="sd">	Example:</span>
 <span class="sd">	</span>
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
-<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_country_species(&quot;Vulpes&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_country_species(&quot;Vulpes&quot;, &quot;Nepal&quot;)</span>
 <span class="sd">	&gt;&gt;&gt; print result</span>
 <span class="sd">	{&quot;execution_time&quot;: &quot;16.23&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T18:20:12.978379&quot;, &quot;taxon&quot;: &quot;Vulpes&quot;, &quot;total_names&quot;: 2, &quot;country&quot;: &quot;Nepal&quot;, &quot;service_url&quot;: &quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/country_species?taxon=Vulpes&amp;country=Nepal&quot;, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [&quot;Vulpes bengalensis&quot;, &quot;Vulpes ferrilata&quot;], &quot;service_documentation&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7&quot;}</span>
 

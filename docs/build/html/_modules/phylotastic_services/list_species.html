@@ -52,27 +52,27 @@
 <span class="kn">import</span> <span class="nn">urllib</span>
 
 <span class="c1">#----------------------------------------------</span>
-<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://phylo.cs.nmsu.edu:5007/phylotastic_ws/sls&quot;</span> 
+<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://phylo.cs.nmsu.edu:5005/phylotastic_ws/sls&quot;</span> 
 <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
-<span class="c1">#scientific_name_authorship(str.)    authorship of the scientific name of the species</span>
 <span class="c1">#----------------------------------------------</span>
 <div class="viewcode-block" id="Species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.list_species.Species">[docs]</a><span class="k">class</span> <span class="nc">Species</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    **Species** class is used to create an instance of a species. A species instance</span>
 <span class="sd">    consists of data about a particular species.</span>
 
-<span class="sd"> 	**Species** *properties* are described below.</span>
+<span class="sd"> 	**Species** *properties* are described below with requirement characteristics.</span>
 
 <span class="sd">     .. table::</span>
 
 <span class="sd">         ================================   ==============================================</span>
 <span class="sd">         PROPERTY(type)                     DESCRIPTION</span>
 <span class="sd">         ================================   ==============================================</span>
-<span class="sd">         scientific_name(str.)               scientific name of the species</span>
-<span class="sd">         vernacular_name(str.)               vernacular name of the species</span>
+<span class="sd">         scientific_name(str.)               scientific name of the species [required]</span>
+<span class="sd">         vernacular_name(str.)               vernacular name of the species [required]</span>
 <span class="sd">         scientific_name_authorship(str.)    authorship of the scientific name of the species</span>
 <span class="sd">         family(str.)                        the taxonomic rank family where the species belongs to</span>
 <span class="sd">         order(str.)                         the taxonomic rank order where the species belongs to</span>
+<span class="sd">         class(str.)                         the taxonomic rank class where the species belongs to</span>
 <span class="sd">         phylum(str.)                        the taxonomic rank phylum where the species belongs to</span>
 <span class="sd">         nomenclature_code(str.)             he nomenclatural code of the species</span>
 <span class="sd">         ================================   ==============================================</span>
@@ -103,26 +103,26 @@
 <span class="sd">    **List** class is used to store information of a list. A list</span>
 <span class="sd">    consists of a collection of Species objects and metadata about the list.</span>
 
-<span class="sd"> 	**List** *properties* are described below.</span>
+<span class="sd"> 	**List** *properties* are described below with requirement characteristics.</span>
 
 <span class="sd">     .. table::</span>
 
 <span class="sd">         ========================  ==============================================</span>
 <span class="sd">         PROPERTY(type)            DESCRIPTION</span>
 <span class="sd">         ========================  ==============================================</span>
-<span class="sd">         title(str.)               title of the new list</span>
-<span class="sd">         description(str.)         description of the new list</span>
-<span class="sd">         author(str.)              a list of names of the authors who prepared the new list</span>
-<span class="sd">         date_published(str.)      date when the new list is being posted (format: mm-dd-yyyy)</span>
-<span class="sd">         curator(str.)             name of the curator of the new list</span>
-<span class="sd">         curation_date(str.)       date when the new list is being curated (format: mm-dd-yyyy)</span>
-<span class="sd">         source(str.)              source of the new list (url, publication)</span>
-<span class="sd">         keywords(str.)            keywords related to the new list</span>
-<span class="sd">         focal_clade(str.)         focal_clade of the new list</span>
-<span class="sd">         extra_info(str.)          extra information about the new list</span>
-<span class="sd">         origin(str.)              the origin from where the new list is being posted. (Permitted values: &quot;script&quot; or &quot;webapp&quot; or &quot;mobileapp&quot;)</span>
-<span class="sd">         is_public(bool.)          true if the new list posted can be viewed by public. Otherwise false</span>
-<span class="sd">         species_list(obj)         a list of species objects  </span>
+<span class="sd">         title(str.)               title of the new list [required]</span>
+<span class="sd">         description(str.)         description of the new list [optional]</span>
+<span class="sd">         author(str.)              a list of names of the authors who prepared the new list [optional]</span>
+<span class="sd">         date_published(str.)      date when the new list is being posted (format: mm-dd-yyyy) [optional]</span>
+<span class="sd">         curator(str.)             name of the curator of the new list (required) [optional]</span>
+<span class="sd">         curation_date(str.)       date when the new list is being curated (format: mm-dd-yyyy) [required] </span>
+<span class="sd">         source(str.)              source of the new list (url, publication) [required]</span>
+<span class="sd">         keywords(str.)            keywords related to the new list [optional]</span>
+<span class="sd">         focal_clade(str.)         focal_clade of the new list [optional]</span>
+<span class="sd">         extra_info(str.)          extra information about the new list [optional]</span>
+<span class="sd">         origin(str.)              the origin from where the new list is being posted. (Permitted values: ``script`` or ``webapp`` or ``mobileapp``)[required]</span>
+<span class="sd">         is_public(bool.)          ``true`` if the new list posted can be viewed by public. Otherwise ``false`` [optional]</span>
+<span class="sd">         species_list(obj)         a list of species objects [required] </span>
 <span class="sd">         ========================  ==============================================</span>
 
 <span class="sd">    :returns: a **List** object which represents a new list.</span>
@@ -407,12 +407,12 @@
  	<span class="c1">#print insert_list_info(&quot;abusalehmdtayeen@gmail.com&quot;, list_obj)</span>
 
  	<span class="c1">#list_obj = List(description=&quot;This list contains the invasive species&quot;, is_public=False)</span>
- 	<span class="c1">#print update_list_metadata(&quot;abusalehmdtayeen@gmail.com&quot;, 57, list_obj, &quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+ 	<span class="c1">#print update_list_metadata(&quot;abusalehmdtayeen@gmail.com&quot;, 129, list_obj, &quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
  	
- 	<span class="c1">#print update_list_data(&quot;abusalehmdtayeen@gmail.com&quot;, 57, species_list2, &quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
- 	<span class="c1">#print get_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=57, accessToken=&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+ 	<span class="c1">#print update_list_data(&quot;abusalehmdtayeen@gmail.com&quot;, 129, species_list2, &quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+ 	<span class="c1">#print get_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=129, accessToken=&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
  	<span class="c1">#print get_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, content=False, accessToken=&quot;ya29.Glt8BP7TxEO5-ME5NiaO-bk0h-Mk06KCRLkwh7DIvsm6SZ_ReVArG_ySECvdVFagncyGA6u0CKLul53QsK6-Wo2ffNQITKdYGhOHLqjmjIDaXNIPHU84-aMFoPF7&quot;)</span>
- 	<span class="c1">#print remove_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=57, accessToken=&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
+ 	<span class="c1">#print remove_list_info(userId=&quot;abusalehmdtayeen@gmail.com&quot;, listId=129, accessToken=&quot;ya29.Glt9BMHJWIYVeH2vHs_O4cGqtb8nWYdVu_dz4CNXVmRdIoX9-sd88MBLRAzmsH_JhhKB_qDTPppn3Iast6C8-g-ty3zKsri6sEm3_R6Lw3bHymCFDDgCHyQsthOH&quot;)</span>
 </pre></div>
 
           </div>

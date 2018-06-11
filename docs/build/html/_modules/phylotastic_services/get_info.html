@@ -50,14 +50,26 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">datetime</span> 
 <span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">abspath</span>
+<span class="kn">import</span> <span class="nn">ConfigParser</span>
 
 <span class="c1">#----------------------------------------------</span>
-<span class="n">EOL_API_Key</span> <span class="o">=</span> <span class="s2">&quot;b6499be78b900c60fb28d38715650e826240ba7b&quot;</span>
 <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
+
+<span class="c1">#-----------------------------------------</span>
+<div class="viewcode-block" id="get_api_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_info.get_api_key">[docs]</a><span class="k">def</span> <span class="nf">get_api_key</span><span class="p">():</span>
+	<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+	<span class="n">current_dir</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+	<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">current_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="o">+</span> <span class="s2">&quot;service.cfg&quot;</span><span class="p">)</span>
+	
+	<span class="n">api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;EOL&#39;</span><span class="p">,</span> <span class="s1">&#39;api_key&#39;</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">api_key</span></div>
 
 <span class="c1">#----------------------------------------------</span>
 <span class="k">def</span> <span class="nf">match_species</span><span class="p">(</span><span class="n">speciesName</span><span class="p">):</span>
- 	<span class="n">search_url</span> <span class="o">=</span> <span class="s2">&quot;http://eol.org/api/search/1.0.json&quot;</span>    
+ 	<span class="n">search_url</span> <span class="o">=</span> <span class="s2">&quot;http://eol.org/api/search/1.0.json&quot;</span> 
+ 	<span class="n">EOL_API_Key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">()</span>    
  	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
  		<span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="n">EOL_API_Key</span><span class="p">,</span>
  		<span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="n">speciesName</span><span class="p">,</span>
@@ -85,6 +97,8 @@
 <div class="viewcode-block" id="get_eolurls_species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_info.get_eolurls_species">[docs]</a><span class="k">def</span> <span class="nf">get_eolurls_species</span><span class="p">(</span><span class="n">inputSpecies</span><span class="p">):</span>
  	<span class="sd">&quot;&quot;&quot;Gets information urls of a list of species from EOL.</span>
 <span class="sd">    </span>
+<span class="sd">	**Note**&gt; maximum ``50`` species allowed as input. </span>
+
 <span class="sd">	Example:</span>
 <span class="sd">	</span>
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
@@ -196,6 +210,8 @@
 <div class="viewcode-block" id="get_images_species"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_info.get_images_species">[docs]</a><span class="k">def</span> <span class="nf">get_images_species</span><span class="p">(</span><span class="n">inputSpecies</span><span class="p">):</span>
  	<span class="sd">&quot;&quot;&quot;Gets image urls and corresponding license information of a list of species from EOL</span>
 <span class="sd">    </span>
+<span class="sd">	**Note**&gt; maximum ``30`` species allowed as input. </span>
+<span class="sd">	</span>
 <span class="sd">	Example:</span>
 <span class="sd">	</span>
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>

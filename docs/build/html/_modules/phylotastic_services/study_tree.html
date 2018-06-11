@@ -46,6 +46,7 @@
 <span class="sd">**study_tree** Module is for getting phylogenetic tree metadata(supporting studies) or to compare trees or to retrieve tree chronogram </span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">dendropy</span>
 <span class="kn">from</span> <span class="nn">dendropy.calculate</span> <span class="k">import</span> <span class="n">treecompare</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -64,7 +65,7 @@
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
 <span class="sd">	&gt;&gt;&gt; result = phylotastic_services.compare_trees(tree1=&quot;(((((((EU368025_Uncult_marine_euk_FS14JA72_30Mar05_5m:0.00329,EU368020_Uncult_marine_euk_FS04GA95_01Aug05_5m:-0.00002):0.00002,EU368013_Uncult_marine_euk_FS01D014_01Aug05_65m:-0.00002):0.00010,(EU368034_Uncult_marine_euk_OC413NSS_Q007_15m:-0.00000,(EU368007_Uncult_marine_euk_FS01B026_30Mar05_5m:-0.00001,EU368004_Uncult_marine_euk_FS01AA94_01Aug05_5m:0.00328):0.00000):0.00317):0.00725,(EU368005_Uncult_marine_euk_FS01B033_30Mar05_5m:-0.00002,(EF172850_Uncult_euk_SSRPB47:-0.00003,EU368022_Uncult_marine_euk_FS04H169_01Aug05_89m:0.00166):0.00002):0.00597):0.00202,((DQ060523_Uncult_marine_euk_NOR46.29:0.01559,(HQ868826_Uncult_euk_SHAX1073:0.00155,EU368038_Uncult_marine_euk_EN351CTD040_4mN11:0.00172):0.00429):0.00017,(EU368023_Uncult_marine_euk_FS04H153_01Aug05_89m:0.00504,(DQ222879_Uncult_photo_euk_RA000907.18:0.00166,HM858468_Uncult_marine_euk_MO.011.5m.00036:-0.00003):0.00152):0.00566):0.00662):0.00941,(HQ868882_Uncult_euk_SHAX1135:0.00170,HQ868810_Uncult_euk_SHAX1056:-0.00007):0.02449):0.00648,(EU368021_Uncult_marine_euk_FS04GA46_01Aug05_5m:0.02285,(HQ869075_Uncult_euk_SHAX587:0.00000,HQ869035_Uncult_euk_SHAX540:0.00000):0.04720):0.01029,HQ156863_Uncult_marine_ciliate_170609_08:0.17059);&quot;, tree2=&quot;((HQ869075_Uncult_euk_SHAX587:0.00000,HQ869035_Uncult_euk_SHAX540:0.00000):0.04484,(EU368021_Uncult_marine_euk_FS04GA46_01Aug05_5m:0.02285,(((((EU368005_Uncult_marine_euk_FS01B033_30Mar05_5m:-0.00002,(EF172850_Uncult_euk_SSRPB47:-0.00003,EU368022_Uncult_marine_euk_FS04H169_01Aug05_89m:0.00166):0.00002):0.00597,(((EU368025_Uncult_marine_euk_FS14JA72_30Mar05_5m:0.00329,EU368020_Uncult_marine_euk_FS04GA95_01Aug05_5m:-0.00002):0.00002,EU368013_Uncult_marine_euk_FS01D014_01Aug05_65m:-0.00002):0.00010,(EU368034_Uncult_marine_euk_OC413NSS_Q007_15m:-0.00000,(EU368007_Uncult_marine_euk_FS01B026_30Mar05_5m:-0.00001,EU368004_Uncult_marine_euk_FS01AA94_01Aug05_5m:0.00328):0.00000):0.00317):0.00725):0.00202,((DQ060523_Uncult_marine_euk_NOR46.29:0.01559,(HQ868826_Uncult_euk_SHAX1073:0.00155,EU368038_Uncult_marine_euk_EN351CTD040_4mN11:0.00172):0.00429):0.00017,(EU368023_Uncult_marine_euk_FS04H153_01Aug05_89m:0.00504,(DQ222879_Uncult_photo_euk_RA000907.18:0.00166,HM858468_Uncult_marine_euk_MO.011.5m.00036:-0.00003):0.00152):0.00566):0.00662):0.00941,(HQ868882_Uncult_euk_SHAX1135:0.00170,HQ868810_Uncult_euk_SHAX1056:-0.00007):0.02449):0.00648,HQ156863_Uncult_marine_ciliate_170609_08:0.17059):0.01029):0.00236);&quot;)</span>
 <span class="sd">	&gt;&gt;&gt; print result</span>
-<span class="sd">	{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [{&quot;species_info_link&quot;: &quot;http://eol.org/328672?action=overview&amp;controller=taxa&quot;, &quot;searched_name&quot;: &quot;Panthera leo&quot;, &quot;eol_id&quot;: 328672, &quot;matched_name&quot;: &quot;Panthera leo (Linnaeus, 1758)&quot;}, {&quot;species_info_link&quot;: &quot;http://eol.org/328606?action=overview&amp;controller=taxa&quot;, &quot;searched_name&quot;: &quot;Panthera onca&quot;, &quot;eol_id&quot;: 328606, &quot;matched_name&quot;: &quot;Panthera onca (Linnaeus, 1758)&quot;}]}</span>
+<span class="sd">	{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;meta_data&quot;: {&quot;execution_time&quot;: 0.02, &quot;creation_time&quot;: &quot;2018-06-10T17:47:17.668300&quot;, &quot;source_urls&quot;: [&quot;http://dendropy.org/library/treecompare.html#module-dendropy.calculate.treecompare&quot;]}, &quot;are_same_tree&quot;: true}</span>
 
 <span class="sd">    :param tree1: First phylogenetic tree in newick format. </span>
 <span class="sd">    :type tree1: string.</span>
@@ -73,204 +74,231 @@
 <span class="sd">    :returns: A json formatted string -- with a boolean value in ``are_same_tree`` property indicating whether two trees are same or not. </span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+ 	<span class="n">response</span> <span class="o">=</span> <span class="p">{}</span>
+ 	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
  	<span class="k">try</span><span class="p">:</span>	
  		<span class="n">tns</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">TaxonNamespace</span><span class="p">()</span> 	
  	
- 		<span class="n">tree1_obj</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tree1</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span><span class="n">taxon_namespace</span><span class="o">=</span><span class="n">tns</span><span class="p">)</span>
- 		<span class="n">tree2_obj</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tree2</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span><span class="n">taxon_namespace</span><span class="o">=</span><span class="n">tns</span><span class="p">)</span>
+ 		<span class="n">tree_obj1</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tree1</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span><span class="n">taxon_namespace</span><span class="o">=</span><span class="n">tns</span><span class="p">)</span>
+ 		<span class="n">tree_obj2</span> <span class="o">=</span> <span class="n">dendropy</span><span class="o">.</span><span class="n">Tree</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tree2</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;newick&quot;</span><span class="p">,</span><span class="n">taxon_namespace</span><span class="o">=</span><span class="n">tns</span><span class="p">)</span>
 
- 		<span class="n">tree1_obj</span><span class="o">.</span><span class="n">encode_bipartitions</span><span class="p">()</span>
- 		<span class="n">tree2_obj</span><span class="o">.</span><span class="n">encode_bipartitions</span><span class="p">()</span>
+ 		<span class="n">tree_obj1</span><span class="o">.</span><span class="n">encode_bipartitions</span><span class="p">()</span>
+ 		<span class="n">tree_obj2</span><span class="o">.</span><span class="n">encode_bipartitions</span><span class="p">()</span>
 
  		<span class="c1">#-----------------------------------------------------------</span>
  		<span class="c1">#This method returns the symmetric distance between two trees. </span>
  		<span class="c1">#The symmetric distance between two trees is the sum of the number of  splits found in one of the trees but not the other. </span>
  		<span class="c1">#It is common to see this statistic called the Robinson-Foulds distance</span>
 
- 		<span class="n">areSame</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">treecompare</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="n">tree1_obj</span><span class="p">,</span> <span class="n">tree2_obj</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">False</span>
+ 		<span class="n">areSame</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">treecompare</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="n">tree_obj1</span><span class="p">,</span> <span class="n">tree_obj2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">False</span>
  		<span class="n">status</span> <span class="o">=</span> <span class="mi">200</span>
  		<span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
+ 		<span class="n">response</span><span class="p">[</span><span class="s1">&#39;are_same_tree&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">areSame</span>
  
- 	<span class="k">except</span> <span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
- 		<span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
- 		<span class="n">status</span> <span class="o">=</span> <span class="mi">500</span> 
+ 	<span class="k">except</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+ 		<span class="k">if</span> <span class="s2">&quot;Incomplete or improperly-terminated tree statement&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span> <span class="c1">#invalid: &quot;((A,B),C,D));&quot;  valid: ((A,B),(C,D)); </span>
+ 			<span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;NewickReaderIncompleteTreeStatementError: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+ 	 		<span class="n">status</span> <span class="o">=</span> <span class="mi">400</span>
+ 		<span class="k">elif</span> <span class="s2">&quot;Unbalanced parentheses at tree statement&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>  <span class="c1">#invalid: &quot;((A,B),(C,D);&quot;  valid: ((A,B),(C,D)); </span>
+ 			<span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;NewickReaderMalformedStatementError: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> 
+ 	 		<span class="n">status</span> <span class="o">=</span> <span class="mi">400</span>
+ 		<span class="k">elif</span> <span class="s2">&quot;Multiple occurrences of the same taxa&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span> <span class="c1">#invalid: &quot;((A,B),(C,C));&quot;  valid: ((A,B),(C,D));</span>
+ 			<span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;NewickReaderDuplicateTaxonError: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+ 	 		<span class="n">status</span> <span class="o">=</span> <span class="mi">400</span>
+ 		<span class="k">elif</span> <span class="s2">&quot;Unexpected end of stream&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span> <span class="c1"># invalid: &quot;((A,B),(C,D))&quot;  valid: ((A,B),(C,D));</span>
+ 			<span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;UnexpectedEndOfStreamError: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+ 	 		<span class="n">status</span> <span class="o">=</span> <span class="mi">400</span>
+ 		<span class="k">else</span><span class="p">:</span>
+ 			<span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Error: Failed to compare trees. &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+ 	 		<span class="n">status</span> <span class="o">=</span> <span class="mi">500</span>
+ 	 	
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">message</span>
 
- 	<span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span> <span class="s1">&#39;are_same_tree&#39;</span><span class="p">:</span> <span class="n">areSame</span><span class="p">}</span>
- 	
- 	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+ 	<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+ 	<span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>
+    <span class="c1">#service result creation time</span>
+ 	<span class="n">creation_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+ 	<span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;creation_time&#39;</span><span class="p">:</span> <span class="n">creation_time</span><span class="p">,</span> <span class="s1">&#39;execution_time&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:4.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)),</span> <span class="s1">&#39;source_urls&#39;</span><span class="p">:[</span><span class="s2">&quot;http://dendropy.org/library/treecompare.html#module-dendropy.calculate.treecompare&quot;</span><span class="p">]</span> <span class="p">}</span>
+
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;meta_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span>
+ 	<span class="nb">print</span> <span class="n">response</span>
+ 	<span class="k">return</span> <span class="n">response</span></div>
+
 
 <span class="c1">#-------------------------------------------------------</span>
 <span class="c1">#~~~~~~~~~~~~~~~~~~~~ (OpenTree-tree_of_life)~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
-<span class="k">def</span> <span class="nf">get_study_ids</span><span class="p">(</span><span class="n">ottid_list</span><span class="p">):</span>
-    <span class="n">opentree_method_url</span> <span class="o">=</span> <span class="n">opentree_base_url</span> <span class="o">+</span> <span class="s2">&quot;tree_of_life/induced_subtree&quot;</span>
-    
-    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;ott_ids&#39;</span><span class="p">:</span> <span class="n">ottid_list</span>	
-    <span class="p">}</span>
-    
-    <span class="n">jsonPayload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
-    
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">opentree_method_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">jsonPayload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-    
-    <span class="n">studyid_result</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">def get_study_ids(ottid_list):</span>
+<span class="sd">    opentree_method_url = opentree_base_url + &quot;tree_of_life/induced_subtree&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    payload = {</span>
+<span class="sd">        &#39;ott_ids&#39;: ottid_list	</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    jsonPayload = json.dumps(payload)</span>
+<span class="sd">    </span>
+<span class="sd">    response = requests.post(opentree_method_url, data=jsonPayload, headers=headers)</span>
+<span class="sd">    </span>
+<span class="sd">    studyid_result = {}</span>
 
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
-        <span class="n">result_data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">studyid_result</span><span class="p">[</span><span class="s1">&#39;study_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;supporting_studies&#39;</span><span class="p">]</span>
-        <span class="n">studyid_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="s2">&quot;Success&quot;</span>
-     	<span class="n">studyid_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
-    <span class="k">else</span><span class="p">:</span>    
-        <span class="n">studyid_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="s2">&quot;Error: getting study ids from OpenTree&quot;</span>
-     	<span class="n">studyid_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="sd">    if response.status_code == requests.codes.ok:    </span>
+<span class="sd">        result_data_json = json.loads(response.text)</span>
+<span class="sd">        studyid_result[&#39;study_ids&#39;] = result_data_json[&#39;supporting_studies&#39;]</span>
+<span class="sd">        studyid_result[&#39;message&#39;] =  &quot;Success&quot;</span>
+<span class="sd">     	studyid_result[&#39;status_code&#39;] = 200</span>
+<span class="sd">    else:    </span>
+<span class="sd">        studyid_result[&#39;message&#39;] =  &quot;Error: getting study ids from OpenTree&quot;</span>
+<span class="sd">     	studyid_result[&#39;status_code&#39;] = 500</span>
 
-    <span class="k">return</span> <span class="n">studyid_result</span>
+<span class="sd">    return studyid_result</span>
 
-<span class="c1">#------------------------(OpenTree-studies)------------------------------</span>
-<span class="k">def</span> <span class="nf">get_study_info</span><span class="p">(</span><span class="n">studyid</span><span class="p">):</span>
-    <span class="n">opentree_method_url</span> <span class="o">=</span> <span class="n">opentree_base_url</span> <span class="o">+</span> <span class="s2">&quot;studies/find_studies&quot;</span>
-    
-    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;property&#39;</span><span class="p">:</span> <span class="s1">&#39;ot:studyId&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">studyid</span><span class="p">,</span>
-        <span class="s1">&#39;verbose&#39;</span><span class="p">:</span> <span class="kc">True</span>	
-    <span class="p">}</span>
-    
-    <span class="n">jsonPayload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
-    
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">opentree_method_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">jsonPayload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-    
-    <span class="n">studyinfo_result</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="sd">#------------------------(OpenTree-studies)------------------------------</span>
+<span class="sd">def get_study_info(studyid):</span>
+<span class="sd">    opentree_method_url = opentree_base_url + &quot;studies/find_studies&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    payload = {</span>
+<span class="sd">        &#39;property&#39;: &#39;ot:studyId&#39;,</span>
+<span class="sd">        &#39;value&#39;: studyid,</span>
+<span class="sd">        &#39;verbose&#39;: True	</span>
+<span class="sd">    }</span>
+<span class="sd">    </span>
+<span class="sd">    jsonPayload = json.dumps(payload)</span>
+<span class="sd">    </span>
+<span class="sd">    response = requests.post(opentree_method_url, data=jsonPayload, headers=headers)</span>
+<span class="sd">    </span>
+<span class="sd">    studyinfo_result = {}</span>
 
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
-        <span class="n">result_data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-           <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="s2">&quot;No matching study found&quot;</span>
-     	   <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">204</span>
-        <span class="k">else</span><span class="p">:</span> 
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:studyPublicationReference&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;Publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:studyPublicationReference&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;Publication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:studyId&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;PublicationIdentifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:studyId&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;PublicationIdentifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">studyid</span>
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:curatorName&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;Curator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:curatorName&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;Curator&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:studyYear&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;PublicationYear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:studyYear&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;PublicationYear&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:focalCladeOTTTaxonName&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;FocalCladeTaxonName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:focalCladeOTTTaxonName&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;FocalCladeTaxonName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:studyPublication&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;PublicationDOI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:studyPublication&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;PublicationDOI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:dataDeposit&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;DataRepository&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:dataDeposit&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;DataRepository&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-           <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;ot:candidateTreeForSynthesis&#39;</span> <span class="ow">in</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;CandidateTreeForSynthesis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;matched_studies&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:candidateTreeForSynthesis&#39;</span><span class="p">]</span>
-           <span class="k">else</span><span class="p">:</span>
-              <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;CandidateTreeForSynthesis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        
-        <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="s2">&quot;Success&quot;</span>
-     	<span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
-    <span class="k">else</span><span class="p">:</span>    
-        <span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span>  <span class="s2">&quot;Error: getting study info from OpenTree&quot;</span>
-     	<span class="n">studyinfo_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="sd">    if response.status_code == requests.codes.ok:    </span>
+<span class="sd">        result_data_json = json.loads(response.text)</span>
+<span class="sd">        if (len(result_data_json[&#39;matched_studies&#39;]) == 0):</span>
+<span class="sd">           studyinfo_result[&#39;message&#39;] =  &quot;No matching study found&quot;</span>
+<span class="sd">     	   studyinfo_result[&#39;status_code&#39;] = 204</span>
+<span class="sd">        else: </span>
+<span class="sd">           if (&#39;ot:studyPublicationReference&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;Publication&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:studyPublicationReference&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;Publication&#39;] = &quot;&quot;</span>
+<span class="sd">           if (&#39;ot:studyId&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;PublicationIdentifier&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:studyId&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;PublicationIdentifier&#39;] = studyid</span>
+<span class="sd">           if (&#39;ot:curatorName&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;Curator&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:curatorName&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;Curator&#39;] = &quot;&quot;</span>
+<span class="sd">           if (&#39;ot:studyYear&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;PublicationYear&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:studyYear&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;PublicationYear&#39;] = &quot;&quot;</span>
+<span class="sd">           if (&#39;ot:focalCladeOTTTaxonName&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;FocalCladeTaxonName&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:focalCladeOTTTaxonName&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;FocalCladeTaxonName&#39;] = &quot;&quot;</span>
+<span class="sd">           if (&#39;ot:studyPublication&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;PublicationDOI&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:studyPublication&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;PublicationDOI&#39;] = &quot;&quot;</span>
+<span class="sd">           if (&#39;ot:dataDeposit&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;DataRepository&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:dataDeposit&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;DataRepository&#39;] = &quot;&quot;</span>
+<span class="sd">           if (&#39;ot:candidateTreeForSynthesis&#39; in result_data_json[&#39;matched_studies&#39;][0]):</span>
+<span class="sd">              studyinfo_result[&#39;CandidateTreeForSynthesis&#39;] = result_data_json[&#39;matched_studies&#39;][0][&#39;ot:candidateTreeForSynthesis&#39;]</span>
+<span class="sd">           else:</span>
+<span class="sd">              studyinfo_result[&#39;CandidateTreeForSynthesis&#39;] = &quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        studyinfo_result[&#39;message&#39;] =  &quot;Success&quot;</span>
+<span class="sd">     	studyinfo_result[&#39;status_code&#39;] = 200</span>
+<span class="sd">    else:    </span>
+<span class="sd">        studyinfo_result[&#39;message&#39;] =  &quot;Error: getting study info from OpenTree&quot;</span>
+<span class="sd">     	studyinfo_result[&#39;status_code&#39;] = 500</span>
 
-    <span class="k">return</span> <span class="n">studyinfo_result</span>
+<span class="sd">    return studyinfo_result</span>
 
-<span class="c1">#----------------------------------------------------</span>
-<span class="k">def</span> <span class="nf">get_studies</span><span class="p">(</span><span class="n">studyid_list</span><span class="p">):</span>
-    <span class="n">studies_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">studyid</span> <span class="ow">in</span> <span class="n">studyid_list</span><span class="p">:</span>
-        <span class="n">study_info</span> <span class="o">=</span> <span class="n">get_study_info</span><span class="p">(</span><span class="n">studyid</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">study_info</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-           <span class="c1">#delete status keys from dictionary </span>
-           <span class="k">del</span> <span class="n">study_info</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span>
-           <span class="k">del</span> <span class="n">study_info</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
-           <span class="n">studies_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">study_info</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">studies_list</span>
+<span class="sd">#----------------------------------------------------</span>
+<span class="sd">def get_studies(studyid_list):</span>
+<span class="sd">    studies_list = []</span>
+<span class="sd">    for studyid in studyid_list:</span>
+<span class="sd">        study_info = get_study_info(studyid)</span>
+<span class="sd">        if study_info[&#39;status_code&#39;] == 200:</span>
+<span class="sd">           #delete status keys from dictionary </span>
+<span class="sd">           del study_info[&#39;status_code&#39;]</span>
+<span class="sd">           del study_info[&#39;message&#39;]</span>
+<span class="sd">           studies_list.append(study_info)</span>
+<span class="sd">    </span>
+<span class="sd">    return studies_list</span>
 
-<span class="c1">#----------------------------------------------------</span>
-<span class="k">def</span> <span class="nf">get_studies_from_ids</span><span class="p">(</span><span class="n">id_list</span><span class="p">,</span> <span class="n">is_ottid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">post</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">studies_info</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">is_ottid</span><span class="p">:</span> <span class="c1">#check whether the id_list is a list of ott ids or not</span>
-       <span class="n">study_id_list_json</span> <span class="o">=</span> <span class="n">get_study_ids</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span>
-       <span class="k">if</span> <span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-          <span class="n">study_id_list</span> <span class="o">=</span> <span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;study_ids&#39;</span><span class="p">]</span>
-          <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;studies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_studies</span><span class="p">(</span><span class="n">study_id_list</span><span class="p">)</span> 
-          <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
-          <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
-       <span class="k">else</span><span class="p">:</span>
-          <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;studies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-          <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
-          <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span> <span class="c1">#when study ids are given directly</span>
-       <span class="n">study_list</span> <span class="o">=</span> <span class="n">get_studies</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span>
-       <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;studies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">study_list</span>  
-       <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
-       <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">204</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">study_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="mi">200</span>
+<span class="sd">#----------------------------------------------------</span>
+<span class="sd">def get_studies_from_ids(id_list, is_ottid=True, post=False):</span>
+<span class="sd">    start_time = time.time()</span>
+<span class="sd">    studies_info = {}</span>
+<span class="sd">    if is_ottid: #check whether the id_list is a list of ott ids or not</span>
+<span class="sd">       study_id_list_json = get_study_ids(id_list)</span>
+<span class="sd">       if study_id_list_json[&#39;status_code&#39;] == 200:</span>
+<span class="sd">          study_id_list = study_id_list_json[&#39;study_ids&#39;]</span>
+<span class="sd">          studies_info[&#39;studies&#39;] = get_studies(study_id_list) </span>
+<span class="sd">          studies_info[&#39;message&#39;] = &quot;Success&quot;</span>
+<span class="sd">          studies_info[&#39;status_code&#39;] = 200</span>
+<span class="sd">       else:</span>
+<span class="sd">          studies_info[&#39;studies&#39;] = []</span>
+<span class="sd">          studies_info[&#39;message&#39;] = study_id_list_json[&#39;message&#39;]</span>
+<span class="sd">          studies_info[&#39;status_code&#39;] = study_id_list_json[&#39;status_code&#39;]</span>
+<span class="sd">    else: #when study ids are given directly</span>
+<span class="sd">       study_list = get_studies(id_list)</span>
+<span class="sd">       studies_info[&#39;studies&#39;] = study_list  </span>
+<span class="sd">       studies_info[&#39;message&#39;] = &quot;Success&quot;</span>
+<span class="sd">       studies_info[&#39;status_code&#39;] = 204 if (len(study_list) == 0) else 200</span>
 
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>
-    <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:4.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">))</span>
+<span class="sd">    end_time = time.time()</span>
+<span class="sd">    execution_time = end_time-start_time</span>
+<span class="sd">    studies_info[&#39;execution_time&#39;] = float(&#39;{:4.2f}&#39;.format(execution_time))</span>
 
-    <span class="k">if</span> <span class="n">post</span><span class="p">:</span>
-       <span class="k">return</span> <span class="n">studies_info</span>
-    <span class="k">else</span><span class="p">:</span>
-       <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">studies_info</span><span class="p">)</span>
+<span class="sd">    if post:</span>
+<span class="sd">       return studies_info</span>
+<span class="sd">    else:</span>
+<span class="sd">       return json.dumps(studies_info)</span>
 
-<span class="c1">#-------------------(OpenTree-TNRS)-----------------------------</span>
-<span class="k">def</span> <span class="nf">get_ott_ids</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">opentree_method_url</span> <span class="o">=</span> <span class="n">opentree_base_url</span> <span class="o">+</span> <span class="s2">&quot;tnrs/match_names&quot;</span>
-    
-    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;names&#39;</span><span class="p">:</span> <span class="n">taxa</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-       <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;context_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">context</span>
+<span class="sd">#-------------------(OpenTree-TNRS)-----------------------------</span>
+<span class="sd">def get_ott_ids(taxa, context=None):</span>
+<span class="sd">    opentree_method_url = opentree_base_url + &quot;tnrs/match_names&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    payload = {</span>
+<span class="sd">        &#39;names&#39;: taxa</span>
+<span class="sd">    }</span>
+<span class="sd">    if context is not None:</span>
+<span class="sd">       payload[&#39;context_name&#39;] = context</span>
 
-    <span class="n">jsonPayload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
-   
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">opentree_method_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">jsonPayload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-    
-    <span class="n">ott_id_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">ott_id_result</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="sd">    jsonPayload = json.dumps(payload)</span>
+<span class="sd">   </span>
+<span class="sd">    response = requests.post(opentree_method_url, data=jsonPayload, headers=headers)</span>
+<span class="sd">    </span>
+<span class="sd">    ott_id_list = []</span>
+<span class="sd">    ott_id_result = {}</span>
 
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
-        <span class="n">result_data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">result_list</span> <span class="o">=</span> <span class="n">result_data_json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> 
-        <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">result_list</span><span class="p">:</span>
-            <span class="n">match_list</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;matches&#39;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">match_list</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.7</span><span class="p">:</span>
-                   <span class="n">ott_id_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="s1">&#39;taxon&#39;</span><span class="p">][</span><span class="s1">&#39;ott_id&#39;</span><span class="p">])</span>
-                   <span class="k">break</span>
+<span class="sd">    if response.status_code == requests.codes.ok:    </span>
+<span class="sd">        result_data_json = json.loads(response.text)</span>
+<span class="sd">        result_list = result_data_json[&#39;results&#39;] </span>
+<span class="sd">        for result in result_list:</span>
+<span class="sd">            match_list = result[&#39;matches&#39;]</span>
+<span class="sd">            for match in match_list:</span>
+<span class="sd">                if float(match[&#39;score&#39;]) &gt;= 0.7:</span>
+<span class="sd">                   ott_id_list.append(match[&#39;taxon&#39;][&#39;ott_id&#39;])</span>
+<span class="sd">                   break</span>
 
-        <span class="n">ott_id_result</span><span class="p">[</span><span class="s1">&#39;ott_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ott_id_list</span>	
-        <span class="n">ott_id_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
-        <span class="n">ott_id_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">ott_id_result</span><span class="p">[</span><span class="s1">&#39;ott_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ott_id_list</span>	
-        <span class="n">ott_id_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
-        <span class="n">ott_id_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Error: getting ott ids from OpenTree&quot;</span>
-    
-    <span class="k">return</span> <span class="n">ott_id_result</span>
+<span class="sd">        ott_id_result[&#39;ott_ids&#39;] = ott_id_list	</span>
+<span class="sd">        ott_id_result[&#39;status_code&#39;] = 200</span>
+<span class="sd">        ott_id_result[&#39;message&#39;] = &quot;Success&quot;</span>
+<span class="sd">    else:</span>
+<span class="sd">        ott_id_result[&#39;ott_ids&#39;] = ott_id_list	</span>
+<span class="sd">        ott_id_result[&#39;status_code&#39;] = 500</span>
+<span class="sd">        ott_id_result[&#39;message&#39;] = &quot;Error: getting ott ids from OpenTree&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    return ott_id_result</span>
 
-<span class="c1">#----------------------------------------------------------</span>
-<div class="viewcode-block" id="get_studies_tree"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.study_tree.get_studies_tree">[docs]</a><span class="k">def</span> <span class="nf">get_studies_tree</span><span class="p">(</span><span class="n">taxa</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Gets supporting studies information from Open Tree of Life for a phylogenetic tree retrieved using a list of taxa.</span>
+<span class="sd">#----------------------------------------------------------</span>
+<span class="sd">def get_studies_tree(taxa):</span>
+<span class="sd">    &quot;&quot;&quot;Gets supporting studies information from Open Tree of Life for a phylogenetic tree retrieved using a list of taxa.</span>
 <span class="sd">    </span>
 <span class="sd">    Example:</span>
 <span class="sd">	</span>
@@ -284,34 +312,35 @@
 <span class="sd">    :returns: A json formatted string -- with a list of species objects containing links to EOL. </span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">context</span><span class="o">=</span><span class="kc">None</span>
-    <span class="n">post</span><span class="o">=</span><span class="kc">False</span>	 	
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">ottidlist_json</span> <span class="o">=</span> <span class="n">get_ott_ids</span><span class="p">(</span><span class="n">taxa</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-    <span class="n">studies_info</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">ottidlist_json</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">500</span><span class="p">:</span>    
-        <span class="n">final_result</span> <span class="o">=</span> <span class="n">ottidlist_json</span>   
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">study_id_list_json</span> <span class="o">=</span> <span class="n">get_study_ids</span><span class="p">(</span><span class="n">ottidlist_json</span><span class="p">[</span><span class="s1">&#39;ott_ids&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-           <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;studies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_studies</span><span class="p">(</span><span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;study_ids&#39;</span><span class="p">])</span>
-           <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
-           <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span> 
-        <span class="k">else</span><span class="p">:</span>
-           <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;studies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-           <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
-           <span class="n">studies_info</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">study_id_list_json</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span>
+<span class="sd">    context=None</span>
+<span class="sd">    post=False	 	</span>
+<span class="sd">    start_time = time.time()</span>
+<span class="sd">    ottidlist_json = get_ott_ids(taxa, context)</span>
+<span class="sd">    studies_info = {}</span>
+<span class="sd">    if ottidlist_json[&#39;status_code&#39;] == 500:    </span>
+<span class="sd">        final_result = ottidlist_json   </span>
+<span class="sd">    else:</span>
+<span class="sd">        study_id_list_json = get_study_ids(ottidlist_json[&#39;ott_ids&#39;])</span>
+<span class="sd">        if study_id_list_json[&#39;status_code&#39;] == 200:</span>
+<span class="sd">           studies_info[&#39;studies&#39;] = get_studies(study_id_list_json[&#39;study_ids&#39;])</span>
+<span class="sd">           studies_info[&#39;message&#39;] = &quot;Success&quot;</span>
+<span class="sd">           studies_info[&#39;status_code&#39;] = 200 </span>
+<span class="sd">        else:</span>
+<span class="sd">           studies_info[&#39;studies&#39;] = []</span>
+<span class="sd">           studies_info[&#39;message&#39;] = study_id_list_json[&#39;message&#39;]</span>
+<span class="sd">           studies_info[&#39;status_code&#39;] = study_id_list_json[&#39;status_code&#39;]</span>
 
-        <span class="n">final_result</span> <span class="o">=</span> <span class="n">studies_info</span>
-    
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>
-    <span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:4.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">))</span>
+<span class="sd">        final_result = studies_info</span>
+<span class="sd">    </span>
+<span class="sd">    end_time = time.time()</span>
+<span class="sd">    execution_time = end_time-start_time</span>
+<span class="sd">    final_result[&#39;execution_time&#39;] = float(&#39;{:4.2f}&#39;.format(execution_time))</span>
 
-    <span class="k">if</span> <span class="n">post</span><span class="p">:</span>
-       <span class="k">return</span> <span class="n">final_result</span>
-    <span class="k">else</span><span class="p">:</span>
-       <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span></div>
+<span class="sd">    if post:</span>
+<span class="sd">       return final_result</span>
+<span class="sd">    else:</span>
+<span class="sd">       return json.dumps(final_result)</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <span class="c1">#-------------------------------------------------</span>
 <div class="viewcode-block" id="get_chronogram_tree"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.study_tree.get_chronogram_tree">[docs]</a><span class="k">def</span> <span class="nf">get_chronogram_tree</span><span class="p">(</span><span class="n">tree</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

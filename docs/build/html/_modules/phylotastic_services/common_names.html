@@ -1,0 +1,448 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>phylotastic_services.common_names &#8212; Phylotastic-services 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for phylotastic_services.common_names</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">**common_names** Module is for getting scientific names of species from their corresponding common names </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">datetime</span> 
+<span class="kn">import</span> <span class="nn">urllib</span>
+<span class="kn">import</span> <span class="nn">ConfigParser</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">abspath</span>
+
+
+<span class="c1">#----------------------------------------------</span>
+<span class="n">NCBI_base_url</span> <span class="o">=</span> <span class="s2">&quot;http://eutils.ncbi.nlm.nih.gov/entrez/eutils/&quot;</span>
+<span class="n">TROPICOS_base_url</span> <span class="o">=</span> <span class="s2">&quot;http://services.tropicos.org/Name/&quot;</span>
+<span class="n">ITIS_base_url</span> <span class="o">=</span> <span class="s2">&quot;https://www.itis.gov/ITISWebService/jsonservice/ITISService/&quot;</span>
+<span class="n">ITIS_source_info_base</span> <span class="o">=</span> <span class="s2">&quot;https://www.itis.gov/ITISWebService/jsonservice/ITISService/getFullRecordFromTSN?tsn=&quot;</span>
+<span class="c1">#-----------------------------------------------------</span>
+<span class="c1">#====================================================</span>
+<div class="viewcode-block" id="search_name_NCBI"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_NCBI">[docs]</a><span class="k">def</span> <span class="nf">search_name_NCBI</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
+	<span class="n">api_url</span> <span class="o">=</span> <span class="s2">&quot;https://www.ncbi.nlm.nih.gov/taxonomy/?&quot;</span>
+
+	<span class="n">taxonomy_response</span> <span class="o">=</span> <span class="p">{}</span>    
+	<span class="n">taxonomy_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+ 	<span class="n">taxonomy_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
+	
+	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;term&#39;</span><span class="p">:</span> <span class="n">commonName</span><span class="p">}</span>
+	<span class="n">encoded_payload</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+	<span class="n">response_html</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">encoded_payload</span><span class="p">)</span> 
+	
+	<span class="n">match_name_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;searched_name&#39;</span><span class="p">:</span> <span class="n">commonName</span><span class="p">}</span>
+	<span class="n">match_name_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="k">if</span> <span class="n">response_html</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+		<span class="c1">#print response_html.text	 	</span>
+		<span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">response_html</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span>
+		<span class="n">match_name_list</span> <span class="o">=</span> <span class="n">extract_sc_names_info</span><span class="p">(</span><span class="n">soup</span><span class="p">,</span> <span class="ow">not</span> <span class="n">best_match</span><span class="p">)</span> <span class="c1">#best match true = don&#39;t want multiple results	</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">taxonomy_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
+		<span class="n">taxonomy_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Error: Could not parse retrieve data&quot;</span>
+
+	<span class="n">match_name_info</span><span class="p">[</span><span class="s1">&#39;matched_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_list</span>
+	<span class="n">taxonomy_response</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_info</span> 
+
+	<span class="k">return</span> <span class="n">taxonomy_response</span></div>
+
+<span class="c1">#----------------------------------------------</span>
+<span class="c1">#get multiple results</span>
+<div class="viewcode-block" id="extract_sc_names_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_sc_names_info">[docs]</a><span class="k">def</span> <span class="nf">extract_sc_names_info</span><span class="p">(</span><span class="n">SoupObj</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="n">divRprtTags</span> <span class="o">=</span> <span class="n">SoupObj</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;rprt&quot;</span><span class="p">})</span>
+	<span class="n">sc_names_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">divRprtTags</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">sc_names_list</span>	<span class="c1">#no info found	</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="n">divtag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">divRprtTags</span><span class="p">):</span>
+			<span class="n">sc_name_info</span> <span class="o">=</span> <span class="p">{}</span>
+			<span class="n">aTags</span> <span class="o">=</span> <span class="n">divtag</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+			<span class="c1">#extract scientific name</span>
+			<span class="n">sc_name</span> <span class="o">=</span> <span class="n">aTags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+			<span class="n">sc_name_link</span> <span class="o">=</span> <span class="n">aTags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]</span>
+			<span class="n">ncbi_id</span> <span class="o">=</span> <span class="n">sc_name_link</span><span class="p">[</span><span class="n">sc_name_link</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>		
+			<span class="n">sc_info_link</span> <span class="o">=</span> <span class="s2">&quot;https://www.ncbi.nlm.nih.gov&quot;</span> <span class="o">+</span> <span class="n">sc_name_link</span>
+			<span class="c1">#print sc_info_link</span>
+		
+			<span class="n">divSuppTag</span> <span class="o">=</span> <span class="n">divtag</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;supp&quot;</span><span class="p">})</span>
+
+			<span class="n">extra_info</span> <span class="o">=</span> <span class="n">extract_more_info</span><span class="p">(</span><span class="n">divSuppTag</span><span class="p">)</span>
+			<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;scientific_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc_name</span>
+			<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span>
+			<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;common_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extra_info</span><span class="p">[</span><span class="s1">&#39;commonName&#39;</span><span class="p">]</span>
+			<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncbi_id</span> 
+			<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;source_info_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc_info_link</span>
+			<span class="n">sc_names_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc_name_info</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">multiple</span><span class="p">:</span>
+				<span class="k">break</span> 
+	
+	<span class="k">return</span>	<span class="n">sc_names_list</span></div>
+
+<span class="c1">#----------------------------------------------</span>
+<div class="viewcode-block" id="extract_more_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_more_info">[docs]</a><span class="k">def</span> <span class="nf">extract_more_info</span><span class="p">(</span><span class="n">divSuppTag</span><span class="p">):</span>
+	<span class="c1">#divSuppTag = SoupObj.find_all(&quot;div&quot;, {&quot;class&quot;: &quot;supp&quot;})</span>
+	
+	<span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>	
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">divSuppTag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">info</span> <span class="o">=</span> <span class="kc">None</span>	<span class="c1">#no info found	</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">info_list</span> <span class="o">=</span> <span class="n">divSuppTag</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+		<span class="c1">#print info_list</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">info_list</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+				<span class="n">gen_comm_name_raw</span> <span class="o">=</span> <span class="n">info_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+				<span class="n">gen_comm_name</span> <span class="o">=</span>  <span class="n">gen_comm_name_raw</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">gen_comm_name_raw</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1">#Genbank common name</span>
+				<span class="n">rank</span> <span class="o">=</span> <span class="n">info_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+				<span class="c1">#blast_name = info_list[2]</span>
+			<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">info_list</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="n">gen_comm_name</span> <span class="o">=</span> <span class="kc">None</span>
+				<span class="n">rank</span> <span class="o">=</span> <span class="n">info_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+			<span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;commonName&#39;</span><span class="p">:</span> <span class="n">gen_comm_name</span><span class="p">,</span> <span class="s1">&#39;rank&#39;</span><span class="p">:</span> <span class="n">rank</span><span class="p">}</span>
+			<span class="c1">#info = {&#39;common_name&#39;: gen_comm_name, &#39;rank&#39;: rank, &#39;inherited_blast_name&#39;: blast_name}</span>
+		<span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+			<span class="n">info</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="n">info</span> <span class="o">=</span> <span class="kc">None</span>
+	
+	<span class="k">return</span> <span class="n">info</span> 	</div>
+
+<span class="c1">#===================================================</span>
+<div class="viewcode-block" id="search_name_ITIS"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_ITIS">[docs]</a><span class="k">def</span> <span class="nf">search_name_ITIS</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
+	<span class="n">api_url</span> <span class="o">=</span> <span class="n">ITIS_base_url</span> <span class="o">+</span> <span class="s2">&quot;searchByCommonName?&quot;</span>
+
+	<span class="n">itis_response</span> <span class="o">=</span> <span class="p">{}</span>    
+	<span class="n">itis_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+ 	<span class="n">itis_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
+	
+	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;srchKey&#39;</span><span class="p">:</span> <span class="n">commonName</span><span class="p">}</span>
+	<span class="n">encoded_payload</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">encoded_payload</span><span class="p">)</span> 
+	
+	<span class="n">match_name_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;searched_name&#39;</span><span class="p">:</span> <span class="n">commonName</span><span class="p">}</span>
+	<span class="n">match_name_list</span> <span class="o">=</span> <span class="p">[]</span>
+	
+	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+		<span class="c1">#print response.text</span>
+		<span class="n">cm_name_key_list</span> <span class="o">=</span> <span class="n">extract_name_info</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+		<span class="c1">#empty list means: No common name matched</span>
+		<span class="n">sc_name_info</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cm_name_key_list</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">best_match</span><span class="p">:</span>  <span class="c1">#best match result</span>
+				<span class="n">best_matched_key</span><span class="p">,</span> <span class="n">cm_name</span> <span class="o">=</span> <span class="n">find_best_match_key</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">cm_name_key_list</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">best_matched_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;scientific_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">search_key</span><span class="p">(</span><span class="n">cm_name_key_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;common_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm_name_key_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm_name_key_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;source_info_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ITIS_source_info_base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm_name_key_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;scientific_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">search_key</span><span class="p">(</span><span class="n">best_matched_key</span><span class="p">)</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;common_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm_name</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_matched_key</span>
+					<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;source_info_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ITIS_source_info_base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_matched_key</span><span class="p">)</span>
+
+				<span class="n">match_name_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc_name_info</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span> <span class="c1">#multiple results</span>
+				<span class="n">match_name_list</span> <span class="o">=</span> <span class="n">extract_sc_names</span><span class="p">(</span><span class="n">cm_name_key_list</span><span class="p">)</span> 		
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">itis_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
+		<span class="n">itis_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ITIS response Error: Could not retrieve data&quot;</span>
+
+	<span class="n">match_name_info</span><span class="p">[</span><span class="s1">&#39;matched_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_list</span>
+	<span class="n">itis_response</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_info</span> 
+
+	<span class="k">return</span> <span class="n">itis_response</span></div>
+
+<span class="c1">#---------------------------------------------------</span>
+<div class="viewcode-block" id="extract_sc_names"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_sc_names">[docs]</a><span class="k">def</span> <span class="nf">extract_sc_names</span><span class="p">(</span><span class="n">cm_name_list</span><span class="p">):</span>
+	<span class="n">matched_results</span> <span class="o">=</span> <span class="p">[]</span>
+	
+	<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="p">(</span><span class="n">cm_name</span><span class="p">,</span> <span class="n">cm_key</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cm_name_list</span><span class="p">):</span>
+		<span class="n">sc_name_info</span> <span class="o">=</span> <span class="p">{}</span>	
+		<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;scientific_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">search_key</span><span class="p">(</span><span class="n">cm_key</span><span class="p">)</span>
+		<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;common_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm_name</span>
+		<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cm_key</span>
+		<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;source_info_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ITIS_source_info_base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm_key</span><span class="p">)</span>
+		<span class="n">matched_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc_name_info</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">matched_results</span></div>
+
+<span class="c1">#----------------------------------------------------</span>
+<div class="viewcode-block" id="extract_name_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_name_info">[docs]</a><span class="k">def</span> <span class="nf">extract_name_info</span><span class="p">(</span><span class="n">ITIS_json_resp</span><span class="p">):</span>
+	<span class="n">found_common_names</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">json_content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ITIS_json_resp</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_content</span><span class="p">[</span><span class="s1">&#39;commonNames&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">json_content</span><span class="p">[</span><span class="s1">&#39;commonNames&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">found_common_names</span>
+
+	<span class="k">for</span> <span class="n">cm_nm_obj</span> <span class="ow">in</span> <span class="n">json_content</span><span class="p">[</span><span class="s1">&#39;commonNames&#39;</span><span class="p">]:</span>			
+		<span class="n">cm_name</span> <span class="o">=</span> <span class="n">cm_nm_obj</span><span class="p">[</span><span class="s1">&#39;commonName&#39;</span><span class="p">]</span>
+		<span class="n">cm_lang</span> <span class="o">=</span> <span class="n">cm_nm_obj</span><span class="p">[</span><span class="s1">&#39;language&#39;</span><span class="p">]</span> 
+		<span class="n">cm_tsn</span> <span class="o">=</span> <span class="n">cm_nm_obj</span><span class="p">[</span><span class="s1">&#39;tsn&#39;</span><span class="p">]</span>
+		<span class="c1">#print (&quot;%s, %s&quot;)%(cm_name, cm_tsn)</span>
+		<span class="k">if</span> <span class="n">cm_lang</span> <span class="o">==</span> <span class="s2">&quot;English&quot;</span><span class="p">:</span> <span class="c1">#get only english common names</span>
+			<span class="n">found_common_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">cm_name</span><span class="p">,</span> <span class="n">cm_tsn</span><span class="p">)</span> <span class="p">)</span>
+	 
+	<span class="k">return</span> <span class="n">found_common_names</span></div>
+
+<span class="c1">#-----------------------------------------------------</span>
+<div class="viewcode-block" id="find_best_match_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.find_best_match_key">[docs]</a><span class="k">def</span> <span class="nf">find_best_match_key</span><span class="p">(</span><span class="n">input_name</span><span class="p">,</span> <span class="n">cm_name_key_list</span><span class="p">):</span>
+	<span class="n">best_match_key</span> <span class="o">=</span> <span class="n">second_best_match_key</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="n">best_match_cm_name</span> <span class="o">=</span> <span class="n">second_best_match_cm_name</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="p">(</span><span class="n">cm_name</span><span class="p">,</span> <span class="n">cm_tsn</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cm_name_key_list</span><span class="p">):</span>
+		<span class="n">cleaned_input_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">input_name</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+		<span class="n">cm_name_lower</span> <span class="o">=</span> <span class="n">cm_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+		<span class="c1">#print (&quot;%s, %s, %s&quot;)%(input_name, cm_name_lower, cm_tsn)</span>
+		<span class="k">if</span> <span class="n">best_match_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cleaned_input_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">cm_name_lower</span><span class="p">:</span>
+			<span class="n">best_match_key</span> <span class="o">=</span> <span class="n">cm_tsn</span>
+			<span class="n">best_match_cm_name</span> <span class="o">=</span> <span class="n">cm_name</span>
+		<span class="k">elif</span> <span class="n">second_best_match_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cleaned_input_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">cm_name_lower</span><span class="p">:</span>
+			<span class="n">second_best_match_key</span> <span class="o">=</span> <span class="n">cm_tsn</span>
+			<span class="n">second_best_match_cm_name</span> <span class="o">=</span> <span class="n">cm_name</span>	
+
+	<span class="c1">#print (&quot;%s, %s, %s, %s&quot;)%(best_match_key, best_match_cm_name, second_best_match_key, second_best_match_cm_name)</span>
+	<span class="k">if</span> <span class="n">best_match_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">best_match_key</span><span class="p">,</span> <span class="n">best_match_cm_name</span> 
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">second_best_match_key</span><span class="p">,</span> <span class="n">second_best_match_cm_name</span></div>
+
+<span class="c1">#--------------------------------------------------------</span>
+<div class="viewcode-block" id="search_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_key">[docs]</a><span class="k">def</span> <span class="nf">search_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+	<span class="n">api_url</span> <span class="o">=</span> <span class="n">ITIS_base_url</span><span class="o">+</span><span class="s2">&quot;searchForAnyMatch?&quot;</span>
+
+	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;srchKey&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">}</span>
+	<span class="n">encoded_payload</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">encoded_payload</span><span class="p">)</span> 
+	
+	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+		<span class="n">json_resp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+		<span class="n">name_info</span> <span class="o">=</span> <span class="n">json_resp</span><span class="p">[</span><span class="s1">&#39;anyMatchList&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;sciName&#39;</span><span class="p">]</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">name_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+	<span class="k">return</span> <span class="n">name_info</span></div>
+
+<span class="c1">#==================================================</span>
+<div class="viewcode-block" id="get_api_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.get_api_key">[docs]</a><span class="k">def</span> <span class="nf">get_api_key</span><span class="p">():</span>
+	<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+	<span class="n">current_dir</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+	<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">current_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="o">+</span> <span class="s2">&quot;service.cfg&quot;</span><span class="p">)</span>
+	
+	<span class="n">tropicos_api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TROPICOS&#39;</span><span class="p">,</span> <span class="s1">&#39;api_key&#39;</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">tropicos_api_key</span></div>
+
+<span class="c1">#----------------------------------</span>
+<div class="viewcode-block" id="search_name_TROPICOS"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_TROPICOS">[docs]</a><span class="k">def</span> <span class="nf">search_name_TROPICOS</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
+	<span class="n">api_url</span> <span class="o">=</span> <span class="n">TROPICOS_base_url</span> <span class="o">+</span> <span class="s2">&quot;Search?&quot;</span>
+	<span class="n">Tropicos_API_Key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">()</span>
+	<span class="n">match_type</span> <span class="o">=</span> <span class="s2">&quot;exact&quot;</span> <span class="k">if</span> <span class="n">best_match</span> <span class="k">else</span> <span class="s2">&quot;wildcard&quot;</span> 	
+
+	<span class="n">response</span> <span class="o">=</span> <span class="p">{}</span>    
+	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+ 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
+	
+	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s1">&#39;commonname&#39;</span><span class="p">:</span> <span class="n">commonName</span><span class="p">,</span>
+		<span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="n">match_type</span><span class="p">,</span>
+		<span class="s1">&#39;apikey&#39;</span><span class="p">:</span> <span class="n">Tropicos_API_Key</span><span class="p">,</span>
+		<span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s2">&quot;json&quot;</span>	
+	<span class="p">}</span>
+
+	<span class="n">api_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span> 
+	
+	<span class="n">match_name_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;searched_name&#39;</span><span class="p">:</span> <span class="n">commonName</span><span class="p">}</span>
+	<span class="n">match_name_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="k">if</span> <span class="n">api_response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+		<span class="c1">#print api_response.text	 	</span>
+		<span class="n">match_name_list</span> <span class="o">=</span> <span class="n">extract_sc_names_info_TRPC</span><span class="p">(</span><span class="n">api_response</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="ow">not</span> <span class="n">best_match</span><span class="p">)</span> <span class="c1">#best match true = don&#39;t want multiple results	</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">500</span>
+		<span class="n">response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Error: Retrieving data from Tropicos API&quot;</span>
+
+	<span class="n">match_name_info</span><span class="p">[</span><span class="s1">&#39;matched_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_list</span>
+	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_info</span> 
+
+	<span class="k">return</span> <span class="n">response</span></div>
+
+<span class="c1">#----------------------------------------------</span>
+<span class="c1">#get multiple results</span>
+<div class="viewcode-block" id="extract_sc_names_info_TRPC"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_sc_names_info_TRPC">[docs]</a><span class="k">def</span> <span class="nf">extract_sc_names_info_TRPC</span><span class="p">(</span><span class="n">respText</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+	<span class="n">sc_names_list</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">json_resp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">respText</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="s1">&#39;Error&#39;</span> <span class="ow">in</span> <span class="n">json_resp</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="c1">#[{u&#39;Error&#39;: u&#39;No names were found&#39;}]</span>
+		<span class="k">return</span> <span class="n">sc_names_list</span>
+
+	<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">json_resp</span><span class="p">:</span>
+		<span class="n">sc_name_info</span> <span class="o">=</span> <span class="n">search_name_key</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="s1">&#39;NameId&#39;</span><span class="p">])</span>
+		<span class="k">if</span> <span class="n">sc_name_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">sc_names_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc_name_info</span><span class="p">)</span>			
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">multiple</span><span class="p">:</span>
+			<span class="k">break</span> 
+			
+	<span class="k">return</span> <span class="n">sc_names_list</span></div>
+
+<span class="c1">#-------------------------------------------</span>
+<div class="viewcode-block" id="search_name_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_key">[docs]</a><span class="k">def</span> <span class="nf">search_name_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+	<span class="n">api_url</span> <span class="o">=</span> <span class="n">TROPICOS_base_url</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;apikey&#39;</span><span class="p">:</span> <span class="n">get_api_key</span><span class="p">(),</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s2">&quot;json&quot;</span><span class="p">}</span>
+	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span> 
+	
+	<span class="n">name_info</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+		<span class="n">json_resp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+		<span class="n">name_info</span><span class="p">[</span><span class="s1">&#39;scientific_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_resp</span><span class="p">[</span><span class="s1">&#39;ScientificName&#39;</span><span class="p">]</span>
+		<span class="n">name_info</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_resp</span><span class="p">[</span><span class="s1">&#39;Rank&#39;</span><span class="p">]</span>
+		<span class="c1">#name_info[&#39;common_name&#39;] = extra_info[&#39;commonName&#39;]</span>
+		<span class="n">name_info</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_resp</span><span class="p">[</span><span class="s1">&#39;NameId&#39;</span><span class="p">]</span> 
+		<span class="n">name_info</span><span class="p">[</span><span class="s1">&#39;source_info_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_resp</span><span class="p">[</span><span class="s1">&#39;Source&#39;</span><span class="p">]</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">name_info</span> <span class="o">=</span> <span class="kc">None</span>
+
+	<span class="k">return</span> <span class="n">name_info</span></div>
+
+<span class="c1">#---------------------------------------------------</span>
+<div class="viewcode-block" id="get_scientific_names"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.get_scientific_names">[docs]</a><span class="k">def</span> <span class="nf">get_scientific_names</span><span class="p">(</span><span class="n">inputNameList</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;NCBI&quot;</span><span class="p">,</span> <span class="n">best_match</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+ 	<span class="sd">&quot;&quot;&quot;Get scientific names of a list of species from their common names (vernacular names)</span>
+<span class="sd">    </span>
+<span class="sd">	For example:</span>
+<span class="sd">	</span>
+<span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
+<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_scientific_names([&quot;domestic cattle&quot;,&quot;blue whale&quot;], &quot;ITIS&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; print result</span>
+<span class="sd">	{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;result&quot;: [{&quot;matched_names&quot;: [{&quot;scientific_name&quot;: &quot;Bos taurus&quot;, &quot;common_name&quot;: &quot;domestic cattle (feral)&quot;, &quot;identifier&quot;: &quot;183838&quot;, &quot;source_info_url&quot;: &quot;https://www.itis.gov/ITISWebService/jsonservice/ITISService/getFullRecordFromTSN?tsn=183838&quot;}], &quot;searched_name&quot;: &quot;domestic cattle&quot;}, {&quot;matched_names&quot;: [{&quot;scientific_name&quot;: &quot;Balaenoptera musculus&quot;, &quot;common_name&quot;: &quot;Blue Whale&quot;, &quot;identifier&quot;: &quot;180528&quot;, &quot;source_info_url&quot;: &quot;https://www.itis.gov/ITISWebService/jsonservice/ITISService/getFullRecordFromTSN?tsn=180528&quot;}], &quot;searched_name&quot;: &quot;blue whale&quot;}], &quot;metadata&quot;: {&quot;execution_time&quot;: &quot;3.99&quot;, &quot;creation_time&quot;: &quot;2018-06-09T17:44:38.256939&quot;, &quot;source_urls&quot;: [&quot;https://www.itis.gov/ws_description.html&quot;]}}</span>
+
+<span class="sd">    :param inputNameList: A list of common names for which to find scientific names. </span>
+<span class="sd">    :type inputNameList: list of str.</span>
+<span class="sd">    :param source: The source tool to use for finding scientific names. Valid values include: ``NCBI`` (default), ``ITIS``, ``TROPICOS``.  </span>
+<span class="sd">    :type source: str.     </span>
+<span class="sd">    :param best_match: A boolean value to specify whether to return the best match result or multiple results. `True` (default), If `False` multiple matches (if available) for each common name in the input list will be returned. </span>
+<span class="sd">    :type best_match: boolean. </span>
+<span class="sd">    :returns: A json formatted string -- with a list of matched names. </span>
+
+<span class="sd">    &quot;&quot;&quot;</span>	
+ 	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+ 	
+	<span class="n">final_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Success&quot;</span> <span class="p">}</span>
+	<span class="k">if</span> <span class="n">source</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;NCBI&quot;</span><span class="p">,</span> <span class="s2">&quot;ITIS&quot;</span><span class="p">,</span> <span class="s2">&quot;TROPICOS&quot;</span><span class="p">]:</span>
+		<span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Error: &#39;source&#39; parameter must have a valid value&quot;</span><span class="p">}</span>
+
+	<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">inputName</span> <span class="ow">in</span> <span class="n">inputNameList</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;NCBI&quot;</span><span class="p">:</span>
+			<span class="n">match_result</span> <span class="o">=</span> <span class="n">search_name_NCBI</span><span class="p">(</span><span class="n">inputName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">)</span>
+			<span class="n">source_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://www.ncbi.nlm.nih.gov/taxonomy&quot;</span><span class="p">]</span>
+		<span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;ITIS&quot;</span><span class="p">:</span>
+			<span class="n">match_result</span> <span class="o">=</span> <span class="n">search_name_ITIS</span><span class="p">(</span><span class="n">inputName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">)</span>
+			<span class="n">source_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://www.itis.gov/ws_description.html&quot;</span><span class="p">]</span>
+		<span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;TROPICOS&quot;</span><span class="p">:</span>
+			<span class="n">match_result</span> <span class="o">=</span> <span class="n">search_name_TROPICOS</span><span class="p">(</span><span class="n">inputName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">)</span>
+			<span class="n">source_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://services.tropicos.org/&quot;</span><span class="p">]</span> 
+
+		<span class="k">if</span> <span class="n">match_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+			<span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match_result</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">])</span>
+
+	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results</span>
+
+	<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+ 	<span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>    
+    
+	<span class="c1">#service result creation time</span>
+ 	<span class="n">creation_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;creation_time&#39;</span><span class="p">:</span> <span class="n">creation_time</span><span class="p">,</span> <span class="s1">&#39;execution_time&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">),</span> <span class="s1">&#39;source_urls&#39;</span><span class="p">:</span> <span class="n">source_urls</span><span class="p">}</span>   	 
+ 	
+ 	<span class="k">return</span> <span class="n">final_result</span></div>
+<span class="c1">#--------------------------------------------------</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Abu Saleh Md Tayeen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

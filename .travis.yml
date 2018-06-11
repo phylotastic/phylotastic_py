@@ -3,11 +3,6 @@ python:
   - "2.7"
 cache: pip
 install:
-  - pip install -r requirements.txt
-  - pip install requests
-  - pip install newick
-  - pip install dendropy
-  - pip install ete3
   - pip install nose
 notifications:
   email:

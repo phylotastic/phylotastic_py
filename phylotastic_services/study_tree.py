@@ -2,6 +2,7 @@
 **study_tree** Module is for getting phylogenetic tree metadata(supporting studies) or to compare trees or to retrieve tree chronogram 
 """
 import json
+import datetime
 import dendropy
 from dendropy.calculate import treecompare
 import time
@@ -20,7 +21,7 @@ def compare_trees(tree1, tree2):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.compare_trees(tree1="(((((((EU368025_Uncult_marine_euk_FS14JA72_30Mar05_5m:0.00329,EU368020_Uncult_marine_euk_FS04GA95_01Aug05_5m:-0.00002):0.00002,EU368013_Uncult_marine_euk_FS01D014_01Aug05_65m:-0.00002):0.00010,(EU368034_Uncult_marine_euk_OC413NSS_Q007_15m:-0.00000,(EU368007_Uncult_marine_euk_FS01B026_30Mar05_5m:-0.00001,EU368004_Uncult_marine_euk_FS01AA94_01Aug05_5m:0.00328):0.00000):0.00317):0.00725,(EU368005_Uncult_marine_euk_FS01B033_30Mar05_5m:-0.00002,(EF172850_Uncult_euk_SSRPB47:-0.00003,EU368022_Uncult_marine_euk_FS04H169_01Aug05_89m:0.00166):0.00002):0.00597):0.00202,((DQ060523_Uncult_marine_euk_NOR46.29:0.01559,(HQ868826_Uncult_euk_SHAX1073:0.00155,EU368038_Uncult_marine_euk_EN351CTD040_4mN11:0.00172):0.00429):0.00017,(EU368023_Uncult_marine_euk_FS04H153_01Aug05_89m:0.00504,(DQ222879_Uncult_photo_euk_RA000907.18:0.00166,HM858468_Uncult_marine_euk_MO.011.5m.00036:-0.00003):0.00152):0.00566):0.00662):0.00941,(HQ868882_Uncult_euk_SHAX1135:0.00170,HQ868810_Uncult_euk_SHAX1056:-0.00007):0.02449):0.00648,(EU368021_Uncult_marine_euk_FS04GA46_01Aug05_5m:0.02285,(HQ869075_Uncult_euk_SHAX587:0.00000,HQ869035_Uncult_euk_SHAX540:0.00000):0.04720):0.01029,HQ156863_Uncult_marine_ciliate_170609_08:0.17059);", tree2="((HQ869075_Uncult_euk_SHAX587:0.00000,HQ869035_Uncult_euk_SHAX540:0.00000):0.04484,(EU368021_Uncult_marine_euk_FS04GA46_01Aug05_5m:0.02285,(((((EU368005_Uncult_marine_euk_FS01B033_30Mar05_5m:-0.00002,(EF172850_Uncult_euk_SSRPB47:-0.00003,EU368022_Uncult_marine_euk_FS04H169_01Aug05_89m:0.00166):0.00002):0.00597,(((EU368025_Uncult_marine_euk_FS14JA72_30Mar05_5m:0.00329,EU368020_Uncult_marine_euk_FS04GA95_01Aug05_5m:-0.00002):0.00002,EU368013_Uncult_marine_euk_FS01D014_01Aug05_65m:-0.00002):0.00010,(EU368034_Uncult_marine_euk_OC413NSS_Q007_15m:-0.00000,(EU368007_Uncult_marine_euk_FS01B026_30Mar05_5m:-0.00001,EU368004_Uncult_marine_euk_FS01AA94_01Aug05_5m:0.00328):0.00000):0.00317):0.00725):0.00202,((DQ060523_Uncult_marine_euk_NOR46.29:0.01559,(HQ868826_Uncult_euk_SHAX1073:0.00155,EU368038_Uncult_marine_euk_EN351CTD040_4mN11:0.00172):0.00429):0.00017,(EU368023_Uncult_marine_euk_FS04H153_01Aug05_89m:0.00504,(DQ222879_Uncult_photo_euk_RA000907.18:0.00166,HM858468_Uncult_marine_euk_MO.011.5m.00036:-0.00003):0.00152):0.00566):0.00662):0.00941,(HQ868882_Uncult_euk_SHAX1135:0.00170,HQ868810_Uncult_euk_SHAX1056:-0.00007):0.02449):0.00648,HQ156863_Uncult_marine_ciliate_170609_08:0.17059):0.01029):0.00236);")
 	>>> print result
-	{"status_code": 200, "message": "Success", "species": [{"species_info_link": "http://eol.org/328672?action=overview&controller=taxa", "searched_name": "Panthera leo", "eol_id": 328672, "matched_name": "Panthera leo (Linnaeus, 1758)"}, {"species_info_link": "http://eol.org/328606?action=overview&controller=taxa", "searched_name": "Panthera onca", "eol_id": 328606, "matched_name": "Panthera onca (Linnaeus, 1758)"}]}
+	{"status_code": 200, "message": "Success", "meta_data": {"execution_time": 0.02, "creation_time": "2018-06-10T17:47:17.668300", "source_urls": ["http://dendropy.org/library/treecompare.html#module-dendropy.calculate.treecompare"]}, "are_same_tree": true}
 
     :param tree1: First phylogenetic tree in newick format. 
     :type tree1: string.
@@ -29,34 +30,61 @@ def compare_trees(tree1, tree2):
     :returns: A json formatted string -- with a boolean value in ``are_same_tree`` property indicating whether two trees are same or not. 
 
     """
+ 	response = {}
+ 	start_time = time.time()
  	try:	
  		tns = dendropy.TaxonNamespace() 	
  	
- 		tree1_obj = dendropy.Tree.get(data=tree1, schema="newick",taxon_namespace=tns)
- 		tree2_obj = dendropy.Tree.get(data=tree2, schema="newick",taxon_namespace=tns)
+ 		tree_obj1 = dendropy.Tree.get(data=tree1, schema="newick",taxon_namespace=tns)
+ 		tree_obj2 = dendropy.Tree.get(data=tree2, schema="newick",taxon_namespace=tns)
 
- 		tree1_obj.encode_bipartitions()
- 		tree2_obj.encode_bipartitions()
+ 		tree_obj1.encode_bipartitions()
+ 		tree_obj2.encode_bipartitions()
 
  		#-----------------------------------------------------------
  		#This method returns the symmetric distance between two trees. 
  		#The symmetric distance between two trees is the sum of the number of  splits found in one of the trees but not the other. 
  		#It is common to see this statistic called the Robinson-Foulds distance
 
- 		areSame = True if treecompare.symmetric_difference(tree1_obj, tree2_obj) == 0 else False
+ 		areSame = True if treecompare.symmetric_difference(tree_obj1, tree_obj2) == 0 else False
  		status = 200
  		message = "Success"
+ 		response['are_same_tree'] = areSame
  
- 	except Error as e:
- 		message = str(e)
- 		status = 500 
+ 	except Exception, e:
+ 		if "Incomplete or improperly-terminated tree statement" in str(e): #invalid: "((A,B),C,D));"  valid: ((A,B),(C,D)); 
+ 			message = "NewickReaderIncompleteTreeStatementError: " + str(e)
+ 	 		status = 400
+ 		elif "Unbalanced parentheses at tree statement" in str(e):  #invalid: "((A,B),(C,D);"  valid: ((A,B),(C,D)); 
+ 			message = "NewickReaderMalformedStatementError: "+str(e) 
+ 	 		status = 400
+ 		elif "Multiple occurrences of the same taxa" in str(e): #invalid: "((A,B),(C,C));"  valid: ((A,B),(C,D));
+ 			message = "NewickReaderDuplicateTaxonError: "+str(e)
+ 	 		status = 400
+ 		elif "Unexpected end of stream" in str(e): # invalid: "((A,B),(C,D))"  valid: ((A,B),(C,D));
+ 			message = "UnexpectedEndOfStreamError: "+str(e)
+ 	 		status = 400
+ 		else:
+ 			message = "Error: Failed to compare trees. "+str(e)
+ 	 		status = 500
+ 	 	
+ 	response['status_code'] = status
+ 	response['message'] = message
 
- 	response = {'status': status, 'message': message, 'are_same_tree': areSame}
- 	
- 	return json.dumps(response)
+ 	end_time = time.time()
+ 	execution_time = end_time-start_time
+    #service result creation time
+ 	creation_time = datetime.datetime.now().isoformat()
+ 	meta_data = {'creation_time': creation_time, 'execution_time': float('{:4.2f}'.format(execution_time)), 'source_urls':["http://dendropy.org/library/treecompare.html#module-dendropy.calculate.treecompare"] }
+
+ 	response['meta_data'] = meta_data
+ 	print response
+ 	return response
+
 
 #-------------------------------------------------------
 #~~~~~~~~~~~~~~~~~~~~ (OpenTree-tree_of_life)~~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
 def get_study_ids(ottid_list):
     opentree_method_url = opentree_base_url + "tree_of_life/induced_subtree"
     
@@ -268,6 +296,7 @@ def get_studies_tree(taxa):
        return final_result
     else:
        return json.dumps(final_result)
+'''
 
 #-------------------------------------------------
 def get_chronogram_tree(tree=None):

@@ -3,3 +3,4 @@ newick
 dendropy
 ete3>=3.0.0b35
 itolapi
+beautifulsoup

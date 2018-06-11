@@ -13,7 +13,7 @@ import tempfile
 from itolapi import Itol
 from itolapi import ItolExport
 
-from ete3 import Tree, TreeStyle
+from ete3 import Tree
 from ete3.parser.newick import NewickError
 from resolve_names import resolve_names_OT
 

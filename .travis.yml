@@ -3,6 +3,7 @@ python:
   - "2.7"
 cache: pip
 install:
+  - pip install -r requirements.txt
   - pip install nose
 notifications:
   email:

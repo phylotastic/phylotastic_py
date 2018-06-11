@@ -2,3 +2,4 @@ requests
 newick
 dendropy
 ete3
+itolapi

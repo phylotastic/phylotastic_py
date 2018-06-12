@@ -7,7 +7,7 @@ import ast
 import urllib
 import datetime
 
-api_url = "http://gnrd.globalnames.org/name_finder.json?"
+api_url = "https://gnrd.globalnames.org/name_finder.json?"
 headers = {'content-type': 'application/json'}
 base_url = "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/fn/"
 

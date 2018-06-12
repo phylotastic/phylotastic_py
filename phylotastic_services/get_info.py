@@ -98,7 +98,8 @@ def get_eolurls_species(inputSpecies):
 
 #--------------------------------------------   
 def get_species_info(speciesId):
- 	page_url = "http://eol.org/api/pages/1.0.json"    
+ 	page_url = "http://eol.org/api/pages/1.0.json" 
+ 	EOL_API_Key = get_api_key()     
  	payload = {
  		'key': EOL_API_Key,
  		'batch' : False,

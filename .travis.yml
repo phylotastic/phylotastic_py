@@ -1,5 +1,6 @@
 before_install:
   - sudo apt-get install python-bs4
+  - sudo apt-get install python-lxml
 language: python
 python:
   - "2.7"
@@ -7,6 +8,7 @@ cache: pip
 install:
   - pip install -r requirements.txt
   - pip install beautifulsoup4
+  - pip install lxml
   - pip install nose
 notifications:
   email:

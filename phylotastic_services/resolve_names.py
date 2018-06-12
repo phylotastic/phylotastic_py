@@ -8,7 +8,7 @@ import urllib
 import datetime
 
 
-api_url = "http://resolver.globalnames.org/name_resolvers.json?"
+api_url = "https://resolver.globalnames.org/name_resolvers.json?"
 headers = {'content-type': 'application/json'}
 base_url = "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/tnrs/"
 
@@ -26,9 +26,11 @@ def resolve_sn_gnr(scNames, do_fuzzy_match, multi_match):
     }
     
     #encoded_payload = urllib.urlencode(payload)
-    #response = requests.get(api_url, params=encoded_payload, headers=headers) 
-    response = requests.post(api_url, data=payload)     
-
+    #response = requests.get(api_url, params=encoded_payload, headers=headers)
+    response = requests.post(api_url, data=payload)  
+    #jsonPayload = json.dumps(payload)
+    #response = requests.post(api_url, data=jsonPayload,headers=headers)     
+    print response.text
     resolvedNamesList = [] 
     data_json = json.loads(response.text)
 
@@ -273,47 +275,6 @@ def get_resolved_names(results, do_fuzzy_match, multi_match):
 #---------------------------------
 def create_sublists(lst, size=200):
 	return [lst[i:i+size] for i in xrange(0, len(lst), size)]
-
-#--------------------------------------------
-def resolve_names_OT(inputNamesList, do_fuzzy_match, multi_match): 
-    list_size = 250
-    final_result = []
-
-    start_time = time.time()
-    
-    status_code = 200
-    message = "Success"
-
-    if len(inputNamesList) > list_size:
-    	sublists = create_sublists(inputNamesList, list_size)
-    	for sublst in sublists:
-    		resolvedResult = resolve_sn_ot(sublst, do_fuzzy_match, multi_match)
-    		resolvedNameslst = resolvedResult['resolvedNames']
-    		if resolvedResult['status_code'] != 200:
-    			return {'status_code': resolvedResult['status_code'], 'message': resolvedResult['message']}
-    		final_result.extend(resolvedNameslst)  
-    else:
-    	resolvedResult = resolve_sn_ot(inputNamesList, do_fuzzy_match, multi_match)
-    	final_result = resolvedResult['resolvedNames']
-    	status_code = resolvedResult['status_code']
-    	message = resolvedResult['message']
-
-    result_len = len(final_result)
-
-    if result_len <= 0 and status_code == 200:
-        message = "Could not resolve any name" 
-
-    end_time = time.time()
-    
-    #service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-3"
-    execution_time = float("{:4.2f}".format(end_time-start_time))
-    #service result creation time
-    creation_time = datetime.datetime.now().isoformat()
-    meta_data = {'creation_time': creation_time, 'execution_time': execution_time, 'source_urls':["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tnrs"] }
-#"service_documentation": service_documentation}
-
-    #return {'resolvedNames': final_result, 'total_names': result_len, 'status_code': status_code, 'input_names': inputNamesList , 'message': message, 'meta_data': meta_data}
-    return {'resolvedNames': final_result, 'total_names': result_len, 'status_code': status_code, 'message': message, 'meta_data': meta_data}
 
 #--------------------------------------------
 def resolve_names_OT(inputNamesList, do_fuzzy_match=False, multi_match=False):

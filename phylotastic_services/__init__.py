@@ -15,8 +15,10 @@ from .get_species import get_genome_species
 from .get_info import get_images_species
 from .get_info import get_eolurls_species
 from .common_names import get_scientific_names
+from .get_traits import get_traits_ECOS
+from .get_traits import get_traits_EOL
 from .study_tree import compare_trees
-from .study_tree import get_studies_tree
+from .study_tree import get_chronogram_tree
 from .list_species import insert_list_info
 from .list_species import update_list_metadata
 from .list_species import update_list_data

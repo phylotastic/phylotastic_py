@@ -54,10 +54,10 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="c1">#----------------</span>
-<span class="kn">from</span> <span class="nn">itolapi</span> <span class="k">import</span> <span class="n">Itol</span>
-<span class="kn">from</span> <span class="nn">itolapi</span> <span class="k">import</span> <span class="n">ItolExport</span>
+<span class="c1">#from itolapi import Itol</span>
+<span class="c1">#from itolapi import ItolExport</span>
 
-<span class="kn">from</span> <span class="nn">ete3</span> <span class="k">import</span> <span class="n">Tree</span><span class="p">,</span> <span class="n">TreeStyle</span>
+<span class="kn">from</span> <span class="nn">ete3</span> <span class="k">import</span> <span class="n">Tree</span>
 <span class="kn">from</span> <span class="nn">ete3.parser.newick</span> <span class="k">import</span> <span class="n">NewickError</span>
 <span class="kn">from</span> <span class="nn">resolve_names</span> <span class="k">import</span> <span class="n">resolve_names_OT</span>
 
@@ -369,11 +369,11 @@
  		<span class="k">return</span> <span class="kc">None</span>
 
 <span class="c1">#---------------------------------------------</span>
-<div class="viewcode-block" id="process_taxa_list"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_tree.process_taxa_list">[docs]</a><span class="k">def</span> <span class="nf">process_taxa_list</span><span class="p">(</span><span class="n">taxaList</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">process_taxa_list</span><span class="p">(</span><span class="n">taxaList</span><span class="p">):</span>
  	<span class="n">taxa</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">taxaList</span><span class="p">)</span>
  	<span class="n">taxa</span> <span class="o">=</span> <span class="n">taxa</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
 
- 	<span class="k">return</span> <span class="n">taxa</span></div>
+ 	<span class="k">return</span> <span class="n">taxa</span>
 
 <span class="c1">#---------------------------------------------</span>
 <span class="k">def</span> <span class="nf">process_phylomatic_result</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
@@ -473,185 +473,189 @@
 	<span class="k">return</span> <span class="n">service_result</span></div>
 
 <span class="c1">#======================================================</span>
-<span class="c1">#get ncbi id available for a taxon</span>
-<span class="k">def</span> <span class="nf">find_taxon_id</span><span class="p">(</span><span class="n">taxonName</span><span class="p">):</span>
- 	<span class="n">api_url</span> <span class="o">=</span> <span class="s2">&quot;http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi&quot;</span>	  
- 	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
- 		<span class="s1">&#39;retmax&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
- 		<span class="s1">&#39;retmode&#39;</span><span class="p">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
- 		<span class="s1">&#39;db&#39;</span><span class="p">:</span> <span class="s1">&#39;taxonomy&#39;</span><span class="p">,</span>
- 		<span class="s1">&#39;term&#39;</span><span class="p">:</span> <span class="n">taxonName</span><span class="p">,</span>
- 		<span class="s1">&#39;tool&#39;</span><span class="p">:</span> <span class="s2">&quot;phylotastic-services&quot;</span><span class="p">,</span>
- 		<span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="s2">&quot;tayeen@nmsu.edu&quot;</span>      
-    <span class="p">}</span>
- 	<span class="n">encoded_payload</span> <span class="o">=</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
- 	<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">encoded_payload</span><span class="p">)</span><span class="c1">#, headers={&#39;content-type&#39;: &#39;application/json&#39;}) </span>
- 	
- 	<span class="n">ncbi_id_list</span> <span class="o">=</span> <span class="p">[]</span>	
- 	<span class="n">ncbi_response</span> <span class="o">=</span> <span class="p">{}</span>    
- 	<span class="n">ncbi_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
- 	<span class="n">ncbi_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
- 	
- 	<span class="n">numResults</span> <span class="o">=</span> <span class="mi">0</span>
- 
- 	<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>    
- 		<span class="n">data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
- 		<span class="n">numResults</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;esearchresult&#39;</span><span class="p">][</span><span class="s1">&#39;count&#39;</span><span class="p">])</span> 
- 		<span class="k">if</span> <span class="n">numResults</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
- 			<span class="n">ncbi_id_list</span> <span class="o">=</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;esearchresult&#39;</span><span class="p">][</span><span class="s1">&#39;idlist&#39;</span><span class="p">]</span>  
- 	<span class="k">else</span><span class="p">:</span> 
- 		<span class="n">ncbi_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span>
- 		<span class="n">ncbi_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Error: Response error from NCBI esearch.fcgi API&quot;</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">#get ncbi id available for a taxon</span>
+<span class="sd">def find_taxon_id(taxonName):</span>
+<span class="sd"> 	api_url = &quot;http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi&quot;	  </span>
+<span class="sd"> 	payload = {</span>
+<span class="sd"> 		&#39;retmax&#39;: 1000,</span>
+<span class="sd"> 		&#39;retmode&#39;: &#39;json&#39;,</span>
+<span class="sd"> 		&#39;db&#39;: &#39;taxonomy&#39;,</span>
+<span class="sd"> 		&#39;term&#39;: taxonName,</span>
+<span class="sd"> 		&#39;tool&#39;: &quot;phylotastic-services&quot;,</span>
+<span class="sd"> 		&#39;email&#39;: &quot;tayeen@nmsu.edu&quot;      </span>
+<span class="sd">    }</span>
+<span class="sd"> 	encoded_payload = urllib.urlencode(payload)</span>
+<span class="sd"> 	response = requests.get(api_url, params=encoded_payload)#, headers={&#39;content-type&#39;: &#39;application/json&#39;}) </span>
+<span class="sd"> 	</span>
+<span class="sd"> 	ncbi_id_list = []	</span>
+<span class="sd"> 	ncbi_response = {}    </span>
+<span class="sd"> 	ncbi_response[&#39;status_code&#39;] = 200</span>
+<span class="sd"> 	ncbi_response[&#39;message&#39;] = &quot;Success&quot;</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	numResults = 0</span>
+<span class="sd"> </span>
+<span class="sd"> 	if response.status_code == requests.codes.ok:    </span>
+<span class="sd"> 		data_json = json.loads(response.text)</span>
+<span class="sd"> 		numResults = int(data_json[&#39;esearchresult&#39;][&#39;count&#39;]) </span>
+<span class="sd"> 		if numResults &gt; 0:</span>
+<span class="sd"> 			ncbi_id_list = data_json[&#39;esearchresult&#39;][&#39;idlist&#39;]  </span>
+<span class="sd"> 	else: </span>
+<span class="sd"> 		ncbi_response[&#39;status_code&#39;] = response.status_code</span>
+<span class="sd"> 		ncbi_response[&#39;message&#39;] = &quot;Error: Response error from NCBI esearch.fcgi API&quot;</span>
 
-	<span class="n">ncbi_response</span><span class="p">[</span><span class="s1">&#39;taxon_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncbi_id_list</span>
- 	
- 	<span class="k">if</span> <span class="n">numResults</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ncbi_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-  	 	<span class="n">ncbi_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No match found for term &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">taxonName</span><span class="p">)</span>
- 	
- 	<span class="k">return</span> <span class="n">ncbi_response</span> 	
-
+<span class="sd">	ncbi_response[&#39;taxon_ids&#39;] = ncbi_id_list</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	if numResults == 0 and ncbi_response[&#39;status_code&#39;] == 200:</span>
+<span class="sd">  	 	ncbi_response[&#39;message&#39;] = &quot;No match found for term &#39;%s&#39;&quot; %(taxonName)</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	return ncbi_response 	</span>
+<span class="sd">&#39;&#39;&#39;</span>
 <span class="c1">#---------------------------------------------------------</span>
-<span class="c1">#get a tree using phyloT</span>
-<span class="k">def</span> <span class="nf">get_tree_itol</span><span class="p">(</span><span class="n">tempDir</span><span class="p">,</span> <span class="n">ncbiIdDict</span><span class="p">):</span>
- 	
- 	<span class="n">phyloT_temp_path</span> <span class="o">=</span> <span class="n">tempDir</span>	
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">#get a tree using phyloT</span>
+<span class="sd">def get_tree_itol(tempDir, ncbiIdDict):</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	phyloT_temp_path = tempDir	</span>
 
- 	<span class="c1">#-----Create the Itol class------</span>
- 	<span class="n">itol_uploader</span> <span class="o">=</span> <span class="n">Itol</span><span class="o">.</span><span class="n">Itol</span><span class="p">()</span>
- 	<span class="c1">#-----Add parameters-------</span>
- 	<span class="c1"># parameter name: &quot;ncbiFile&quot;</span>
-	<span class="c1"># parameter description: instead of uploading a tree, iTOL can automatically generate one from a file containing a list of NCBI tax IDs. NCBI taxonomy will be pruned based on your IDs and a Newick tree generated. Input file location</span>
+<span class="sd"> 	#-----Create the Itol class------</span>
+<span class="sd"> 	itol_uploader = Itol.Itol()</span>
+<span class="sd"> 	#-----Add parameters-------</span>
+<span class="sd"> 	# parameter name: &quot;ncbiFile&quot;</span>
+<span class="sd">	# parameter description: instead of uploading a tree, iTOL can automatically generate one from a file containing a list of NCBI tax IDs. NCBI taxonomy will be pruned based on your IDs and a Newick tree generated. Input file location</span>
 
- 	<span class="n">itol_uploader</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s1">&#39;ncbiFile&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">phyloT_temp_path</span><span class="p">,</span> <span class="s2">&quot;ids.txt&quot;</span><span class="p">))</span>
+<span class="sd"> 	itol_uploader.add_variable(&#39;ncbiFile&#39;, os.path.join(phyloT_temp_path, &quot;ids.txt&quot;))</span>
 
- 	<span class="c1"># parameter name: &quot;ncbiFormat&quot;</span>
- 	<span class="c1"># parameter description: format of the tree generated using NCBI tax IDs:</span>
- 	<span class="c1">#			&#39;namesFull&#39;: generated tree will contain scientific names and internal nodes will not be collapsed</span>
- 	<span class="c1">#			&#39;namesCollapsed&#39;: scientific names will be used, and internal nodes with only one child removed</span>
- 	<span class="c1"># 			&#39;idsFull&#39;: tree will contain NCBI taxonomy IDs and internal nodes will not be collapsed</span>
- 	<span class="c1"># 			&#39;idsCollapsed&#39;: NCBI taxonomy IDs will be used, and internal nodes with only one child remove</span>
+<span class="sd"> 	# parameter name: &quot;ncbiFormat&quot;</span>
+<span class="sd"> 	# parameter description: format of the tree generated using NCBI tax IDs:</span>
+<span class="sd"> 	#			&#39;namesFull&#39;: generated tree will contain scientific names and internal nodes will not be collapsed</span>
+<span class="sd"> 	#			&#39;namesCollapsed&#39;: scientific names will be used, and internal nodes with only one child removed</span>
+<span class="sd"> 	# 			&#39;idsFull&#39;: tree will contain NCBI taxonomy IDs and internal nodes will not be collapsed</span>
+<span class="sd"> 	# 			&#39;idsCollapsed&#39;: NCBI taxonomy IDs will be used, and internal nodes with only one child remove</span>
 
- 	<span class="n">itol_uploader</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s1">&#39;ncbiFormat&#39;</span><span class="p">,</span> <span class="s1">&#39;idsFull&#39;</span><span class="p">)</span>
+<span class="sd"> 	itol_uploader.add_variable(&#39;ncbiFormat&#39;, &#39;idsFull&#39;)</span>
 
- 	<span class="c1"># parameter name: &quot;treeName&quot;</span>
- 	<span class="c1"># parameter description: name of the tree generated using NCBI tax IDs:</span>
+<span class="sd"> 	# parameter name: &quot;treeName&quot;</span>
+<span class="sd"> 	# parameter description: name of the tree generated using NCBI tax IDs:</span>
 
- 	<span class="n">itol_uploader</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s1">&#39;treeName&#39;</span><span class="p">,</span> <span class="s1">&#39;phylotree&#39;</span><span class="p">)</span>
+<span class="sd"> 	itol_uploader.add_variable(&#39;treeName&#39;, &#39;phylotree&#39;)</span>
 
- 	<span class="n">upload_status</span> <span class="o">=</span> <span class="n">itol_uploader</span><span class="o">.</span><span class="n">upload</span><span class="p">()</span>
+<span class="sd"> 	upload_status = itol_uploader.upload()</span>
 
- 	<span class="k">if</span> <span class="ow">not</span> <span class="n">upload_status</span><span class="p">:</span>
- 		<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;There was an error:&quot;</span> <span class="o">+</span> <span class="n">itol_uploader</span><span class="o">.</span><span class="n">comm</span><span class="o">.</span><span class="n">upload_output</span><span class="p">,</span> <span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">}</span>
- 	<span class="k">else</span><span class="p">:</span>    
- 		<span class="c1"># Read the iTOL API return statement</span>
- 		<span class="n">upload_output</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">itol_uploader</span><span class="o">.</span><span class="n">comm</span><span class="o">.</span><span class="n">upload_output</span><span class="p">)</span>
- 		<span class="k">if</span> <span class="n">upload_output</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;SUCCESS&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># SUCCESS: 174561252042902514884188540</span>
- 			<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;No tree found in phyloT&quot;</span> <span class="p">,</span> <span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">204</span><span class="p">}</span>
+<span class="sd"> 	if not upload_status:</span>
+<span class="sd"> 		return {&quot;message&quot;: &quot;There was an error:&quot; + itol_uploader.comm.upload_output, &quot;status_code&quot;: 500}</span>
+<span class="sd"> 	else:    </span>
+<span class="sd"> 		# Read the iTOL API return statement</span>
+<span class="sd"> 		upload_output = str(itol_uploader.comm.upload_output)</span>
+<span class="sd"> 		if upload_output.find(&quot;SUCCESS&quot;) == -1: # SUCCESS: 174561252042902514884188540</span>
+<span class="sd"> 			return {&quot;message&quot;: &quot;No tree found in phyloT&quot; , &quot;status_code&quot;: 204}</span>
 
- 	<span class="c1"># Read the tree ID</span>
- 	<span class="n">tree_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">itol_uploader</span><span class="o">.</span><span class="n">comm</span><span class="o">.</span><span class="n">tree_id</span><span class="p">)</span> <span class="c1">#Tree ID: 174561252042902514884188540</span>
+<span class="sd"> 	# Read the tree ID</span>
+<span class="sd"> 	tree_id = str(itol_uploader.comm.tree_id) #Tree ID: 174561252042902514884188540</span>
 
- 	<span class="c1"># Export the tree above to newick</span>
- 	<span class="c1">#print(&#39;Exporting tree to newick&#39;)</span>
- 	<span class="n">itol_exporter</span> <span class="o">=</span> <span class="n">itol_uploader</span><span class="o">.</span><span class="n">get_itol_export</span><span class="p">()</span>
+<span class="sd"> 	# Export the tree above to newick</span>
+<span class="sd"> 	#print(&#39;Exporting tree to newick&#39;)</span>
+<span class="sd"> 	itol_exporter = itol_uploader.get_itol_export()</span>
 
- 	<span class="n">export_location</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">phyloT_temp_path</span><span class="p">,</span> <span class="s2">&quot;output_phylot.txt&quot;</span><span class="p">)</span>
- 	<span class="c1">#print export_location</span>
- 	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">export_location</span><span class="p">):</span>
- 		<span class="c1">#print &quot;Removing output file&quot;</span>
- 		<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">export_location</span><span class="p">)</span>	
+<span class="sd"> 	export_location = os.path.join(phyloT_temp_path, &quot;output_phylot.txt&quot;)</span>
+<span class="sd"> 	#print export_location</span>
+<span class="sd"> 	if os.path.exists(export_location):</span>
+<span class="sd"> 		#print &quot;Removing output file&quot;</span>
+<span class="sd"> 		os.remove(export_location)	</span>
 
- 	<span class="n">itol_exporter</span><span class="o">.</span><span class="n">set_export_param_value</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="s1">&#39;newick&#39;</span><span class="p">)</span>
- 	<span class="n">itol_exporter</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">export_location</span><span class="p">)</span>
- 	<span class="c1">#print(&#39;exported tree to &#39;, export_location)</span>
- 	
- 	<span class="n">output_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">export_location</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
- 	<span class="n">newick_str</span> <span class="o">=</span> <span class="n">output_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
- 	<span class="c1">#process phyloT result</span>
- 	<span class="k">for</span> <span class="n">ncbi_id</span><span class="p">,</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">ncbiIdDict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>	
- 		<span class="n">newick_str</span> <span class="o">=</span> <span class="n">newick_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">ncbi_id</span><span class="p">,</span> <span class="n">taxon</span><span class="p">)</span>
- 	
- 	<span class="n">newick_str</span> <span class="o">=</span> <span class="n">newick_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
- 	<span class="n">newick_str</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\:\.0-9]&#39;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">newick_str</span><span class="p">)</span>
- 	<span class="n">final_newick_str</span> <span class="o">=</span> <span class="n">newick_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
- 
- 	<span class="n">output_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-	<span class="c1">#remove temporary files and directories</span>
- 	<span class="c1">#print &quot;Removing temp ...&quot;</span>
- 	<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">phyloT_temp_path</span><span class="p">,</span> <span class="s2">&quot;ids.txt&quot;</span><span class="p">))</span>
- 	<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">phyloT_temp_path</span><span class="p">,</span> <span class="s2">&quot;output_phylot.txt&quot;</span><span class="p">))</span>
+<span class="sd"> 	itol_exporter.set_export_param_value(&#39;format&#39;, &#39;newick&#39;)</span>
+<span class="sd"> 	itol_exporter.export(export_location)</span>
+<span class="sd"> 	#print(&#39;exported tree to &#39;, export_location)</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	output_file = open(export_location, &quot;r&quot;)</span>
+<span class="sd"> 	newick_str = output_file.read()</span>
+<span class="sd"> 	#process phyloT result</span>
+<span class="sd"> 	for ncbi_id, taxon in ncbiIdDict.items():	</span>
+<span class="sd"> 		newick_str = newick_str.replace(ncbi_id, taxon)</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	newick_str = newick_str.replace(&quot;\n&quot;, &quot;&quot;)</span>
+<span class="sd"> 	newick_str = re.sub(r&#39;[\:\.0-9]&#39;, &quot;&quot;, newick_str)</span>
+<span class="sd"> 	final_newick_str = newick_str.replace(&quot; &quot;, &quot;_&quot;)</span>
+<span class="sd"> </span>
+<span class="sd"> 	output_file.close()</span>
+<span class="sd">	#remove temporary files and directories</span>
+<span class="sd"> 	#print &quot;Removing temp ...&quot;</span>
+<span class="sd"> 	os.remove(os.path.join(phyloT_temp_path, &quot;ids.txt&quot;))</span>
+<span class="sd"> 	os.remove(os.path.join(phyloT_temp_path, &quot;output_phylot.txt&quot;))</span>
 
- 	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">phyloT_temp_path</span><span class="p">):</span>
- 		<span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">(</span><span class="n">phyloT_temp_path</span><span class="p">)</span>
-	
- 	<span class="k">return</span> <span class="p">{</span><span class="s2">&quot;newick&quot;</span><span class="p">:</span> <span class="n">final_newick_str</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Success&quot;</span><span class="p">,</span> <span class="s2">&quot;status_code&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+<span class="sd"> 	if os.path.exists(phyloT_temp_path):</span>
+<span class="sd"> 		os.rmdir(phyloT_temp_path)</span>
+<span class="sd">	</span>
+<span class="sd"> 	return {&quot;newick&quot;: final_newick_str, &quot;message&quot;: &quot;Success&quot;, &quot;status_code&quot;: 200}</span>
 
-<span class="c1">#-----------------------------------------------</span>
-<span class="c1">#create a dictionary of ncbi ids from a taxa list</span>
-<span class="k">def</span> <span class="nf">get_ncbi_ids</span><span class="p">(</span><span class="n">taxaList</span><span class="p">):</span>
- 	<span class="n">ncbi_id_dic</span> <span class="o">=</span> <span class="p">{}</span>
- 	<span class="k">for</span> <span class="n">taxon_name</span> <span class="ow">in</span> <span class="n">taxaList</span><span class="p">:</span>
- 		<span class="n">taxon_result</span> <span class="o">=</span> <span class="n">find_taxon_id</span><span class="p">(</span><span class="n">taxon_name</span><span class="p">)</span>
- 		<span class="k">if</span> <span class="n">taxon_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
- 			<span class="n">ncbi_id_taxon</span> <span class="o">=</span> <span class="n">taxon_result</span><span class="p">[</span><span class="s1">&#39;taxon_ids&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
- 			<span class="n">ncbi_id_dic</span><span class="p">[</span><span class="n">ncbi_id_taxon</span><span class="p">]</span> <span class="o">=</span> <span class="n">taxon_name</span>
+<span class="sd">#-----------------------------------------------</span>
+<span class="sd">#create a dictionary of ncbi ids from a taxa list</span>
+<span class="sd">def get_ncbi_ids(taxaList):</span>
+<span class="sd"> 	ncbi_id_dic = {}</span>
+<span class="sd"> 	for taxon_name in taxaList:</span>
+<span class="sd"> 		taxon_result = find_taxon_id(taxon_name)</span>
+<span class="sd"> 		if taxon_result[&#39;status_code&#39;] == 200:</span>
+<span class="sd"> 			ncbi_id_taxon = taxon_result[&#39;taxon_ids&#39;][0]</span>
+<span class="sd"> 			ncbi_id_dic[ncbi_id_taxon] = taxon_name</span>
 
- 	<span class="k">return</span> <span class="n">ncbi_id_dic</span>		
+<span class="sd"> 	return ncbi_id_dic		</span>
 
+<span class="sd">#---------------------------------------------</span>
+<span class="sd">#create a input file with ncbi ids</span>
+<span class="sd">def create_file_input_ids(ncbiIdDict):</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	#make a temporary directory</span>
+<span class="sd"> 	tmpdir = tempfile.mkdtemp()	</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	file_path = os.path.join(tmpdir, &quot;ids.txt&quot;)</span>
+<span class="sd"> 	print file_path</span>
+<span class="sd"> 	try:</span>
+<span class="sd"> 		with open(file_path, &quot;w&quot;) as tmp:</span>
+<span class="sd"> 			counter = 0</span>
+<span class="sd"> 			dictLen = len(ncbiIdDict)</span>
+<span class="sd"> 			for ncbi_id, taxon in ncbiIdDict.items():</span>
+<span class="sd"> 				tmp.write(ncbi_id)</span>
+<span class="sd"> 				counter += 1</span>
+<span class="sd"> 				if counter != dictLen:</span>
+<span class="sd"> 					tmp.write(&quot;\n&quot;)</span>
+<span class="sd"> 	except IOError as e:</span>
+<span class="sd"> 		print &#39;IOError&#39;</span>
+<span class="sd"> 			</span>
+<span class="sd"> 	return tmpdir</span>
+<span class="sd">&#39;&#39;&#39;</span>
 <span class="c1">#---------------------------------------------</span>
-<span class="c1">#create a input file with ncbi ids</span>
-<span class="k">def</span> <span class="nf">create_file_input_ids</span><span class="p">(</span><span class="n">ncbiIdDict</span><span class="p">):</span>
- 	
- 	<span class="c1">#make a temporary directory</span>
- 	<span class="n">tmpdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>	
- 	
- 	<span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;ids.txt&quot;</span><span class="p">)</span>
- 	<span class="nb">print</span> <span class="n">file_path</span>
- 	<span class="k">try</span><span class="p">:</span>
- 		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
- 			<span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
- 			<span class="n">dictLen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncbiIdDict</span><span class="p">)</span>
- 			<span class="k">for</span> <span class="n">ncbi_id</span><span class="p">,</span> <span class="n">taxon</span> <span class="ow">in</span> <span class="n">ncbiIdDict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
- 				<span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ncbi_id</span><span class="p">)</span>
- 				<span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
- 				<span class="k">if</span> <span class="n">counter</span> <span class="o">!=</span> <span class="n">dictLen</span><span class="p">:</span>
- 					<span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
- 	<span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
- 		<span class="nb">print</span> <span class="s1">&#39;IOError&#39;</span>
- 			
- 	<span class="k">return</span> <span class="n">tmpdir</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">def get_tree_phyloT(taxaList, post=False):</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	start_time = time.time()</span>
+<span class="sd"> 	 	</span>
+<span class="sd"> 	NCBI_dict = get_ncbi_ids(taxaList)</span>
+<span class="sd"> 	temp_file_dir = create_file_input_ids(NCBI_dict)</span>
+<span class="sd">	get_tree_response = get_tree_itol(temp_file_dir, NCBI_dict)</span>
+<span class="sd"> 	</span>
+<span class="sd"> 	final_result = {}</span>
+<span class="sd"> 	if get_tree_response[&#39;status_code&#39;] == 200:</span>
+<span class="sd"> 		final_result[&#39;tree_newick&#39;] = get_tree_response[&#39;newick&#39;]</span>
+<span class="sd">	else:</span>
+<span class="sd"> 		final_result[&#39;tree_newick&#39;] = &quot;&quot;</span>
+<span class="sd"> 			</span>
+<span class="sd"> 	final_result[&#39;status_code&#39;] = get_tree_response[&#39;status_code&#39;]</span>
+<span class="sd"> 	final_result[&#39;message&#39;] = get_tree_response[&#39;message&#39;]	</span>
+<span class="sd"> 		</span>
+<span class="sd"> 	end_time = time.time()</span>
+<span class="sd"> 	execution_time = end_time-start_time</span>
+<span class="sd">    #service result creation time</span>
+<span class="sd"> 	creation_time = datetime.datetime.now().isoformat()</span>
+<span class="sd"> 	final_result[&#39;creation_time&#39;] = creation_time</span>
+<span class="sd"> 	final_result[&#39;execution_time&#39;] = &quot;{:4.2f}&quot;.format(execution_time)</span>
+<span class="sd"> 	final_result[&#39;query_taxa&#39;] = taxaList		</span>
 
-<span class="c1">#---------------------------------------------</span>
-<span class="k">def</span> <span class="nf">get_tree_phyloT</span><span class="p">(</span><span class="n">taxaList</span><span class="p">,</span> <span class="n">post</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
- 	
- 	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
- 	 	
- 	<span class="n">NCBI_dict</span> <span class="o">=</span> <span class="n">get_ncbi_ids</span><span class="p">(</span><span class="n">taxaList</span><span class="p">)</span>
- 	<span class="n">temp_file_dir</span> <span class="o">=</span> <span class="n">create_file_input_ids</span><span class="p">(</span><span class="n">NCBI_dict</span><span class="p">)</span>
-	<span class="n">get_tree_response</span> <span class="o">=</span> <span class="n">get_tree_itol</span><span class="p">(</span><span class="n">temp_file_dir</span><span class="p">,</span> <span class="n">NCBI_dict</span><span class="p">)</span>
- 	
- 	<span class="n">final_result</span> <span class="o">=</span> <span class="p">{}</span>
- 	<span class="k">if</span> <span class="n">get_tree_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
- 		<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;tree_newick&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_tree_response</span><span class="p">[</span><span class="s1">&#39;newick&#39;</span><span class="p">]</span>
-	<span class="k">else</span><span class="p">:</span>
- 		<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;tree_newick&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
- 			
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_tree_response</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_tree_response</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>	
- 		
- 	<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
- 	<span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>
-    <span class="c1">#service result creation time</span>
- 	<span class="n">creation_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;creation_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creation_time</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;query_taxa&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">taxaList</span>		
-
- 	<span class="k">return</span> <span class="n">final_result</span>
- 	
+<span class="sd"> 	return final_result</span>
+<span class="sd">&#39;&#39;&#39;</span> 	
 <span class="c1">#-------------------------------------------</span>
-<div class="viewcode-block" id="get_tree_NCBI"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.get_tree.get_tree_NCBI">[docs]</a><span class="k">def</span> <span class="nf">get_tree_NCBI</span><span class="p">(</span><span class="n">taxa</span><span class="p">):</span>
- 	<span class="sd">&quot;&quot;&quot;Gets a phylogenetic tree from a list of taxa based on NCBI taxonomy using PhyloT</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">def get_tree_NCBI(taxa):</span>
+<span class="sd"> 	&quot;&quot;&quot;Gets a phylogenetic tree from a list of taxa based on NCBI taxonomy using PhyloT</span>
 <span class="sd">    </span>
 <span class="sd">	Example:</span>
 <span class="sd">	</span>
@@ -665,10 +669,10 @@
 <span class="sd">    :returns: A json formatted string -- with a phylogenetic tree in newick format as the value of the ``tree_newick`` property. </span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-	<span class="n">service_result</span> <span class="o">=</span> <span class="n">get_tree_phyloT</span><span class="p">(</span><span class="n">taxa</span><span class="p">)</span>
+<span class="sd">	service_result = get_tree_phyloT(taxa)</span>
 
-	<span class="k">return</span> <span class="n">service_result</span></div>
-
+<span class="sd">	return service_result</span>
+<span class="sd">&#39;&#39;&#39;</span>
 
 <span class="c1">#---------------------------------------------</span>
 <span class="c1">#if __name__ == &#39;__main__&#39;:</span>

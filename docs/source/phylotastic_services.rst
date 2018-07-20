@@ -4,6 +4,14 @@ phylotastic\_services package
 Submodules
 ----------
 
+phylotastic\_services\.common\_names module
+-------------------------------------------
+
+.. automodule:: phylotastic_services.common_names
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 phylotastic\_services\.extract\_names module
 --------------------------------------------
 
@@ -24,6 +32,14 @@ phylotastic\_services\.get\_species module
 ------------------------------------------
 
 .. automodule:: phylotastic_services.get_species
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+phylotastic\_services\.get\_traits module
+-----------------------------------------
+
+.. automodule:: phylotastic_services.get_traits
     :members:
     :undoc-members:
     :show-inheritance:

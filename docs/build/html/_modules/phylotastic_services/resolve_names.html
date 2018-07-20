@@ -52,7 +52,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 
 
-<span class="n">api_url</span> <span class="o">=</span> <span class="s2">&quot;http://resolver.globalnames.org/name_resolvers.json?&quot;</span>
+<span class="n">api_url</span> <span class="o">=</span> <span class="s2">&quot;https://resolver.globalnames.org/name_resolvers.json?&quot;</span>
 <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
 <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/tnrs/&quot;</span>
 
@@ -70,9 +70,11 @@
     <span class="p">}</span>
     
     <span class="c1">#encoded_payload = urllib.urlencode(payload)</span>
-    <span class="c1">#response = requests.get(api_url, params=encoded_payload, headers=headers) </span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>     
-
+    <span class="c1">#response = requests.get(api_url, params=encoded_payload, headers=headers)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">api_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>  
+    <span class="c1">#jsonPayload = json.dumps(payload)</span>
+    <span class="c1">#response = requests.post(api_url, data=jsonPayload,headers=headers)     </span>
+    <span class="nb">print</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
     <span class="n">resolvedNamesList</span> <span class="o">=</span> <span class="p">[]</span> 
     <span class="n">data_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 
@@ -141,7 +143,7 @@
                 
 <span class="c1">#-----------------------------------------------------</span>
 <span class="c1">#Process Scientific Names List for iPlant</span>
-<div class="viewcode-block" id="make_iplant_api_friendly_list"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.resolve_names.make_iplant_api_friendly_list">[docs]</a><span class="k">def</span> <span class="nf">make_iplant_api_friendly_list</span><span class="p">(</span><span class="n">scNamesList</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">make_iplant_api_friendly_list</span><span class="p">(</span><span class="n">scNamesList</span><span class="p">):</span>
     <span class="c1">#process list for iPlant api    </span>
     <span class="n">ListSize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">scNamesList</span><span class="p">)</span>    
     
@@ -155,12 +157,12 @@
         <span class="n">TobeResolvedNames</span> <span class="o">+=</span> <span class="n">str_element</span>
     
     <span class="c1">#print &quot;List size:&quot;+ str(ListSize)    </span>
-    <span class="k">return</span> <span class="n">TobeResolvedNames</span></div>
+    <span class="k">return</span> <span class="n">TobeResolvedNames</span>
 
 
 <span class="c1">#~~~~~~~~~~~~~~~~~~~~ (iplantcollaborative-TNRS)~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
 <span class="c1">#resolve scientific names using iplantcollaborative</span>
-<div class="viewcode-block" id="resolve_sn_iplant"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.resolve_names.resolve_sn_iplant">[docs]</a><span class="k">def</span> <span class="nf">resolve_sn_iplant</span><span class="p">(</span><span class="n">scNames</span><span class="p">,</span> <span class="n">do_fuzzy_match</span><span class="p">,</span> <span class="n">multi_match</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">resolve_sn_iplant</span><span class="p">(</span><span class="n">scNames</span><span class="p">,</span> <span class="n">do_fuzzy_match</span><span class="p">,</span> <span class="n">multi_match</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Source: http://tnrs.iplantcollaborative.org/api.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -237,7 +239,7 @@
         
         <span class="n">statuscode</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span>   
 
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;resolvedNames&#39;</span><span class="p">:</span> <span class="n">resolvedNamesList</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">statuscode</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;resolvedNames&#39;</span><span class="p">:</span> <span class="n">resolvedNamesList</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">statuscode</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
         
 <span class="c1">#----------------------------------------------    </span>
                 
@@ -317,47 +319,6 @@
 <span class="c1">#---------------------------------</span>
 <span class="k">def</span> <span class="nf">create_sublists</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
 	<span class="k">return</span> <span class="p">[</span><span class="n">lst</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">size</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span> <span class="n">size</span><span class="p">)]</span>
-
-<span class="c1">#--------------------------------------------</span>
-<span class="k">def</span> <span class="nf">resolve_names_OT</span><span class="p">(</span><span class="n">inputNamesList</span><span class="p">,</span> <span class="n">do_fuzzy_match</span><span class="p">,</span> <span class="n">multi_match</span><span class="p">):</span> 
-    <span class="n">list_size</span> <span class="o">=</span> <span class="mi">250</span>
-    <span class="n">final_result</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    
-    <span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Success&quot;</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputNamesList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">list_size</span><span class="p">:</span>
-    	<span class="n">sublists</span> <span class="o">=</span> <span class="n">create_sublists</span><span class="p">(</span><span class="n">inputNamesList</span><span class="p">,</span> <span class="n">list_size</span><span class="p">)</span>
-    	<span class="k">for</span> <span class="n">sublst</span> <span class="ow">in</span> <span class="n">sublists</span><span class="p">:</span>
-    		<span class="n">resolvedResult</span> <span class="o">=</span> <span class="n">resolve_sn_ot</span><span class="p">(</span><span class="n">sublst</span><span class="p">,</span> <span class="n">do_fuzzy_match</span><span class="p">,</span> <span class="n">multi_match</span><span class="p">)</span>
-    		<span class="n">resolvedNameslst</span> <span class="o">=</span> <span class="n">resolvedResult</span><span class="p">[</span><span class="s1">&#39;resolvedNames&#39;</span><span class="p">]</span>
-    		<span class="k">if</span> <span class="n">resolvedResult</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-    			<span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">resolvedResult</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">],</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">resolvedResult</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]}</span>
-    		<span class="n">final_result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">resolvedNameslst</span><span class="p">)</span>  
-    <span class="k">else</span><span class="p">:</span>
-    	<span class="n">resolvedResult</span> <span class="o">=</span> <span class="n">resolve_sn_ot</span><span class="p">(</span><span class="n">inputNamesList</span><span class="p">,</span> <span class="n">do_fuzzy_match</span><span class="p">,</span> <span class="n">multi_match</span><span class="p">)</span>
-    	<span class="n">final_result</span> <span class="o">=</span> <span class="n">resolvedResult</span><span class="p">[</span><span class="s1">&#39;resolvedNames&#39;</span><span class="p">]</span>
-    	<span class="n">status_code</span> <span class="o">=</span> <span class="n">resolvedResult</span><span class="p">[</span><span class="s1">&#39;status_code&#39;</span><span class="p">]</span>
-    	<span class="n">message</span> <span class="o">=</span> <span class="n">resolvedResult</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
-
-    <span class="n">result_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">result_len</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Could not resolve any name&quot;</span> 
-
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    
-    <span class="c1">#service_documentation = &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-3&quot;</span>
-    <span class="n">execution_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
-    <span class="c1">#service result creation time</span>
-    <span class="n">creation_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-    <span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;creation_time&#39;</span><span class="p">:</span> <span class="n">creation_time</span><span class="p">,</span> <span class="s1">&#39;execution_time&#39;</span><span class="p">:</span> <span class="n">execution_time</span><span class="p">,</span> <span class="s1">&#39;source_urls&#39;</span><span class="p">:[</span><span class="s2">&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tnrs&quot;</span><span class="p">]</span> <span class="p">}</span>
-<span class="c1">#&quot;service_documentation&quot;: service_documentation}</span>
-
-    <span class="c1">#return {&#39;resolvedNames&#39;: final_result, &#39;total_names&#39;: result_len, &#39;status_code&#39;: status_code, &#39;input_names&#39;: inputNamesList , &#39;message&#39;: message, &#39;meta_data&#39;: meta_data}</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;resolvedNames&#39;</span><span class="p">:</span> <span class="n">final_result</span><span class="p">,</span> <span class="s1">&#39;total_names&#39;</span><span class="p">:</span> <span class="n">result_len</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="n">status_code</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span> <span class="s1">&#39;meta_data&#39;</span><span class="p">:</span> <span class="n">meta_data</span><span class="p">}</span>
 
 <span class="c1">#--------------------------------------------</span>
 <div class="viewcode-block" id="resolve_names_OT"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.resolve_names.resolve_names_OT">[docs]</a><span class="k">def</span> <span class="nf">resolve_names_OT</span><span class="p">(</span><span class="n">inputNamesList</span><span class="p">,</span> <span class="n">do_fuzzy_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multi_match</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>

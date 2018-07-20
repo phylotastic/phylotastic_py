@@ -31,7 +31,22 @@ sys.path.insert(0, os.path.abspath('../..'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.coverage']
+    'sphinx.ext.coverage',
+    'sphinx.ext.viewcode',
+    'rst2pdf.pdfbuilder']
+
+pdf_documents = [('index', u'rst2pdf', u'Phylotastic_services_doc', u'Abu Saleh Md Tayeen'),]
+# index - master document
+# rst2pdf - name of the generated pdf
+# Sample rst2pdf doc - title of the pdf
+# Your Name - author name in the pdf
+
+# A comma-separated list of custom stylesheets. Example:
+pdf_stylesheets = ['sphinx','kerning','a4']
+
+# A list of folders to search for stylesheets. Example:
+pdf_style_path = ['.', '_styles']
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -156,21 +171,11 @@ texinfo_documents = [
 # ---- Skip member functions -------------------------------------------------
 def autodoc_skip_member(app, what, name, obj, skip, options):
     exclusions = ('__main__',  # special-members
-                  'get_sn_text', 'get_token_result', 'is_ascii', 'get_sn', 'get_sn_url',  # undoc-members
+                  'get_sn_text', 'get_token_result', 'is_ascii', 'get_sn', 'get_sn_url', 'get_tf_sn_url', 'get_tf_sn_text', 'get_tf_names',   # undoc-members
                   'create_sublists', 'get_resolved_names', 'resolve_sn_ot', 'make_api_friendly_list', 'resolve_sn_gnr',
-'get_inducedSubtree','subtree','get_tree_OT','get_supporting_studies','get_num_tips','get_tree_version', 'get_metadata', 'get_phylomatic_tree','get_taxa_context','get_contexts', 'process_phylomatic_result', 'get_tree_phyloMT','find_taxon_id', 'get_tree_itol', 'get_ncbi_ids', 'create_file_input_ids', 'get_tree_phyloT', 'match_taxon', 'get_children', 'get_species_from_highrank', 'get_species_from_genus', 'check_species_by_country', 'form_cs_ids', 'get_species_names', 'find_species_ids', 'find_genome_ids','match_species', 'get_species_info', 'get_imageObjects', 'create_image_obj', 'get_image_species_id', 'get_ott_ids', 'get_studies_from_ids', 'get_studies', 'get_study_info', 'get_study_ids','ComplexEncoder','reprJSON')
+'get_inducedSubtree','subtree','get_tree_OT','get_supporting_studies','get_num_tips','get_tree_version', 'get_metadata', 'get_phylomatic_tree','get_taxa_context','get_contexts', 'process_phylomatic_result', 'get_tree_phyloMT','find_taxon_id', 'get_tree_itol', 'get_ncbi_ids', 'create_file_input_ids', 'get_tree_phyloT', 'match_taxon', 'get_children', 'get_species_from_highrank', 'get_species_from_genus', 'check_species_by_country', 'form_cs_ids', 'get_species_names', 'find_species_ids', 'find_genome_ids','match_species', 'get_species_info', 'get_imageObjects', 'create_image_obj', 'get_image_species_id', 'get_ott_ids', 'get_studies_from_ids', 'get_studies', 'get_study_info', 'get_study_ids', 'extract_more_info', 'extract_name_info', 'extract_sc_names', 'extract_sc_names_info', 'extract_sc_names_info_TRPC', 'find_best_match_key', 'get_api_key', 'search_key', 'search_name_ITIS', 'search_name_NCBI', 'search_name_TROPICOS', 'search_name_key', 'get_traits', 'parse_xml', 'search_species', 'process_taxa_list', 'make_iplant_api_friendly_list', 'resolve_sn_iplant','get_scientific_names','ComplexEncoder','reprJSON')
     exclude = name in exclusions
     return skip or exclude
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
-#-----------------------------------------------------------
-from mock import Mock as MagicMock
-
-class Mock(MagicMock):  
-    @classmethod
-    def __getattr__(cls, name):
-            return MagicMock()
-
-MOCK_MODULES = ['ete3', 'dendropy', 'dendropy.calculate.treecompare', 'itolapi', 'itolapi.Itol', 'itolapi.ItolExport', 'ete3.Tree', 'ete3.TreeStyle', 'ete3.parser.newick.NewickError']  
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)  

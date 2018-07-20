@@ -49,97 +49,6 @@
 <div class="section" id="module-phylotastic_services.common_names">
 <span id="phylotastic-services-common-names-module"></span><h2>phylotastic_services.common_names module<a class="headerlink" href="#module-phylotastic_services.common_names" title="Permalink to this headline">¶</a></h2>
 <p><strong>common_names</strong> Module is for getting scientific names of species from their corresponding common names</p>
-<dl class="function">
-<dt id="phylotastic_services.common_names.extract_more_info">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">extract_more_info</code><span class="sig-paren">(</span><em>divSuppTag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#extract_more_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.extract_more_info" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.extract_name_info">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">extract_name_info</code><span class="sig-paren">(</span><em>ITIS_json_resp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#extract_name_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.extract_name_info" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.extract_sc_names">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">extract_sc_names</code><span class="sig-paren">(</span><em>cm_name_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#extract_sc_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.extract_sc_names" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.extract_sc_names_info">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">extract_sc_names_info</code><span class="sig-paren">(</span><em>SoupObj</em>, <em>multiple=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#extract_sc_names_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.extract_sc_names_info" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.extract_sc_names_info_TRPC">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">extract_sc_names_info_TRPC</code><span class="sig-paren">(</span><em>respText</em>, <em>multiple=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#extract_sc_names_info_TRPC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.extract_sc_names_info_TRPC" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.find_best_match_key">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">find_best_match_key</code><span class="sig-paren">(</span><em>input_name</em>, <em>cm_name_key_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#find_best_match_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.find_best_match_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.get_api_key">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">get_api_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#get_api_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.get_api_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.get_scientific_names">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">get_scientific_names</code><span class="sig-paren">(</span><em>inputNameList</em>, <em>source=’NCBI’</em>, <em>best_match=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#get_scientific_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.get_scientific_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get scientific names of a list of species from their common names (vernacular names)</p>
-<blockquote>
-<div><p>For example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">get_scientific_names</span><span class="p">([</span><span class="s2">&quot;domestic cattle&quot;</span><span class="p">,</span><span class="s2">&quot;blue whale&quot;</span><span class="p">],</span> <span class="s2">&quot;ITIS&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
-<span class="go">{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;result&quot;: [{&quot;matched_names&quot;: [{&quot;scientific_name&quot;: &quot;Bos taurus&quot;, &quot;common_name&quot;: &quot;domestic cattle (feral)&quot;, &quot;identifier&quot;: &quot;183838&quot;, &quot;source_info_url&quot;: &quot;https://www.itis.gov/ITISWebService/jsonservice/ITISService/getFullRecordFromTSN?tsn=183838&quot;}], &quot;searched_name&quot;: &quot;domestic cattle&quot;}, {&quot;matched_names&quot;: [{&quot;scientific_name&quot;: &quot;Balaenoptera musculus&quot;, &quot;common_name&quot;: &quot;Blue Whale&quot;, &quot;identifier&quot;: &quot;180528&quot;, &quot;source_info_url&quot;: &quot;https://www.itis.gov/ITISWebService/jsonservice/ITISService/getFullRecordFromTSN?tsn=180528&quot;}], &quot;searched_name&quot;: &quot;blue whale&quot;}], &quot;metadata&quot;: {&quot;execution_time&quot;: &quot;3.99&quot;, &quot;creation_time&quot;: &quot;2018-06-09T17:44:38.256939&quot;, &quot;source_urls&quot;: [&quot;https://www.itis.gov/ws_description.html&quot;]}}</span>
-</pre></div>
-</div>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>inputNameList</strong> (<em>list of str.</em>) – A list of common names for which to find scientific names.</li>
-<li><strong>source</strong> (<em>str.</em>) – The source tool to use for finding scientific names. Valid values include: <code class="docutils literal"><span class="pre">NCBI</span></code> (default), <code class="docutils literal"><span class="pre">ITIS</span></code>, <code class="docutils literal"><span class="pre">TROPICOS</span></code>.</li>
-<li><strong>best_match</strong> (<em>boolean.</em>) – A boolean value to specify whether to return the best match result or multiple results. <cite>True</cite> (default), If <cite>False</cite> multiple matches (if available) for each common name in the input list will be returned.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A json formatted string – with a list of matched names.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.search_key">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">search_key</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#search_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.search_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.search_name_ITIS">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">search_name_ITIS</code><span class="sig-paren">(</span><em>commonName</em>, <em>best_match</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#search_name_ITIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.search_name_ITIS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.search_name_NCBI">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">search_name_NCBI</code><span class="sig-paren">(</span><em>commonName</em>, <em>best_match</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#search_name_NCBI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.search_name_NCBI" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.search_name_TROPICOS">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">search_name_TROPICOS</code><span class="sig-paren">(</span><em>commonName</em>, <em>best_match</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#search_name_TROPICOS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.search_name_TROPICOS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.common_names.search_name_key">
-<code class="descclassname">phylotastic_services.common_names.</code><code class="descname">search_name_key</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/common_names.html#search_name_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.common_names.search_name_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-phylotastic_services.extract_names">
 <span id="phylotastic-services-extract-names-module"></span><h2>phylotastic_services.extract_names module<a class="headerlink" href="#module-phylotastic_services.extract_names" title="Permalink to this headline">¶</a></h2>
@@ -209,11 +118,6 @@
 <div class="section" id="module-phylotastic_services.get_info">
 <span id="phylotastic-services-get-info-module"></span><h2>phylotastic_services.get_info module<a class="headerlink" href="#module-phylotastic_services.get_info" title="Permalink to this headline">¶</a></h2>
 <p><strong>get_info</strong> Module is for getting data (image urls, eol info links) about species</p>
-<dl class="function">
-<dt id="phylotastic_services.get_info.get_api_key">
-<code class="descclassname">phylotastic_services.get_info.</code><code class="descname">get_api_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_info.html#get_api_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_info.get_api_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="function">
 <dt id="phylotastic_services.get_info.get_eolurls_species">
 <code class="descclassname">phylotastic_services.get_info.</code><code class="descname">get_eolurls_species</code><span class="sig-paren">(</span><em>inputSpecies</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_info.html#get_eolurls_species"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_info.get_eolurls_species" title="Permalink to this definition">¶</a></dt>
@@ -352,16 +256,6 @@
 <span id="phylotastic-services-get-traits-module"></span><h2>phylotastic_services.get_traits module<a class="headerlink" href="#module-phylotastic_services.get_traits" title="Permalink to this headline">¶</a></h2>
 <p><strong>get_traits</strong> Module is for getting traits (habitat and conservation status) about species</p>
 <dl class="function">
-<dt id="phylotastic_services.get_traits.get_api_key">
-<code class="descclassname">phylotastic_services.get_traits.</code><code class="descname">get_api_key</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_traits.html#get_api_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_traits.get_api_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.get_traits.get_traits">
-<code class="descclassname">phylotastic_services.get_traits.</code><code class="descname">get_traits</code><span class="sig-paren">(</span><em>species_eol_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_traits.html#get_traits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_traits.get_traits" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="phylotastic_services.get_traits.get_traits_ECOS">
 <code class="descclassname">phylotastic_services.get_traits.</code><code class="descname">get_traits_ECOS</code><span class="sig-paren">(</span><em>inputSpeciesList</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_traits.html#get_traits_ECOS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_traits.get_traits_ECOS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets conservation status of a list of species using ECOS services</p>
@@ -413,44 +307,9 @@
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="phylotastic_services.get_traits.parse_xml">
-<code class="descclassname">phylotastic_services.get_traits.</code><code class="descname">parse_xml</code><span class="sig-paren">(</span><em>xml_str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_traits.html#parse_xml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_traits.parse_xml" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.get_traits.search_species">
-<code class="descclassname">phylotastic_services.get_traits.</code><code class="descname">search_species</code><span class="sig-paren">(</span><em>species_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_traits.html#search_species"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_traits.search_species" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-phylotastic_services.get_tree">
 <span id="phylotastic-services-get-tree-module"></span><h2>phylotastic_services.get_tree module<a class="headerlink" href="#module-phylotastic_services.get_tree" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="phylotastic_services.get_tree.get_tree_NCBI">
-<code class="descclassname">phylotastic_services.get_tree.</code><code class="descname">get_tree_NCBI</code><span class="sig-paren">(</span><em>taxa</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_tree.html#get_tree_NCBI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_tree.get_tree_NCBI" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets a phylogenetic tree from a list of taxa based on NCBI taxonomy using PhyloT</p>
-<blockquote>
-<div><p>Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">get_tree_NCBI</span><span class="p">(</span><span class="n">taxa</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Panthera uncia&quot;</span><span class="p">,</span> <span class="s2">&quot;Panthera onca&quot;</span><span class="p">,</span> <span class="s2">&quot;Panthera leo&quot;</span><span class="p">,</span> <span class="s2">&quot;Panthera pardus&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
-<span class="go">{&quot;execution_time&quot;: &quot;7.86&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T15:55:16.470304&quot;, &quot;query_taxa&quot;: [&quot;Panthera uncia&quot;, &quot;Panthera onca&quot;, &quot;Panthera leo&quot;, &quot;Panthera pardus&quot;], &quot;tree_newick&quot;: &quot;(Panthera_pardus,Panthera_onca,Panthera_uncia,Panthera_leo);&quot;, &quot;message&quot;: &quot;Success&quot;, &quot;service_documentation&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-19&quot;}</span>
-</pre></div>
-</div>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>taxa</strong> (<em>A list of strings.</em>) – A list of taxa to be used to get a phylogenetic tree.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A json formatted string – with a phylogenetic tree in newick format as the value of the <code class="docutils literal"><span class="pre">tree_newick</span></code> property.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="function">
 <dt id="phylotastic_services.get_tree.get_tree_OpenTree">
 <code class="descclassname">phylotastic_services.get_tree.</code><code class="descname">get_tree_OpenTree</code><span class="sig-paren">(</span><em>taxa</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_tree.html#get_tree_OpenTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_tree.get_tree_OpenTree" title="Permalink to this definition">¶</a></dt>
@@ -500,11 +359,6 @@
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.get_tree.process_taxa_list">
-<code class="descclassname">phylotastic_services.get_tree.</code><code class="descname">process_taxa_list</code><span class="sig-paren">(</span><em>taxaList</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_tree.html#process_taxa_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_tree.process_taxa_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </div>
 <div class="section" id="module-phylotastic_services.list_species">
@@ -806,11 +660,6 @@ consists of data about a particular species.</p>
 <div class="section" id="module-phylotastic_services.resolve_names">
 <span id="phylotastic-services-resolve-names-module"></span><h2>phylotastic_services.resolve_names module<a class="headerlink" href="#module-phylotastic_services.resolve_names" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="phylotastic_services.resolve_names.make_iplant_api_friendly_list">
-<code class="descclassname">phylotastic_services.resolve_names.</code><code class="descname">make_iplant_api_friendly_list</code><span class="sig-paren">(</span><em>scNamesList</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/resolve_names.html#make_iplant_api_friendly_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.resolve_names.make_iplant_api_friendly_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="phylotastic_services.resolve_names.resolve_names_GNR">
 <code class="descclassname">phylotastic_services.resolve_names.</code><code class="descname">resolve_names_GNR</code><span class="sig-paren">(</span><em>inputNamesList</em>, <em>do_fuzzy_match=False</em>, <em>multi_match=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/resolve_names.html#resolve_names_GNR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.resolve_names.resolve_names_GNR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resolves scientific names using Global Names Resolver</p>
@@ -901,12 +750,6 @@ consists of data about a particular species.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="phylotastic_services.resolve_names.resolve_sn_iplant">
-<code class="descclassname">phylotastic_services.resolve_names.</code><code class="descname">resolve_sn_iplant</code><span class="sig-paren">(</span><em>scNames</em>, <em>do_fuzzy_match</em>, <em>multi_match</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/resolve_names.html#resolve_sn_iplant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.resolve_names.resolve_sn_iplant" title="Permalink to this definition">¶</a></dt>
-<dd><p>Source: <a class="reference external" href="http://tnrs.iplantcollaborative.org/api.html">http://tnrs.iplantcollaborative.org/api.html</a></p>
 </dd></dl>
 
 </div>

@@ -9,6 +9,6 @@ Read the documentation of the **python package** of phylotastic services in [her
   1. Download the __phylotastic_services-0.1.tar.gz__ file from the *dist* folder.
   2. Run the following command to install.
 
-``bash
+``
 sudo pip install phylotastic_services-0.1.tar.gz
 ``

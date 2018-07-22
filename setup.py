@@ -18,8 +18,8 @@ setup(name='phylotastic_services',
       packages=find_packages(),
       install_requires=[
           'ete3>=3.0.0b35',
- 	      'itolapi',
-          'dendropy'
+          'dendropy',
+          'beautifulsoap4'
       ],
       include_package_data=False,
       zip_safe=False)

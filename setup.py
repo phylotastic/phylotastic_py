@@ -19,7 +19,8 @@ setup(name='phylotastic_services',
       install_requires=[
           'ete3>=3.0.0b35',
           'dendropy',
-          'beautifulsoap4'
+          'beautifulsoap4',
+          'requests'
       ],
       include_package_data=False,
       zip_safe=False)

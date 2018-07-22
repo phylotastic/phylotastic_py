@@ -13,8 +13,7 @@ base_url = "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/fn/"
 
 #-----------------------------------------
 #get scientific names from URL
-def get_sn_url(inputURL, sEngine):
-    
+def get_sn_url(inputURL, sEngine=0):
     payload = {
         'url': inputURL,
         'engine': sEngine	
@@ -24,31 +23,31 @@ def get_sn_url(inputURL, sEngine):
     response = requests.get(api_url, params=encoded_payload, headers=headers) 
     
     scientificNamesList = []
-
-    if sEngine == 0:
-       service_url = base_url + "names_url?url=" + inputURL
-    else:
-       service_url = base_url + "names_url?url=" + inputURL + "&engine=" + sEngine
      
-    service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-1"
-
     if response.status_code == requests.codes.ok:    
         data_json = json.loads(response.text)
     else:
-        return {'input_url': inputURL, 'scientificNames': scientificNamesList,'status_code': 500,
-                'service_url': service_url, "service_url_doc": service_documentation, 'message': "Error extracting names using GNRD"} 
+        data_json = json.loads(response.text)
+        if 'message' in data_json:
+           msg = "GNRD Error: "+data_json['message']
+        else:
+           msg = "Error: Response error while extracting names using GNRD"
+        if 'status' in data_json:
+           statuscode = data_json['status']
+        else:
+           statuscode = 500
+
+        return {'input_url': inputURL, 'scientificNames': scientificNamesList, 'status_code': statuscode, 'message': msg} 
     
     token_result = get_token_result(data_json)
     
     if token_result['total'] == 0:
-         return {'input_url': inputURL, 'scientificNames': scientificNamesList, 'status_code': 204, 
-                 'service_url': service_url, "service_url_doc": service_documentation, 'message': "No scientific names found"} 
+         return {'input_url': inputURL, 'scientificNames': scientificNamesList, 'status_code': 200, 'message': "No scientific names found"} 
     else:
          scientificNamesList = get_sn(token_result['names'])
          parametersList = token_result['parameters']        
-         
-         return {'input_url': inputURL, 'parameters': parametersList, 'scientificNames': scientificNamesList, 'status_code': 200, 
-                 'service_url': service_url, "service_url_doc": service_documentation, 'message': "Success"} 
+         #scientificNamesList = uniquify(all_scientificNamesList) 
+         return {'input_url': inputURL, 'gnrd_parameters': parametersList, 'scientificNames': scientificNamesList, 'status_code': 200, 'message': "Success"}
      
 #----------------------------------------------    
 #get scientific names from final api-result
@@ -95,41 +94,42 @@ def get_token_result(response_json):
 
 #---------------------------------------------------
 #get scientific names from Text
-def get_sn_text(inputTEXT, sEngine):
+def get_sn_text(inputTEXT, sEngine=0):
     payload = {
         'text': inputTEXT,
         'engine': sEngine
     }
     
-    encoded_payload = urllib.urlencode(payload)
-    response = requests.get(api_url, params=encoded_payload, headers=headers) 
- 
+    #encoded_payload = urllib.urlencode(payload)
+    #response = requests.get(api_url, params=encoded_payload, headers=headers) 
+    response = requests.post(api_url, data=payload) 
+
     scientificNamesList = []
     
-    if sEngine == 0:
-       service_url = base_url + "names_text?text=" + inputTEXT
-    else:
-       service_url = base_url + "names_text?text=" + inputTEXT + "&engine=" + sEngine
-     
-    service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-2"    
-
     if response.status_code == requests.codes.ok:    
         data_json = json.loads(response.text)
     else:
-        return {'input_text': inputTEXT, 'scientificNames': scientificNamesList, 'status_code': 500, 
-                'service_url': service_url, "service_url_doc": service_documentation, 'message': "Error extracting names using GNRD"} 
+        data_json = json.loads(response.text) 
+        if 'message' in data_json:
+           msg = "GNRD Error: "+data_json['message']
+        else:
+           msg = "Error: Response error while extracting names using GNRD"
+        if 'status' in data_json:
+           statuscode = data_json['status']
+        else:
+           statuscode = 500
+
+        return {'input_text': inputTEXT, 'scientificNames': scientificNamesList, 'status_code': statuscode, 'message': msg} 
     
     token_result = get_token_result(data_json)
     
     if token_result['total'] == 0:
-         return {'input_text': inputTEXT, 'scientificNames': scientificNamesList, 'status_code': 204, 
-                 'service_url': service_url, "service_url_doc": service_documentation, 'message': "No scientific names found"} 
+         return {'input_text': inputTEXT, 'scientificNames': scientificNamesList, 'status_code': 200, 'message': "No scientific names found"} 
     else:
          scientificNamesList = get_sn(token_result['names'])
          parametersList = token_result['parameters']
-          
-         return {'input_text': inputTEXT, 'parameters': parametersList, 'scientificNames': scientificNamesList, 'status_code': 200, 
-                 'service_url': service_url, "service_url_doc": service_documentation, 'message': "Success"} 
+         #scientificNamesList = uniquify(all_scientificNamesList) 
+         return {'input_text': inputTEXT, 'gnrd_parameters': parametersList, 'scientificNames': scientificNamesList, 'status_code': 200,'message': "Success"}  
 
 #--------------------------------------
 def extract_names_URL(inputURL, sEngine=0):
@@ -140,7 +140,7 @@ def extract_names_URL(inputURL, sEngine=0):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.extract_names_URL("https://en.wikipedia.org/wiki/Plain_pigeon")
 	>>> print result
-	{"parameters": {"engine": 0, "best_match_only": false, "data_source_ids": [], "detect_language": true, "preferred_data_sources": [], "all_data_sources": false, "return_content": false}, "execution_time": "1.44", "status_code": 200, "creation_time": "2017-06-26T12:29:22.770155", "input_url": "https://en.wikipedia.org/wiki/Plain_pigeon", "scientificNames": ["Patagioenas inornata wetmorei", "Animalia", "Chordata", "Aves", "Columbiformes", "Columbidae", "Patagioenas", "Patagioenas inornata", "Columba inornata", "P. flavirostria", "P. oenops", "Hispaniola"], "service_url": "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/fn/names_url?url=https://en.wikipedia.org/wiki/Plain_pigeon", "service_url_doc": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-1", "total_names": 12, "message": "Success"}
+	{"status_code": 200, "input_url": "https://en.wikipedia.org/wiki/Plain_pigeon", "scientificNames": ["Patagioenas inornata wetmorei", "Animalia", "Chordata", "Aves", "Columbiformes", "Columbidae", "Patagioenas", "Patagioenas inornata", "Columba inornata", "P. flavirostria", "P. oenops", "Hispaniola"], "meta_data": {"execution_time": 1.16, "creation_time": "2018-01-15T22:10:17.313609", "source_urls": ["http://gnrd.globalnames.org/"]}, "total_names": 12, "message": "Success", "gnrd_parameters": {"engine": 0, "best_match_only": false, "data_source_ids": [], "detect_language": true, "preferred_data_sources": [], "all_data_sources": false, "return_content": false}}
 
     :param inputURL: A url of a web page from which scientific names need to be extracted. 
     :type inputURL: str. 
@@ -158,8 +158,9 @@ def extract_names_URL(inputURL, sEngine=0):
     #service result creation time
     creation_time = datetime.datetime.now().isoformat()
 
-    final_result['creation_time'] = creation_time
-    final_result['execution_time'] = "{:4.2f}".format(execution_time) 
+    meta_data = {'creation_time': creation_time, 'execution_time': float("{:4.2f}".format(execution_time)), 'source_urls': ["http://gnrd.globalnames.org/"] }
+
+    final_result['meta_data'] = meta_data
     final_result['total_names'] = len(final_result['scientificNames'])
 
     return json.dumps(final_result)
@@ -189,22 +190,12 @@ def extract_names_TEXT(inputTEXT, sEngine=0):
     
     #service result creation time
     creation_time = datetime.datetime.now().isoformat()
-    final_result['creation_time'] = creation_time
-    final_result['execution_time'] = "{:4.2f}".format(execution_time)
+    meta_data = {'creation_time': creation_time, 'execution_time': float("{:4.2f}".format(execution_time)), 'source_urls': ["http://gnrd.globalnames.org/"] }
+
+    final_result['meta_data'] = meta_data
+
     final_result['total_names'] = len(final_result['scientificNames'])
     
     return json.dumps(final_result)	    
    
 #--------------------------------------------
-
-#if __name__ == '__main__':
-    #inputURL = 'https://en.wikipedia.org/wiki/Aster'    
-    #inputURL = 'https://en.wikipedia.org/wiki/Setophaga'
-    #inputURL = 'https://species.wikimedia.org/wiki/Morganucodontidae'
-    #inputURL = 'https://en.wikipedia.org/wiki/Ant'
-    #inputTEXT = 'The Crabronidae are a large paraphyletic group of wasps. Ophiocordyceps, Cordyceps are genus of fungi. The Megalyroidea are a small hymenopteran superfamily that includes a single family, Megalyridae. The Apidae is the largest family within the Apoidea, with at least 5700 species of bees. Formica polyctena is a species of European red wood ant in the genus Formica. The pavement ant, Tetramorium caespitum is an ant native to Europe. Pseudomyrmex is a genus of stinging, wasp-like ants. Adetomyrma venatrix is an endangered species of ants endemic to Madagascar. Carebara diversa is a species of ants in the subfamily Formicinae. It is found in many Asian countries.'	
-    #inputTEXT = "Formica polyctena is a species of European red wood ant in the genus Formica. The pavement ant, Tetramorium caespitum is an ant native to Europe. Pseudomyrmex is a genus of stinging, wasp-like ants. Adetomyrma venatrix is an endangered species of ants endemic to Madagascar. Carebara diversa is a species of ants in the subfamily Formicinae. It is found in many Asian countries."
-    #result = extract_names_URL(inputURL, 0)
-    #result = extract_names_TEXT(inputTEXT, 0)    
-    #print result
-    

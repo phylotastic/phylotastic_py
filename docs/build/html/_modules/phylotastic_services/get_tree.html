@@ -61,9 +61,9 @@
 <span class="kn">from</span> <span class="nn">ete3.parser.newick</span> <span class="k">import</span> <span class="n">NewickError</span>
 <span class="kn">from</span> <span class="nn">resolve_names</span> <span class="k">import</span> <span class="n">resolve_names_OT</span>
 
-<span class="kn">from</span> <span class="nn">requests.packages.urllib3.exceptions</span> <span class="k">import</span> <span class="n">InsecureRequestWarning</span>
+<span class="c1">#from requests.packages.urllib3.exceptions import InsecureRequestWarning</span>
 <span class="c1">#Suppress warning for using a version of Requests which vendors urllib3 inside</span>
-<span class="n">requests</span><span class="o">.</span><span class="n">packages</span><span class="o">.</span><span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">(</span><span class="n">InsecureRequestWarning</span><span class="p">)</span>
+<span class="c1">#requests.packages.urllib3.disable_warnings(InsecureRequestWarning)</span>
 
 <span class="c1">#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
 <span class="n">megatree_plants</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;R20120829&quot;</span><span class="p">,</span> <span class="s2">&quot;smith2011&quot;</span><span class="p">,</span> <span class="s2">&quot;zanne2014&quot;</span><span class="p">]</span>

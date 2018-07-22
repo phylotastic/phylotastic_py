@@ -64,7 +64,7 @@
 <span class="n">ITIS_source_info_base</span> <span class="o">=</span> <span class="s2">&quot;https://www.itis.gov/ITISWebService/jsonservice/ITISService/getFullRecordFromTSN?tsn=&quot;</span>
 <span class="c1">#-----------------------------------------------------</span>
 <span class="c1">#====================================================</span>
-<div class="viewcode-block" id="search_name_NCBI"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_NCBI">[docs]</a><span class="k">def</span> <span class="nf">search_name_NCBI</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">search_name_NCBI</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
 	<span class="n">api_url</span> <span class="o">=</span> <span class="s2">&quot;https://www.ncbi.nlm.nih.gov/taxonomy/?&quot;</span>
 
 	<span class="n">taxonomy_response</span> <span class="o">=</span> <span class="p">{}</span>    
@@ -89,11 +89,11 @@
 	<span class="n">match_name_info</span><span class="p">[</span><span class="s1">&#39;matched_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_list</span>
 	<span class="n">taxonomy_response</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_info</span> 
 
-	<span class="k">return</span> <span class="n">taxonomy_response</span></div>
+	<span class="k">return</span> <span class="n">taxonomy_response</span>
 
 <span class="c1">#----------------------------------------------</span>
 <span class="c1">#get multiple results</span>
-<div class="viewcode-block" id="extract_sc_names_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_sc_names_info">[docs]</a><span class="k">def</span> <span class="nf">extract_sc_names_info</span><span class="p">(</span><span class="n">SoupObj</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">extract_sc_names_info</span><span class="p">(</span><span class="n">SoupObj</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 	<span class="n">divRprtTags</span> <span class="o">=</span> <span class="n">SoupObj</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;rprt&quot;</span><span class="p">})</span>
 	<span class="n">sc_names_list</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -122,10 +122,10 @@
 			<span class="k">if</span> <span class="ow">not</span> <span class="n">multiple</span><span class="p">:</span>
 				<span class="k">break</span> 
 	
-	<span class="k">return</span>	<span class="n">sc_names_list</span></div>
+	<span class="k">return</span>	<span class="n">sc_names_list</span>
 
 <span class="c1">#----------------------------------------------</span>
-<div class="viewcode-block" id="extract_more_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_more_info">[docs]</a><span class="k">def</span> <span class="nf">extract_more_info</span><span class="p">(</span><span class="n">divSuppTag</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">extract_more_info</span><span class="p">(</span><span class="n">divSuppTag</span><span class="p">):</span>
 	<span class="c1">#divSuppTag = SoupObj.find_all(&quot;div&quot;, {&quot;class&quot;: &quot;supp&quot;})</span>
 	
 	<span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>	
@@ -151,10 +151,10 @@
 		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 			<span class="n">info</span> <span class="o">=</span> <span class="kc">None</span>
 	
-	<span class="k">return</span> <span class="n">info</span> 	</div>
+	<span class="k">return</span> <span class="n">info</span> 	
 
 <span class="c1">#===================================================</span>
-<div class="viewcode-block" id="search_name_ITIS"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_ITIS">[docs]</a><span class="k">def</span> <span class="nf">search_name_ITIS</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">search_name_ITIS</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">ITIS_base_url</span> <span class="o">+</span> <span class="s2">&quot;searchByCommonName?&quot;</span>
 
 	<span class="n">itis_response</span> <span class="o">=</span> <span class="p">{}</span>    
@@ -197,10 +197,10 @@
 	<span class="n">match_name_info</span><span class="p">[</span><span class="s1">&#39;matched_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_list</span>
 	<span class="n">itis_response</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_info</span> 
 
-	<span class="k">return</span> <span class="n">itis_response</span></div>
+	<span class="k">return</span> <span class="n">itis_response</span>
 
 <span class="c1">#---------------------------------------------------</span>
-<div class="viewcode-block" id="extract_sc_names"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_sc_names">[docs]</a><span class="k">def</span> <span class="nf">extract_sc_names</span><span class="p">(</span><span class="n">cm_name_list</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">extract_sc_names</span><span class="p">(</span><span class="n">cm_name_list</span><span class="p">):</span>
 	<span class="n">matched_results</span> <span class="o">=</span> <span class="p">[]</span>
 	
 	<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="p">(</span><span class="n">cm_name</span><span class="p">,</span> <span class="n">cm_key</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cm_name_list</span><span class="p">):</span>
@@ -211,10 +211,10 @@
 		<span class="n">sc_name_info</span><span class="p">[</span><span class="s1">&#39;source_info_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ITIS_source_info_base</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm_key</span><span class="p">)</span>
 		<span class="n">matched_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sc_name_info</span><span class="p">)</span>
 
-	<span class="k">return</span> <span class="n">matched_results</span></div>
+	<span class="k">return</span> <span class="n">matched_results</span>
 
 <span class="c1">#----------------------------------------------------</span>
-<div class="viewcode-block" id="extract_name_info"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_name_info">[docs]</a><span class="k">def</span> <span class="nf">extract_name_info</span><span class="p">(</span><span class="n">ITIS_json_resp</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">extract_name_info</span><span class="p">(</span><span class="n">ITIS_json_resp</span><span class="p">):</span>
 	<span class="n">found_common_names</span> <span class="o">=</span> <span class="p">[]</span>
 	<span class="n">json_content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ITIS_json_resp</span><span class="p">)</span>
 	
@@ -229,10 +229,10 @@
 		<span class="k">if</span> <span class="n">cm_lang</span> <span class="o">==</span> <span class="s2">&quot;English&quot;</span><span class="p">:</span> <span class="c1">#get only english common names</span>
 			<span class="n">found_common_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="p">(</span><span class="n">cm_name</span><span class="p">,</span> <span class="n">cm_tsn</span><span class="p">)</span> <span class="p">)</span>
 	 
-	<span class="k">return</span> <span class="n">found_common_names</span></div>
+	<span class="k">return</span> <span class="n">found_common_names</span>
 
 <span class="c1">#-----------------------------------------------------</span>
-<div class="viewcode-block" id="find_best_match_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.find_best_match_key">[docs]</a><span class="k">def</span> <span class="nf">find_best_match_key</span><span class="p">(</span><span class="n">input_name</span><span class="p">,</span> <span class="n">cm_name_key_list</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">find_best_match_key</span><span class="p">(</span><span class="n">input_name</span><span class="p">,</span> <span class="n">cm_name_key_list</span><span class="p">):</span>
 	<span class="n">best_match_key</span> <span class="o">=</span> <span class="n">second_best_match_key</span> <span class="o">=</span> <span class="kc">None</span>
 	<span class="n">best_match_cm_name</span> <span class="o">=</span> <span class="n">second_best_match_cm_name</span> <span class="o">=</span> <span class="kc">None</span>
 	<span class="k">for</span> <span class="n">indx</span><span class="p">,</span> <span class="p">(</span><span class="n">cm_name</span><span class="p">,</span> <span class="n">cm_tsn</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cm_name_key_list</span><span class="p">):</span>
@@ -250,10 +250,10 @@
 	<span class="k">if</span> <span class="n">best_match_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="k">return</span> <span class="n">best_match_key</span><span class="p">,</span> <span class="n">best_match_cm_name</span> 
 	<span class="k">else</span><span class="p">:</span>
-		<span class="k">return</span> <span class="n">second_best_match_key</span><span class="p">,</span> <span class="n">second_best_match_cm_name</span></div>
+		<span class="k">return</span> <span class="n">second_best_match_key</span><span class="p">,</span> <span class="n">second_best_match_cm_name</span>
 
 <span class="c1">#--------------------------------------------------------</span>
-<div class="viewcode-block" id="search_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_key">[docs]</a><span class="k">def</span> <span class="nf">search_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">search_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">ITIS_base_url</span><span class="o">+</span><span class="s2">&quot;searchForAnyMatch?&quot;</span>
 
 	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;srchKey&#39;</span><span class="p">:</span> <span class="n">key</span><span class="p">}</span>
@@ -266,20 +266,20 @@
 	<span class="k">else</span><span class="p">:</span>
 		<span class="n">name_info</span> <span class="o">=</span> <span class="kc">None</span>
 
-	<span class="k">return</span> <span class="n">name_info</span></div>
+	<span class="k">return</span> <span class="n">name_info</span>
 
 <span class="c1">#==================================================</span>
-<div class="viewcode-block" id="get_api_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.get_api_key">[docs]</a><span class="k">def</span> <span class="nf">get_api_key</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">get_api_key</span><span class="p">():</span>
 	<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
 	<span class="n">current_dir</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
 	<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">current_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="o">+</span> <span class="s2">&quot;service.cfg&quot;</span><span class="p">)</span>
 	
 	<span class="n">tropicos_api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TROPICOS&#39;</span><span class="p">,</span> <span class="s1">&#39;api_key&#39;</span><span class="p">)</span>
 
-	<span class="k">return</span> <span class="n">tropicos_api_key</span></div>
+	<span class="k">return</span> <span class="n">tropicos_api_key</span>
 
 <span class="c1">#----------------------------------</span>
-<div class="viewcode-block" id="search_name_TROPICOS"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_TROPICOS">[docs]</a><span class="k">def</span> <span class="nf">search_name_TROPICOS</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">search_name_TROPICOS</span><span class="p">(</span><span class="n">commonName</span><span class="p">,</span> <span class="n">best_match</span><span class="p">):</span>
 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">TROPICOS_base_url</span> <span class="o">+</span> <span class="s2">&quot;Search?&quot;</span>
 	<span class="n">Tropicos_API_Key</span> <span class="o">=</span> <span class="n">get_api_key</span><span class="p">()</span>
 	<span class="n">match_type</span> <span class="o">=</span> <span class="s2">&quot;exact&quot;</span> <span class="k">if</span> <span class="n">best_match</span> <span class="k">else</span> <span class="s2">&quot;wildcard&quot;</span> 	
@@ -310,11 +310,11 @@
 	<span class="n">match_name_info</span><span class="p">[</span><span class="s1">&#39;matched_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_list</span>
 	<span class="n">response</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_name_info</span> 
 
-	<span class="k">return</span> <span class="n">response</span></div>
+	<span class="k">return</span> <span class="n">response</span>
 
 <span class="c1">#----------------------------------------------</span>
 <span class="c1">#get multiple results</span>
-<div class="viewcode-block" id="extract_sc_names_info_TRPC"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.extract_sc_names_info_TRPC">[docs]</a><span class="k">def</span> <span class="nf">extract_sc_names_info_TRPC</span><span class="p">(</span><span class="n">respText</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">extract_sc_names_info_TRPC</span><span class="p">(</span><span class="n">respText</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 	<span class="n">sc_names_list</span> <span class="o">=</span> <span class="p">[]</span>
 	<span class="n">json_resp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">respText</span><span class="p">)</span>
 	
@@ -328,10 +328,10 @@
 		<span class="k">if</span> <span class="ow">not</span> <span class="n">multiple</span><span class="p">:</span>
 			<span class="k">break</span> 
 			
-	<span class="k">return</span> <span class="n">sc_names_list</span></div>
+	<span class="k">return</span> <span class="n">sc_names_list</span>
 
 <span class="c1">#-------------------------------------------</span>
-<div class="viewcode-block" id="search_name_key"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.search_name_key">[docs]</a><span class="k">def</span> <span class="nf">search_name_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">search_name_key</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
 	<span class="n">api_url</span> <span class="o">=</span> <span class="n">TROPICOS_base_url</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
 	<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;apikey&#39;</span><span class="p">:</span> <span class="n">get_api_key</span><span class="p">(),</span> <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s2">&quot;json&quot;</span><span class="p">}</span>
@@ -348,7 +348,7 @@
 	<span class="k">else</span><span class="p">:</span>
 		<span class="n">name_info</span> <span class="o">=</span> <span class="kc">None</span>
 
-	<span class="k">return</span> <span class="n">name_info</span></div>
+	<span class="k">return</span> <span class="n">name_info</span>
 
 <span class="c1">#---------------------------------------------------</span>
 <div class="viewcode-block" id="get_scientific_names"><a class="viewcode-back" href="../../phylotastic_services.html#phylotastic_services.common_names.get_scientific_names">[docs]</a><span class="k">def</span> <span class="nf">get_scientific_names</span><span class="p">(</span><span class="n">inputNameList</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;NCBI&quot;</span><span class="p">,</span> <span class="n">best_match</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>

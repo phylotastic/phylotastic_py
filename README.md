@@ -2,7 +2,11 @@
 
 This repository contains source codes and documentation related to python library.
 
-Read the documentation of the **python package** of phylotastic services in [here](http://phylo.cs.nmsu.edu:8000).
+Read the documentation of the **python package** of phylotastic services in the following link: 
+
+http://phylo.cs.nmsu.edu:8000/py-modindex.html
+
+Click on different module links to view the usage of it.
 
 **Installation**
 

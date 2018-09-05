@@ -16,7 +16,8 @@ headers = {'content-type': 'application/json'}
 def get_api_key():
 	config = ConfigParser.ConfigParser()
 	current_dir = dirname(abspath(__file__))
-	config.read(current_dir + "/"+ "service.cfg")
+	#config.read(current_dir + "/"+ "service.cfg")
+	config.read(current_dir + "/"+ "config.py")
 	
 	api_key = config.get('EOL', 'api_key')
 

@@ -86,7 +86,7 @@ class List:
     **Example:**
 
     ::
-
+        
         species_obj1=Species("Acer ginnala", "Amur maple", "Maxim.", "Aceraceae","Sapindales", "Streptophyta", "ICN") #creates a species object
         species_list = [species_obj1] # create a list of species objects
         list_obj = List("Illinois Invasive Plants", "This list contains the invasive species, with their Family and Order", ["Invasive.org  Center for Invasive Species and Ecosystem Health"], "06-25-2017", "HD Laughinghouse", "2-25-2016", "http://www.invasive.org/species/list.cfm?id=152", ["Plants", " invasive species", " Illinois"], "Embryophyta", "", "script", True, species_list) #create a list object

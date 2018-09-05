@@ -1,4 +1,7 @@
-#find scientific names service: version 0.1
+"""
+**extract_names** Module is for extracting scientific names from free-form text or URL
+"""
+
 import json
 import time
 import requests
@@ -268,7 +271,7 @@ def extract_names_TEXT(inputTEXT, source="gnrd", sEngine=0):
 	For example:
 	
 	>>> import phylotastic_services
-	>>> result = phylotastic_services.extract_names_TEXT("Formica polyctena is a species of European red wood ant in the genus Formica." "taxonfinder")
+	>>> result = phylotastic_services.extract_names_TEXT("Formica polyctena is a species of European red wood ant in the genus Formica.", "taxonfinder")
 	>>> print result
 	{"status_code": 200, "scientificNames": ["Formica polyctena"], "meta_data": {"execution_time": 0.29, "creation_time": "2018-05-20T18:59:10.951318", "source_urls": ["http://taxonfinder.org/"]}, "total_names": 1, "message": "Success"}
 
@@ -284,17 +287,19 @@ def extract_names_TEXT(inputTEXT, source="gnrd", sEngine=0):
     start_time = time.time()
     if source == "gnrd":
        final_result = get_sn_text(inputTEXT, sEngine)
+       src_urls = ["http://gnrd.globalnames.org/"]
     elif source == "taxonfinder":
        final_result = get_tf_sn_text(inputTEXT)
+       src_urls = ["http://taxonfinder.org/"]
     else:
-       return {'status_code': 400, 'message': "Error: Invalid source name"} 
+       return json.dumps({'status_code': 400, 'message': "Error: Invalid source name"}) 
         
     end_time = time.time()
     execution_time = end_time-start_time
     
     #service result creation time
     creation_time = datetime.datetime.now().isoformat()
-    meta_data = {'creation_time': creation_time, 'execution_time': float("{:4.2f}".format(execution_time)), 'source_urls': ["http://gnrd.globalnames.org/"] }
+    meta_data = {'creation_time': creation_time, 'execution_time': float("{:4.2f}".format(execution_time)), 'source_urls': src_urls }
 
     final_result['meta_data'] = meta_data
 

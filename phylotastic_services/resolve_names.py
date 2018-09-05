@@ -1,4 +1,7 @@
-#resolver service: version 0.1
+"""
+**resolve_names** Module is for resolving scientific names using different TNRS services 
+"""
+
 import json
 import time
 import requests

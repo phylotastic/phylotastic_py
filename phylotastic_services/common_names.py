@@ -1,3 +1,7 @@
+"""
+**common_names** Module is for getting scientific names of species from their corresponding common names 
+"""
+
 import re
 import json
 import requests
@@ -353,5 +357,5 @@ def get_scientific_names(inputNameList, source="NCBI", best_match=True):
 
 	final_result['metadata'] = {'creation_time': creation_time, 'execution_time': "{:4.2f}".format(execution_time), 'source_urls': source_urls}   	 
  	
- 	return final_result
+ 	return json.dumps(final_result)
 #--------------------------------------------------

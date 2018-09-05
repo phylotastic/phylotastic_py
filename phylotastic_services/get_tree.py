@@ -1,4 +1,6 @@
-#get tree service
+"""
+**get_tree** Module is for getting a phylogenetic tree from a list of taxa
+"""
 
 import json
 import time
@@ -10,16 +12,16 @@ import ast
 import datetime
 import tempfile
 #----------------
-from itolapi import Itol
-from itolapi import ItolExport
+#from itolapi import Itol
+#from itolapi import ItolExport
 
 from ete3 import Tree
 from ete3.parser.newick import NewickError
 from resolve_names import resolve_names_OT
 
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+#from requests.packages.urllib3.exceptions import InsecureRequestWarning
 #Suppress warning for using a version of Requests which vendors urllib3 inside
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+#requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 megatree_plants = ["R20120829", "smith2011", "zanne2014"]
@@ -245,7 +247,7 @@ def get_tree_OpenTree(taxa):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.get_tree_OpenTree(taxa=["Setophaga striata","Setophaga magnolia","Setophaga angelae","Setophaga plumbea","Setophaga virens"])
 	>>> print result
-	{"execution_time": "2.15", "status_code": 200, "creation_time": "2017-07-02T12:12:02.157046", "newick": "(Setophaga_magnolia_ott532751,Setophaga_striata_ott60236,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_virens_ott1014098)Setophaga_ott285198;", "message": "Success", "tree_metadata": {"alignment_method": "NA", "character_matrix": "NA", "rooted": true, "supporting_studies": [{"PublicationYear": 2010, "FocalCladeTaxonName": "Parulidae", "Publication": "Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.", "CandidateTreeForSynthesis": "tree6024", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2010.07.018", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "pg_2591"}, {"PublicationYear": 2015, "FocalCladeTaxonName": "Passeriformes", "Publication": "Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1642/auk-14-110.1", "DataRepository": "http://datadryad.org/resource/doi:10.5061/dryad.pb787", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_770"}], "anastomosing": false, "branch_lengths_type": null, "consensus_type": "NA", "inference_method": "induced_subtree from synthetic tree with ID opentree9.1", "branch_support_type": null, "num_tips": 5, "gene_or_species": "species", "topology_id": "NA", "synthetic_tree_id": "opentree9.1"}, "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-5"}
+	{"status_code": 200, "message": "Success", "meta_data": {"execution_time": 2.3, "creation_time": "2018-09-05T16:01:31.981435", "source_urls": ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life"]}, "tree_metadata": {"alignment_method": "NA", "character_matrix": "NA", "rooted": true, "supporting_studies": [{"PublicationYear": 2010, "FocalCladeTaxonName": "Parulidae", "Publication": "Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.", "CandidateTreeForSynthesis": "tree6024", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2010.07.018", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "pg_2591"}, {"PublicationYear": 2015, "FocalCladeTaxonName": "Passeriformes", "Publication": "Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1642/auk-14-110.1", "DataRepository": "http://datadryad.org/resource/doi:10.5061/dryad.pb787", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_770"}], "anastomosing": false, "branch_lengths_type": null, "consensus_type": "NA", "inference_method": "induced_subtree from synthetic tree with ID opentree9.1", "branch_support_type": null, "num_tips": 5, "gene_or_species": "species", "topology_id": "NA", "synthetic_tree_id": "opentree9.1"}, "newick": "(Setophaga_magnolia_ott532751,Setophaga_striata_ott60236,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_virens_ott1014098)Setophaga_ott285198;"}
 
     :param taxa: A list of taxa to be used to get a phylogenetic tree. 
     :type taxa: A list of strings.  
@@ -256,7 +258,7 @@ def get_tree_OpenTree(taxa):
  	nameslist = nameslist_json["resolvedNames"]
  	service_result = get_tree_OT(nameslist)
    
- 	return service_result
+ 	return json.dumps(service_result)
 
 #-------------------------------------------
 
@@ -426,9 +428,10 @@ def get_tree_Phylomatic(taxa):
     """
 	service_result = get_tree_phyloMT(taxa)
 
-	return service_result
+	return json.dumps(service_result)
 
 #======================================================
+'''
 #get ncbi id available for a taxon
 def find_taxon_id(taxonName):
  	api_url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"	  
@@ -465,8 +468,9 @@ def find_taxon_id(taxonName):
   	 	ncbi_response['message'] = "No match found for term '%s'" %(taxonName)
  	
  	return ncbi_response 	
-
+'''
 #---------------------------------------------------------
+'''
 #get a tree using phyloT
 def get_tree_itol(tempDir, ncbiIdDict):
  	
@@ -576,8 +580,9 @@ def create_file_input_ids(ncbiIdDict):
  		print 'IOError'
  			
  	return tmpdir
-
+'''
 #---------------------------------------------
+'''
 def get_tree_phyloT(taxaList, post=False):
  	
  	start_time = time.time()
@@ -604,8 +609,9 @@ def get_tree_phyloT(taxaList, post=False):
  	final_result['query_taxa'] = taxaList		
 
  	return final_result
- 	
+''' 	
 #-------------------------------------------
+'''
 def get_tree_NCBI(taxa):
  	"""Gets a phylogenetic tree from a list of taxa based on NCBI taxonomy using PhyloT
     
@@ -624,7 +630,7 @@ def get_tree_NCBI(taxa):
 	service_result = get_tree_phyloT(taxa)
 
 	return service_result
-
+'''
 
 #---------------------------------------------
 #if __name__ == '__main__':

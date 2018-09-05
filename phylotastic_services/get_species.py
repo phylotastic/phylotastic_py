@@ -109,7 +109,7 @@ def get_all_species(inputTaxon):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.get_all_species("Vulpes")
 	>>> print result
-	{"execution_time": "11.33", "status_code": 200, "creation_time": "2017-07-02T18:09:04.415738", "taxon": "Vulpes", "total_names": 19, "service_url": "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/all_species?taxon=Vulpes", "message": "Success", "species": ["Vulpes mathisoni", "Vulpes minimus", "Vulpes cascadensis", "Vulpes kernensis", "Vulpes environmental sample", "Vulpes stenognathus", "Vulpes bengalensis", "Vulpes pallida", "Vulpes cana", "Vulpes chama", "Vulpes vulpes", "Vulpes lagopus", "Vulpes corsac", "Vulpes rueppellii", "Vulpes zerda", "Vulpes velox", "Vulpes macrotis", "Vulpes sp.", "Vulpes ferrilata"], "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-6"}
+	{"execution_time": "11.33", "status_code": 200, "creation_time": "2017-07-02T18:09:04.415738", "taxon": "Vulpes", "total_names": 19,  "message": "Success", "species": ["Vulpes mathisoni", "Vulpes minimus", "Vulpes cascadensis", "Vulpes kernensis", "Vulpes environmental sample", "Vulpes stenognathus", "Vulpes bengalensis", "Vulpes pallida", "Vulpes cana", "Vulpes chama", "Vulpes vulpes", "Vulpes lagopus", "Vulpes corsac", "Vulpes rueppellii", "Vulpes zerda", "Vulpes velox", "Vulpes macrotis", "Vulpes sp.", "Vulpes ferrilata"]}
 
     :param inputTaxon: Name of a taxon for which species needs to be found. 
     :type inputTaxon: string.  
@@ -153,10 +153,10 @@ def get_all_species(inputTaxon):
  	final_result['creation_time'] = creation_time
  	final_result['execution_time'] = "{:4.2f}".format(execution_time)
  	final_result['total_names'] = len_splist
- 	#final_result['source_urls'] = ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy"]
+ 	final_result['source_urls'] = ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy"]
  	#final_result['source_version'] = "ott2.9draft12"
- 	final_result['service_url'] = service_url
- 	final_result['service_documentation'] = service_documentation
+ 	#final_result['service_url'] = service_url
+ 	#final_result['service_documentation'] = service_documentation
 
  	return json.dumps(final_result)
 
@@ -171,7 +171,7 @@ def get_country_species(inputTaxon, inputCountry):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.get_country_species("Vulpes", "Nepal")
 	>>> print result
-	{"execution_time": "16.23", "status_code": 200, "creation_time": "2017-07-02T18:20:12.978379", "taxon": "Vulpes", "total_names": 2, "country": "Nepal", "service_url": "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/country_species?taxon=Vulpes&country=Nepal", "message": "Success", "species": ["Vulpes bengalensis", "Vulpes ferrilata"], "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7"}
+	{"execution_time": "16.23", "status_code": 200, "creation_time": "2017-07-02T18:20:12.978379", "taxon": "Vulpes", "total_names": 2, "country": "Nepal", "message": "Success", "species": ["Vulpes bengalensis", "Vulpes ferrilata"]}
 
     :param inputTaxon: Name of a taxon for which species needs to be found. 
     :type inputTaxon: string. 
@@ -183,8 +183,8 @@ def get_country_species(inputTaxon, inputCountry):
     """
  	start_time = time.time()
 
- 	service_url = base_url + "country_species?taxon=" + inputTaxon + "&country=" + inputCountry 
- 	service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7"
+ 	#service_url = base_url + "country_species?taxon=" + inputTaxon + "&country=" + inputCountry 
+ 	#service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7"
 
  	ott_id = match_taxon(inputTaxon)
  	if ott_id == -1:
@@ -221,10 +221,10 @@ def get_country_species(inputTaxon, inputCountry):
  	final_result['creation_time'] = creation_time
  	final_result['execution_time'] = "{:4.2f}".format(execution_time)
  	final_result['total_names'] = len_splist
- 	#final_result['source_urls'] = ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy", "https://www.inaturalist.org"]
+ 	final_result['source_urls'] = ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy", "https://www.inaturalist.org"]
  	#final_result['source_version'] = "ott2.9draft12"
- 	final_result['service_url'] = service_url
- 	final_result['service_documentation'] = service_documentation	
+ 	#final_result['service_url'] = service_url
+ 	#final_result['service_documentation'] = service_documentation	
  	final_result['country'] = inputCountry
 
  	return json.dumps(final_result)
@@ -358,7 +358,7 @@ def get_genome_species(inputTaxon):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.get_genome_species("Felidae")
 	>>> print result
-	{"execution_time": "10.43", "status_code": 200, "creation_time": "2017-07-02T21:12:17.248633", "taxon": "Felidae", "total_names": 6, "source_urls": ["https://www.ncbi.nlm.nih.gov/taxonomy", "https://www.ncbi.nlm.nih.gov/genome"], "service_url": "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/ncbi/genome_species?taxon=Felidae", "message": "Success", "species": ["Panthera tigris amoyensis", "Panthera tigris altaica", "Acinonyx jubatus", "Panthera tigris", "Panthera pardus", "Felis catus"], "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-9"}
+	{"execution_time": "35.01", "status_code": 200, "creation_time": "2018-09-05T15:53:29.247569", "taxon": "Felidae", "total_names": 7, "source_urls": ["https://www.ncbi.nlm.nih.gov/taxonomy", "https://www.ncbi.nlm.nih.gov/genome"], "message": "Success", "species": ["Panthera tigris amoyensis", "Panthera tigris altaica", "Acinonyx jubatus", "Puma concolor", "Panthera tigris", "Panthera pardus", "Felis catus"]}
 
     :param inputTaxon: Name of a taxon for which species needs to be found. 
     :type inputTaxon: string. 
@@ -368,7 +368,7 @@ def get_genome_species(inputTaxon):
     """	
  	start_time = time.time()
  	service_url = "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/ncbi/genome_species?taxon=" + inputTaxon
- 	service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-9"
+ 	#service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-9"
 
  	final_result = {}	
  	g_response = find_genome_ids(inputTaxon)
@@ -398,7 +398,7 @@ def get_genome_species(inputTaxon):
  	final_result['source_urls'] = ["https://www.ncbi.nlm.nih.gov/taxonomy", "https://www.ncbi.nlm.nih.gov/genome"]
  	#final_result['source_version'] = "ott2.9draft12"
  	final_result['service_url'] = service_url
- 	final_result['service_documentation'] = service_documentation	
+ 	#final_result['service_documentation'] = service_documentation	
  	final_result['taxon'] = inputTaxon
 
  	return json.dumps(final_result)

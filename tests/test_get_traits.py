@@ -9,8 +9,8 @@ class TestGetTraits(TestCase):
         """
         result = phylotastic_services.get_traits_EOL(["Balaenoptera musculus"])
         # Check whether result is what it should be according to docs
-        self.assertTrue(u'oceanic zone' in result['species'][0]['habitats'])
-        self.assertTrue(u'endangered' in result['species'][0]['conservation_status'])
+        self.assertTrue(u'oceanic zone' in json.loads(result)['species'][0]['habitats'])
+        self.assertTrue(u'endangered' in json.loads(result)['species'][0]['conservation_status'])
         
 
     def test_get_traits_ECOS(self):
@@ -19,6 +19,6 @@ class TestGetTraits(TestCase):
         """
         result = phylotastic_services.get_traits_ECOS(["Loxodonta africana"])
         # Check whether result is what it should be according to docs
-        self.assertTrue(u'Threatened' in result['species'][0]['conservation_status'])
+        self.assertTrue(u'Threatened' in json.loads(result)['species'][0]['conservation_status'])
         
     

@@ -175,7 +175,7 @@ def get_images_species(inputSpecies):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.get_images_species(["Rangifer tarandus"])
 	>>> print result
-	{"execution_time": "2.51", "status_code": 200, "creation_time": "2017-07-02T22:42:48.209751", "input_query": ["Rangifer tarandus"], "source_urls": ["http://eol.org"], "message": "Success", "species": [{"images": [{"license": "http://creativecommons.org/licenses/publicdomain/", "mediaURL": "http://www.biolib.cz/IMG/GAL/21652.jpg", "eolMediaURL": "http://media.eol.org/content/2014/05/02/09/88803_orig.jpg", "rightsHolder": "Nickles, Jon", "vettedStatus": "Trusted", "source": "http://www.biolib.cz/en/image/id21652/", "eolThumbnailURL": "http://media.eol.org/content/2014/05/02/09/88803_98_68.jpg", "dataRating": 3.0}, {"license": "http://creativecommons.org/licenses/by-nc-sa/3.0/", "mediaURL": "http://calphotos.berkeley.edu/imgs/256x384/6666_6666/1007/6477.jpeg", "eolMediaURL": "http://media.eol.org/content/2011/08/07/07/12395_orig.jpg", "rightsHolder": "2007 California Academy of Sciences", "vettedStatus": "Trusted", "source": "http://calphotos.berkeley.edu/cgi/img_query?seq_num=27882&one=T", "eolThumbnailURL": "http://media.eol.org/content/2011/08/07/07/12395_98_68.jpg", "dataRating": 4.0}, {"license": "http://creativecommons.org/publicdomain/mark/1.0/", "mediaURL": "http://upload.wikimedia.org/wikipedia/commons/f/fd/Caribou.jpg", "eolMediaURL": "http://media.eol.org/content/2013/06/18/06/80894_orig.jpg", "rightsHolder": "", "vettedStatus": "Trusted", "source": "http://commons.wikimedia.org/wiki/File:Caribou.jpg", "eolThumbnailURL": "http://media.eol.org/content/2013/06/18/06/80894_98_68.jpg", "dataRating": 3.45455}, {"license": "http://creativecommons.org/licenses/by-nc/2.0/", "mediaURL": "https://farm1.staticflickr.com/31/56038869_7421be89f6_o.jpg", "eolMediaURL": "http://media.eol.org/content/2015/01/12/03/89244_orig.jpg", "rightsHolder": "Caleb Slemmons", "vettedStatus": "Trusted", "source": "https://www.flickr.com/photos/kenai/56038869/", "eolThumbnailURL": "http://media.eol.org/content/2015/01/12/03/89244_98_68.jpg", "dataRating": 3.0}, {"license": "http://creativecommons.org/licenses/by-sa/3.0/", "mediaURL": "http://upload.wikimedia.org/wikipedia/commons/a/af/20070818-0001-strolling_reindeer.jpg", "eolMediaURL": "http://media.eol.org/content/2012/06/13/00/48543_orig.jpg", "rightsHolder": "", "vettedStatus": "Trusted", "source": "http://commons.wikimedia.org/wiki/File:20070818-0001-strolling_reindeer.jpg", "eolThumbnailURL": "http://media.eol.org/content/2012/06/13/00/48543_98_68.jpg", "dataRating": 3.0}], "searched_name": "Rangifer tarandus", "total_images": 5, "eol_id": 328653, "matched_name": "Rangifer tarandus (Linnaeus, 1758)"}], "service_documentation": "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-8"}
+	{"execution_time": "2.51", "status_code": 200, "creation_time": "2017-07-02T22:42:48.209751", "input_query": ["Rangifer tarandus"], "source_urls": ["http://eol.org"], "message": "Success", "species": [{"images": [{"license": "http://creativecommons.org/licenses/publicdomain/", "mediaURL": "http://www.biolib.cz/IMG/GAL/21652.jpg", "eolMediaURL": "http://media.eol.org/content/2014/05/02/09/88803_orig.jpg", "rightsHolder": "Nickles, Jon", "vettedStatus": "Trusted", "source": "http://www.biolib.cz/en/image/id21652/", "eolThumbnailURL": "http://media.eol.org/content/2014/05/02/09/88803_98_68.jpg", "dataRating": 3.0}, {"license": "http://creativecommons.org/licenses/by-nc-sa/3.0/", "mediaURL": "http://calphotos.berkeley.edu/imgs/256x384/6666_6666/1007/6477.jpeg", "eolMediaURL": "http://media.eol.org/content/2011/08/07/07/12395_orig.jpg", "rightsHolder": "2007 California Academy of Sciences", "vettedStatus": "Trusted", "source": "http://calphotos.berkeley.edu/cgi/img_query?seq_num=27882&one=T", "eolThumbnailURL": "http://media.eol.org/content/2011/08/07/07/12395_98_68.jpg", "dataRating": 4.0}, {"license": "http://creativecommons.org/publicdomain/mark/1.0/", "mediaURL": "http://upload.wikimedia.org/wikipedia/commons/f/fd/Caribou.jpg", "eolMediaURL": "http://media.eol.org/content/2013/06/18/06/80894_orig.jpg", "rightsHolder": "", "vettedStatus": "Trusted", "source": "http://commons.wikimedia.org/wiki/File:Caribou.jpg", "eolThumbnailURL": "http://media.eol.org/content/2013/06/18/06/80894_98_68.jpg", "dataRating": 3.45455}, {"license": "http://creativecommons.org/licenses/by-nc/2.0/", "mediaURL": "https://farm1.staticflickr.com/31/56038869_7421be89f6_o.jpg", "eolMediaURL": "http://media.eol.org/content/2015/01/12/03/89244_orig.jpg", "rightsHolder": "Caleb Slemmons", "vettedStatus": "Trusted", "source": "https://www.flickr.com/photos/kenai/56038869/", "eolThumbnailURL": "http://media.eol.org/content/2015/01/12/03/89244_98_68.jpg", "dataRating": 3.0}, {"license": "http://creativecommons.org/licenses/by-sa/3.0/", "mediaURL": "http://upload.wikimedia.org/wikipedia/commons/a/af/20070818-0001-strolling_reindeer.jpg", "eolMediaURL": "http://media.eol.org/content/2012/06/13/00/48543_orig.jpg", "rightsHolder": "", "vettedStatus": "Trusted", "source": "http://commons.wikimedia.org/wiki/File:20070818-0001-strolling_reindeer.jpg", "eolThumbnailURL": "http://media.eol.org/content/2012/06/13/00/48543_98_68.jpg", "dataRating": 3.0}], "searched_name": "Rangifer tarandus", "total_images": 5, "eol_id": 328653, "matched_name": "Rangifer tarandus (Linnaeus, 1758)"}]}
 
 
 
@@ -184,10 +184,9 @@ def get_images_species(inputSpecies):
     :returns: A json formatted string -- with a list of species objects containing image urls, license info., eol ids. 
 
     """
- 	post=False
  	start_time = time.time()
  	#service_url = "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/si/eol/get_images?species=" + inputSpeciesList
- 	service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-8"
+ 	#service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-8"
  	response = {}	
  	outputSpeciesList = []
 
@@ -230,13 +229,10 @@ def get_images_species(inputSpecies):
  	response['source_urls'] = ["http://eol.org"]
  	#final_result['source_version'] = "ott2.9draft12"
  	#response['service_url'] = service_url
- 	response['service_documentation'] = service_documentation
+ 	#response['service_documentation'] = service_documentation
  	response['input_query'] = inputSpecies
 
- 	if post:
- 		return response
- 	else:
- 	 	return json.dumps(response)
+ 	return json.dumps(response)
 
 #--------------------------------------------------
 def get_image_species_id(species_id, post=False):

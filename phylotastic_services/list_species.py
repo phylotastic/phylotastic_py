@@ -86,10 +86,11 @@ class List:
     **Example:**
 
     ::
-        
-        species_obj1=Species("Acer ginnala", "Amur maple", "Maxim.", "Aceraceae","Sapindales", "Streptophyta", "ICN") #creates a species object
+        from phylotastic_services import list_species
+
+        species_obj1=list_species.Species("Acer ginnala", "Amur maple", "Maxim.", "Aceraceae","Sapindales", "Streptophyta", "ICN") #creates a species object
         species_list = [species_obj1] # create a list of species objects
-        list_obj = List("Illinois Invasive Plants", "This list contains the invasive species, with their Family and Order", ["Invasive.org  Center for Invasive Species and Ecosystem Health"], "06-25-2017", "HD Laughinghouse", "2-25-2016", "http://www.invasive.org/species/list.cfm?id=152", ["Plants", " invasive species", " Illinois"], "Embryophyta", "", "script", True, species_list) #create a list object
+        list_obj = list_species.List("Illinois Invasive Plants", "This list contains the invasive species, with their Family and Order", ["Invasive.org  Center for Invasive Species and Ecosystem Health"], "06-25-2017", "HD Laughinghouse", "2-25-2016", "http://www.invasive.org/species/list.cfm?id=152", ["Plants", " invasive species", " Illinois"], "Embryophyta", "", "script", True, species_list) #create a list object
     """
 
     def __init__(self, title=None, description=None, author=None, date_published=None, curator=None, curation_date=None, source=None, keywords=None, focal_clade=None, extra_info=None, origin=None, is_public=None, species_list=None):
@@ -153,9 +154,10 @@ def insert_list_info(userId, listObj):
 	Example:
 
 	>>> import phylotastic_services
-	>>> species_obj1 = Species("Acer ginnala", "Amur maple", "Maxim.", "Aceraceae","Sapindales", "Streptophyta", "ICN")
+	>>> from phylotastic_services import list_species
+	>>> species_obj1 = list_species.Species("Acer ginnala", "Amur maple", "Maxim.", "Aceraceae","Sapindales", "Streptophyta", "ICN")
 	>>> species_list1 = [species_obj1]
-	>>> list_obj = List("Illinois Invasive Plants", "This list contains the invasive species, with their Family and Order", ["Invasive.org  Center for Invasive Species and Ecosystem Health"], "06-25-2017", "HD Laughinghouse", "2-25-2016", "http://www.invasive.org/species/list.cfm?id=152", ["Plants", " invasive species", " Illinois"], "Embryophyta", "", "script", True, species_list1)
+	>>> list_obj = list_species.List("Illinois Invasive Plants", "This list contains the invasive species, with their Family and Order", ["Invasive.org  Center for Invasive Species and Ecosystem Health"], "06-25-2017", "HD Laughinghouse", "2-25-2016", "http://www.invasive.org/species/list.cfm?id=152", ["Plants", " invasive species", " Illinois"], "Embryophyta", "", "script", True, species_list1)
 	>>> result = phylotastic_services.insert_list_info("abusalehmdtayeen@gmail.com", list_obj)
 	>>> print result
 	{"status_code": 200, "message": "Success", "list_id": 57}
@@ -181,7 +183,10 @@ def insert_list_info(userId, listObj):
  	if response.status_code == requests.codes.ok:    
  		return response.text
  	else:
- 		return json.dumps({"status_code": 500, "message": "Error connecting with species list server"})
+ 		resp_json = json.loads(response.text)
+ 		if 'message' in resp_json:
+ 			msg = resp_json['message']
+ 		return json.dumps({"status_code": 500, "message": "Error connecting with species list server. "+msg})
 
 #-----------------------------------------------
 def update_list_metadata(userId, listId, listObj, accessToken):
@@ -190,7 +195,8 @@ def update_list_metadata(userId, listId, listObj, accessToken):
 	Example:
 
 	>>> import phylotastic_services
-	>>> list_obj = List(description="This list contains the invasive species", is_public=False)
+	>>> from phylotastic_services import list_species   
+	>>> list_obj = list_species.List(description="This list contains the invasive species", is_public=False)
  	>>> result = phylotastic_services.update_list_metadata("abusalehmdtayeen@gmail.com", 57, list_obj, "ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c")
 	>>> print result
 	{"user_id": "abusalehmdtayeen@gmail.com", "date_modified": "2017-07-03T19:55:46.430503", "status_code": 200, "modified_content": {"list_description": "This list contains the invasive species", "is_list_public": false}, "list_id": 57, "list_title": "Illinois Invasive Plants", "message": "Success"}
@@ -231,8 +237,9 @@ def update_list_data(userId, listId, speciesList, accessToken):
 	Example:
 
 	>>> import phylotastic_services
-	>>> species_obj1 = Species("Acer ginnala", "Amur maple", "Maxim.", "Aceraceae","Sapindales", "Streptophyta", "ICN")
-	>>> species_obj2 = Species("Achyranthes japonica", "Japanses chaff flower", "(Miq.) Nakal", "Amaranthaceae", "Caryophyllales", "Streptophyta", "ICN")
+	>>> from phylotastic_services import list_species
+	>>> species_obj1 = list_species.Species("Acer ginnala", "Amur maple", "Maxim.", "Aceraceae","Sapindales", "Streptophyta", "ICN")
+	>>> species_obj2 = list_species.Species("Achyranthes japonica", "Japanses chaff flower", "(Miq.) Nakal", "Amaranthaceae", "Caryophyllales", "Streptophyta", "ICN")
 	>>> species_list2 = [species_obj1, species_obj2]
  	>>> result = phylotastic_services.update_list_data("abusalehmdtayeen@gmail.com", 57, species_list2,"ya29.Glt8BAvKKpEsU165zpbMEEoAGZOXh_qqSVln8Rsc_BTPLtQjURNUwbd7Dv6mzIvG6A6DJjgC3fyv9uIJ3wkH_9Rbu4W7zXvyNEu9Y-T2FrdXOiabiSEngGbBl19c")
 	>>> print result
@@ -311,7 +318,10 @@ def get_list_info(userId=None, listId=None, accessToken=None, verbose=None, cont
  	if response.status_code == requests.codes.ok:    
  		return response.text
  	else:
- 		return json.dumps({"status_code": 500, "message": "Error connecting with species list server"})
+ 		resp_json = json.loads(response.text)
+ 		if 'message' in resp_json:
+ 			msg = resp_json['message']
+ 		return json.dumps({"status_code": 500, "message": "Error connecting with species list server. "+msg})
 	
 #----------------------------------------------
 def remove_list_info(userId, listId, accessToken):

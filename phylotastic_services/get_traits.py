@@ -144,7 +144,7 @@ def get_traits_EOL(inputSpeciesList):
 	response['status_code'] = 200
 	response['species'] = outputSpeciesList
 
-	return response
+	return json.dumps(response)
 
 #====================================================
 def get_traits_ECOS(inputSpeciesList):
@@ -203,7 +203,7 @@ def get_traits_ECOS(inputSpeciesList):
 		response['status_code'] = 200
 		response['species'] = outputSpeciesList
 
-	return response
+	return json.dumps(response)
 
 #----------------------------------------------
 #https://ecos.fws.gov/ecp0/TessQuery?request=query&xquery=/SPECIES_DETAIL[SCINAME=%22Panthera%20tigris%22]

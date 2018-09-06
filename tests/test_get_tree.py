@@ -8,6 +8,7 @@ class TestGetTree(TestCase):
         Testing getting a phylogenetic tree from a list of taxa using Open Tree of Life APIs
         """
         result = phylotastic_services.get_tree_OpenTree(taxa=["Setophaga striata","Setophaga magnolia","Setophaga angelae","Setophaga plumbea","Setophaga virens"])
+        result = json.loads(result)
 
         self.assertTrue(u'newick' in result)
         #self.assertTrue(u'newick' in result)
@@ -23,6 +24,7 @@ class TestGetTree(TestCase):
         Testing getting a phylogenetic tree from a list of taxa using Phylomatic API
         """
         result = phylotastic_services.get_tree_Phylomatic(taxa=["Annona cherimola", "Annona muricata", "Quercus robur", "Shorea parvifolia"])
+        result = json.loads(result)
         
         self.assertTrue('newick' in result)
         self.assertTrue('Annona_muricata' in result[u'newick'])

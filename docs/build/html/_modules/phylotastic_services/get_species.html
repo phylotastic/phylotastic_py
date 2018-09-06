@@ -153,7 +153,7 @@
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
 <span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_all_species(&quot;Vulpes&quot;)</span>
 <span class="sd">	&gt;&gt;&gt; print result</span>
-<span class="sd">	{&quot;execution_time&quot;: &quot;11.33&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T18:09:04.415738&quot;, &quot;taxon&quot;: &quot;Vulpes&quot;, &quot;total_names&quot;: 19, &quot;service_url&quot;: &quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/all_species?taxon=Vulpes&quot;, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [&quot;Vulpes mathisoni&quot;, &quot;Vulpes minimus&quot;, &quot;Vulpes cascadensis&quot;, &quot;Vulpes kernensis&quot;, &quot;Vulpes environmental sample&quot;, &quot;Vulpes stenognathus&quot;, &quot;Vulpes bengalensis&quot;, &quot;Vulpes pallida&quot;, &quot;Vulpes cana&quot;, &quot;Vulpes chama&quot;, &quot;Vulpes vulpes&quot;, &quot;Vulpes lagopus&quot;, &quot;Vulpes corsac&quot;, &quot;Vulpes rueppellii&quot;, &quot;Vulpes zerda&quot;, &quot;Vulpes velox&quot;, &quot;Vulpes macrotis&quot;, &quot;Vulpes sp.&quot;, &quot;Vulpes ferrilata&quot;], &quot;service_documentation&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-6&quot;}</span>
+<span class="sd">	{&quot;execution_time&quot;: &quot;11.33&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T18:09:04.415738&quot;, &quot;taxon&quot;: &quot;Vulpes&quot;, &quot;total_names&quot;: 19,  &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [&quot;Vulpes mathisoni&quot;, &quot;Vulpes minimus&quot;, &quot;Vulpes cascadensis&quot;, &quot;Vulpes kernensis&quot;, &quot;Vulpes environmental sample&quot;, &quot;Vulpes stenognathus&quot;, &quot;Vulpes bengalensis&quot;, &quot;Vulpes pallida&quot;, &quot;Vulpes cana&quot;, &quot;Vulpes chama&quot;, &quot;Vulpes vulpes&quot;, &quot;Vulpes lagopus&quot;, &quot;Vulpes corsac&quot;, &quot;Vulpes rueppellii&quot;, &quot;Vulpes zerda&quot;, &quot;Vulpes velox&quot;, &quot;Vulpes macrotis&quot;, &quot;Vulpes sp.&quot;, &quot;Vulpes ferrilata&quot;]}</span>
 
 <span class="sd">    :param inputTaxon: Name of a taxon for which species needs to be found. </span>
 <span class="sd">    :type inputTaxon: string.  </span>
@@ -197,10 +197,10 @@
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;creation_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creation_time</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;total_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">len_splist</span>
- 	<span class="c1">#final_result[&#39;source_urls&#39;] = [&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy&quot;]</span>
+ 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;source_urls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy&quot;</span><span class="p">]</span>
  	<span class="c1">#final_result[&#39;source_version&#39;] = &quot;ott2.9draft12&quot;</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;service_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_url</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;service_documentation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_documentation</span>
+ 	<span class="c1">#final_result[&#39;service_url&#39;] = service_url</span>
+ 	<span class="c1">#final_result[&#39;service_documentation&#39;] = service_documentation</span>
 
  	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span></div>
 
@@ -215,7 +215,7 @@
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
 <span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_country_species(&quot;Vulpes&quot;, &quot;Nepal&quot;)</span>
 <span class="sd">	&gt;&gt;&gt; print result</span>
-<span class="sd">	{&quot;execution_time&quot;: &quot;16.23&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T18:20:12.978379&quot;, &quot;taxon&quot;: &quot;Vulpes&quot;, &quot;total_names&quot;: 2, &quot;country&quot;: &quot;Nepal&quot;, &quot;service_url&quot;: &quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/country_species?taxon=Vulpes&amp;country=Nepal&quot;, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [&quot;Vulpes bengalensis&quot;, &quot;Vulpes ferrilata&quot;], &quot;service_documentation&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7&quot;}</span>
+<span class="sd">	{&quot;execution_time&quot;: &quot;16.23&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T18:20:12.978379&quot;, &quot;taxon&quot;: &quot;Vulpes&quot;, &quot;total_names&quot;: 2, &quot;country&quot;: &quot;Nepal&quot;, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [&quot;Vulpes bengalensis&quot;, &quot;Vulpes ferrilata&quot;]}</span>
 
 <span class="sd">    :param inputTaxon: Name of a taxon for which species needs to be found. </span>
 <span class="sd">    :type inputTaxon: string. </span>
@@ -227,8 +227,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
  	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
- 	<span class="n">service_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;country_species?taxon=&quot;</span> <span class="o">+</span> <span class="n">inputTaxon</span> <span class="o">+</span> <span class="s2">&quot;&amp;country=&quot;</span> <span class="o">+</span> <span class="n">inputCountry</span> 
- 	<span class="n">service_documentation</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7&quot;</span>
+ 	<span class="c1">#service_url = base_url + &quot;country_species?taxon=&quot; + inputTaxon + &quot;&amp;country=&quot; + inputCountry </span>
+ 	<span class="c1">#service_documentation = &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-7&quot;</span>
 
  	<span class="n">ott_id</span> <span class="o">=</span> <span class="n">match_taxon</span><span class="p">(</span><span class="n">inputTaxon</span><span class="p">)</span>
  	<span class="k">if</span> <span class="n">ott_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -265,10 +265,10 @@
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;creation_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creation_time</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;total_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">len_splist</span>
- 	<span class="c1">#final_result[&#39;source_urls&#39;] = [&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy&quot;, &quot;https://www.inaturalist.org&quot;]</span>
+ 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;source_urls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy&quot;</span><span class="p">,</span> <span class="s2">&quot;https://www.inaturalist.org&quot;</span><span class="p">]</span>
  	<span class="c1">#final_result[&#39;source_version&#39;] = &quot;ott2.9draft12&quot;</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;service_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_url</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;service_documentation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_documentation</span>	
+ 	<span class="c1">#final_result[&#39;service_url&#39;] = service_url</span>
+ 	<span class="c1">#final_result[&#39;service_documentation&#39;] = service_documentation	</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;country&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputCountry</span>
 
  	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span></div>
@@ -402,7 +402,7 @@
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
 <span class="sd">	&gt;&gt;&gt; result = phylotastic_services.get_genome_species(&quot;Felidae&quot;)</span>
 <span class="sd">	&gt;&gt;&gt; print result</span>
-<span class="sd">	{&quot;execution_time&quot;: &quot;10.43&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2017-07-02T21:12:17.248633&quot;, &quot;taxon&quot;: &quot;Felidae&quot;, &quot;total_names&quot;: 6, &quot;source_urls&quot;: [&quot;https://www.ncbi.nlm.nih.gov/taxonomy&quot;, &quot;https://www.ncbi.nlm.nih.gov/genome&quot;], &quot;service_url&quot;: &quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/ncbi/genome_species?taxon=Felidae&quot;, &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [&quot;Panthera tigris amoyensis&quot;, &quot;Panthera tigris altaica&quot;, &quot;Acinonyx jubatus&quot;, &quot;Panthera tigris&quot;, &quot;Panthera pardus&quot;, &quot;Felis catus&quot;], &quot;service_documentation&quot;: &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-9&quot;}</span>
+<span class="sd">	{&quot;execution_time&quot;: &quot;35.01&quot;, &quot;status_code&quot;: 200, &quot;creation_time&quot;: &quot;2018-09-05T15:53:29.247569&quot;, &quot;taxon&quot;: &quot;Felidae&quot;, &quot;total_names&quot;: 7, &quot;source_urls&quot;: [&quot;https://www.ncbi.nlm.nih.gov/taxonomy&quot;, &quot;https://www.ncbi.nlm.nih.gov/genome&quot;], &quot;message&quot;: &quot;Success&quot;, &quot;species&quot;: [&quot;Panthera tigris amoyensis&quot;, &quot;Panthera tigris altaica&quot;, &quot;Acinonyx jubatus&quot;, &quot;Puma concolor&quot;, &quot;Panthera tigris&quot;, &quot;Panthera pardus&quot;, &quot;Felis catus&quot;]}</span>
 
 <span class="sd">    :param inputTaxon: Name of a taxon for which species needs to be found. </span>
 <span class="sd">    :type inputTaxon: string. </span>
@@ -412,7 +412,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>	
  	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
  	<span class="n">service_url</span> <span class="o">=</span> <span class="s2">&quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/ncbi/genome_species?taxon=&quot;</span> <span class="o">+</span> <span class="n">inputTaxon</span>
- 	<span class="n">service_documentation</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-9&quot;</span>
+ 	<span class="c1">#service_documentation = &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-9&quot;</span>
 
  	<span class="n">final_result</span> <span class="o">=</span> <span class="p">{}</span>	
  	<span class="n">g_response</span> <span class="o">=</span> <span class="n">find_genome_ids</span><span class="p">(</span><span class="n">inputTaxon</span><span class="p">)</span>
@@ -442,7 +442,7 @@
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;source_urls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://www.ncbi.nlm.nih.gov/taxonomy&quot;</span><span class="p">,</span> <span class="s2">&quot;https://www.ncbi.nlm.nih.gov/genome&quot;</span><span class="p">]</span>
  	<span class="c1">#final_result[&#39;source_version&#39;] = &quot;ott2.9draft12&quot;</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;service_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_url</span>
- 	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;service_documentation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_documentation</span>	
+ 	<span class="c1">#final_result[&#39;service_documentation&#39;] = service_documentation	</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;taxon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputTaxon</span>
 
  	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span></div>

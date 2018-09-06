@@ -42,7 +42,10 @@
           <div class="body" role="main">
             
   <h1>Source code for phylotastic_services.extract_names</h1><div class="highlight"><pre>
-<span></span><span class="c1">#find scientific names service: version 0.1</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">**extract_names** Module is for extracting scientific names from free-form text or URL</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">requests</span>
@@ -312,7 +315,7 @@
 <span class="sd">	For example:</span>
 <span class="sd">	</span>
 <span class="sd">	&gt;&gt;&gt; import phylotastic_services</span>
-<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.extract_names_TEXT(&quot;Formica polyctena is a species of European red wood ant in the genus Formica.&quot; &quot;taxonfinder&quot;)</span>
+<span class="sd">	&gt;&gt;&gt; result = phylotastic_services.extract_names_TEXT(&quot;Formica polyctena is a species of European red wood ant in the genus Formica.&quot;, &quot;taxonfinder&quot;)</span>
 <span class="sd">	&gt;&gt;&gt; print result</span>
 <span class="sd">	{&quot;status_code&quot;: 200, &quot;scientificNames&quot;: [&quot;Formica polyctena&quot;], &quot;meta_data&quot;: {&quot;execution_time&quot;: 0.29, &quot;creation_time&quot;: &quot;2018-05-20T18:59:10.951318&quot;, &quot;source_urls&quot;: [&quot;http://taxonfinder.org/&quot;]}, &quot;total_names&quot;: 1, &quot;message&quot;: &quot;Success&quot;}</span>
 
@@ -328,17 +331,19 @@
     <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;gnrd&quot;</span><span class="p">:</span>
        <span class="n">final_result</span> <span class="o">=</span> <span class="n">get_sn_text</span><span class="p">(</span><span class="n">inputTEXT</span><span class="p">,</span> <span class="n">sEngine</span><span class="p">)</span>
+       <span class="n">src_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://gnrd.globalnames.org/&quot;</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;taxonfinder&quot;</span><span class="p">:</span>
        <span class="n">final_result</span> <span class="o">=</span> <span class="n">get_tf_sn_text</span><span class="p">(</span><span class="n">inputTEXT</span><span class="p">)</span>
+       <span class="n">src_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;http://taxonfinder.org/&quot;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-       <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Error: Invalid source name&quot;</span><span class="p">}</span> 
+       <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Error: Invalid source name&quot;</span><span class="p">})</span> 
         
     <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>
     
     <span class="c1">#service result creation time</span>
     <span class="n">creation_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-    <span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;creation_time&#39;</span><span class="p">:</span> <span class="n">creation_time</span><span class="p">,</span> <span class="s1">&#39;execution_time&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)),</span> <span class="s1">&#39;source_urls&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;http://gnrd.globalnames.org/&quot;</span><span class="p">]</span> <span class="p">}</span>
+    <span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;creation_time&#39;</span><span class="p">:</span> <span class="n">creation_time</span><span class="p">,</span> <span class="s1">&#39;execution_time&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)),</span> <span class="s1">&#39;source_urls&#39;</span><span class="p">:</span> <span class="n">src_urls</span> <span class="p">}</span>
 
     <span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;meta_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">meta_data</span>
 

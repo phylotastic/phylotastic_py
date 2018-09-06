@@ -5,10 +5,10 @@ import phylotastic_services
 class TestCommonNames(TestCase):
     def test_get_scientific_names_ex1(self):
         """
-        Testing Example 1: Getting scientific names of a list of species from their common names (vernacular names)
+        Testing Example 1 (NCBI): Getting scientific names of a list of species from their common names (vernacular names)
         """
         result = phylotastic_services.get_scientific_names(["american crow", "rock dove", "american robin", "barn owl", "bald eagle"])
-        result_list = json.loads(result['result'])
+        result_list = json.loads(result)['result']
         for result in result_list: 
             if result['searched_name'] == "rock dove":
                self.assertTrue(u'Columba livia' in result['matched_names'][0]['scientific_name'])
@@ -23,7 +23,7 @@ class TestCommonNames(TestCase):
         Testing Example 2 (ITIS): Getting scientific names of a list of species from their common names (vernacular names)
         """
         result = phylotastic_services.get_scientific_names(["domestic cattle","blue whale"], source="ITIS")
-        result_list = json.loads(result['result'])
+        result_list = json.loads(result)['result']
         for result in result_list: 
             if result['searched_name'] == "domestic cattle":
                self.assertTrue(u'Bos taurus' in result['matched_names'][0]['scientific_name'])
@@ -37,7 +37,7 @@ class TestCommonNames(TestCase):
         Testing Example 3 (TROPICOS): Getting scientific names of a list of species from their common names (vernacular names)
         """
         result = phylotastic_services.get_scientific_names(["ginger", "garlic"], source="TROPICOS")
-        result_list = result['result']
+        result_list = json.loads(result)['result']
         for result in result_list: 
             if result['searched_name'] == "ginger":
                self.assertTrue(u'Zingiber officinale' in result['matched_names'][0]['scientific_name'])

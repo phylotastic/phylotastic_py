@@ -4,6 +4,7 @@
 
 import json
 import time
+import types
 import urllib
 import requests
 import os
@@ -27,7 +28,7 @@ from resolve_names import resolve_names_OT
 megatree_plants = ["R20120829", "smith2011", "zanne2014"]
 megatree_mammals = ["binindaemonds2007"]
 
-api_url = "https://api.opentreeoflife.org/v2/tree_of_life/"
+api_url = "https://api.opentreeoflife.org/v3/tree_of_life/"
 headers = {'content-type': 'application/json'}
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
@@ -42,57 +43,64 @@ def get_inducedSubtree(ottIdList):
     }
     jsonPayload = json.dumps(payload_data)
     
-    response = requests.post(resource_url, data=jsonPayload, headers=headers)
-    
+    #----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool due to DNS resolver problem--------
+    try: 
+       response = requests.post(resource_url, data=jsonPayload, headers=headers)
+    except requests.exceptions.ConnectionError:
+       alt_url = google_dns.alt_service_url(resource_url)
+       response = requests.post(alt_url, data=jsonPayload, headers=headers, verify=False)        
+    #----------------------------------------------
+
     newick_tree_str = ""
+    studies = ""
     inducedtree_info = {}
 
     if response.status_code == requests.codes.ok:
  		data_json = json.loads(response.text)
- 		newick_tree_str = data_json['newick']		
+ 		newick_tree_str = data_json['newick']
+ 		studies = data_json['supporting_studies']		
  		inducedtree_info['message'] = "Success"
  		inducedtree_info['status_code'] = 200
     else:
-        #print response.text
-        try: 
-         	error_json = json.loads(response.text)
-         	error_msg = error_json['message']
-         	if 'Not enough valid node or ott ids' in error_msg:
- 				inducedtree_info['message'] = error_msg#"Error: Response error from OpenTreeofLife- 'Not enough valid node or ott ids provided to construct a subtree (there must be at least two)'"
-         	else:
- 		 		inducedtree_info['message'] = error_msg
+ 		try: 
+ 			error_msg = str(response.text)
+ 			if 'node_id' in error_msg:
+ 				st_indx = error_msg.find("node_id")  #"[/v3/tree_of_life/induced_subtree] Error: node_id 'ott4284156' was not found!"
+ 				en_indx = error_msg.find("was")
+ 				missing_node_id_str = error_msg[st_indx+9: en_indx-2]
+ 				missing_ott_id = int(missing_node_id_str.replace("ott", ""))
+ 				ottIdList.remove(missing_ott_id)
+ 				return ottIdList
+ 			else:
+ 				error_json = json.loads(error_msg)
+ 				error_msg = error_json['message']
+ 		 		inducedtree_info['message'] = "OpenTreeofLife API Error: " + error_msg
          	
-     	except ValueError:
-     		inducedtree_info['message'] =  "Error: Decoding of JSON error message from induced_subtree method failed"
+ 		except Exception as e:
+ 			inducedtree_info['message'] =  "OpenTreeofLife API Error: " + str(e)
      		 	
-        inducedtree_info['status_code'] = response.status_code
+    inducedtree_info['status_code'] = response.status_code
 
     inducedtree_info['newick'] = newick_tree_str
+    inducedtree_info['studies'] = studies
  	
     return inducedtree_info
 
 #-------------------------------------------------------
 def subtree(ottidList):
-    result = {}
-    #single species
-    if len(ottidList) < 2:
-       result['newick'] = ""
-       result['message'] = "Not enough valid nodes provided to construct a subtree (there must be at least two)"
-       result['status_code'] = 500 
-       return result
-    
- 	#multiple species
     induced_response = get_inducedSubtree(ottidList)
-    result = induced_response
+    while type(induced_response) == types.ListType: 
+        induced_response = get_inducedSubtree(induced_response)    
+ 
+    return induced_response 
 
-    return result 
 #-----------------------------------------------------------
+#get newick string for tree from OpenTree
+#input: list of resolved scientific names
 #get newick string for tree from OpenTree
 #input: list of resolved scientific names
 def get_tree_OT(resolvedNames):
  	start_time = time.time() 
- 	#service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-5"
-
  	ListSize = len(resolvedNames)
     
  	response = {}
@@ -122,21 +130,31 @@ def get_tree_OT(resolvedNames):
  			 	return response
  			     
     #get induced_subtree
- 	final_result = subtree(ottIdList)
- 	newick_str = final_result['newick']
- 	if final_result['status_code'] != 200:	
- 		return final_result 
+ 	final_result = {} 
+ 	opentree_result = subtree(ottIdList)
+ 	newick_str = opentree_result['newick']
+ 	if newick_str.find(";") == -1:
+ 		newick_str = newick_str + ";"
+ 	final_result['newick'] = newick_str#newick_str.encode('ascii', 'ignore').decode('ascii')
+ 	if opentree_result['status_code'] != 200:	
+ 		return opentree_result 
  
- 	if final_result['newick'] != "":
+ 	if opentree_result['newick'] != "":
+ 		final_result['message'] = "Success"
+ 		final_result['status_code'] = 200
  		synth_tree_version = get_tree_version()		
  		tree_metadata = get_metadata()
  		tree_metadata['inference_method'] = tree_metadata['inference_method'] + " from synthetic tree with ID "+ synth_tree_version
  		final_result['tree_metadata'] = tree_metadata
  		final_result['tree_metadata']['synthetic_tree_id'] = synth_tree_version
+ 		#https://wiki.python.org/moin/UnicodeDecodeError
+ 		newick_str = newick_str.encode('utf-8', 'ignore')
  		num_tips = get_num_tips(newick_str)
  		if num_tips != -1:
  			final_result['tree_metadata']['num_tips'] = num_tips
- 		study_list = get_supporting_studies(ottIdList) 	
+
+ 		study_ids = opentree_result['studies']
+ 		study_list = get_supporting_studies(study_ids) 	
  		final_result['tree_metadata']['supporting_studies'] = study_list['studies']
  		 
  	end_time = time.time()
@@ -146,7 +164,6 @@ def get_tree_OT(resolvedNames):
  	meta_data = {}
  	meta_data['creation_time'] = creation_time
  	meta_data['execution_time'] = float("{:4.2f}".format(execution_time))
- 	#meta_data['service_documentation'] = service_documentation
  	meta_data['source_urls'] = ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life"]
 
  	final_result['meta_data'] = meta_data  
@@ -155,17 +172,23 @@ def get_tree_OT(resolvedNames):
 
 #--------------------------------------------
 #get supporting studies of the tree from OpenTree
-def get_supporting_studies(ottIdList):
+def get_supporting_studies(studyIdList):
  	resource_url = "http://phylo.cs.nmsu.edu:5006/phylotastic_ws/md/studies"    
     
  	payload_data = {
- 		'list': ottIdList,
- 		'list_type': "ottids"		
+ 		'list': studyIdList,
+ 		'list_type': "studyids"		
     }
  	jsonPayload = json.dumps(payload_data)
     
- 	response = requests.post(resource_url, data=jsonPayload, headers=headers)
- 	
+    #+++++++++++Solution 2++++++++++++++++
+ 	try: 
+ 		response = requests.post(resource_url, data=jsonPayload, headers=headers)
+ 	except requests.exceptions.ConnectionError:
+ 		alt_url = google_dns.alt_service_url(resource_url)      
+ 		response = requests.post(alt_url, data=jsonPayload, headers=headers, verify=False)        
+    #----------------------------------------------    
+    
  	studies_info = {}
 
  	data_json = json.loads(response.text)  
@@ -193,7 +216,14 @@ def get_num_tips(newick_str):
  		try:
  			tree = Tree(newick_str, format=1)
  		except NewickError as e:
- 			parse_error = True
+ 			#print str(e) 
+ 			if 'quoted_node_names' in str(e):
+ 				try:
+ 					tree = Tree(newick_str, format=1, quoted_node_names=True)
+ 				except NewickError as e:
+ 					parse_error = True	
+ 			else:
+ 				parse_error = True
 
  	if not(parse_error):
  		tips_list = [leaf for leaf in tree.iter_leaves()]            
@@ -205,22 +235,23 @@ def get_num_tips(newick_str):
 
 #-------------------------------------------
 def get_tree_version():
- 	resource_url = "https://api.opentreeoflife.org/v2/tree_of_life/about"    
+ 	resource_url = api_url + "about"    
     
- 	payload_data = {
- 		'study_list': False
- 	}
- 	jsonPayload = json.dumps(payload_data)
-    
- 	response = requests.post(resource_url, data=jsonPayload, headers=headers)
- 	#----------------------------------------------
+ 	#----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool--------------
+    #+++++++++++Solution 2++++++++++++++++
+ 	try: 
+ 		response = requests.post(resource_url)
+ 	except requests.exceptions.ConnectionError:
+ 		alt_url = google_dns.alt_service_url(resource_url)
+ 		response = requests.post(alt_url, verify=False)                
+    #----------------------------------------------
         
  	metadata = {}
  	if response.status_code == requests.codes.ok:
  		data_json = json.loads(response.text)
- 		return data_json['tree_id']
+ 		return data_json['synth_id']
  	else:
- 		return "Error: getting synth tree version"  
+ 		return "" #Error: getting synth tree version"  
 
 #---------------------------------------------
 def get_metadata():
@@ -296,7 +327,7 @@ def get_phylomatic_tree(megatree_id, taxa):
 #--------------------------------------------------------
 #infer the taxonomic context from a list of taxonomic names 
 def get_taxa_context(taxaList):
- 	resource_url = "https://api.opentreeoflife.org/v2/tnrs/infer_context"    
+ 	resource_url = "https://api.opentreeoflife.org/v3/tnrs/infer_context"    
     
  	payload_data = {
      	'names': taxaList
@@ -304,8 +335,15 @@ def get_taxa_context(taxaList):
 
  	jsonPayload = json.dumps(payload_data)
  
- 	response = requests.post(resource_url, data=jsonPayload, headers=headers)
- 	    	
+ 	#----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool due to DNS resolver problem--------------
+ 	try: 
+ 		response = requests.post(resource_url, data=jsonPayload, headers=headers)
+ 	except requests.exceptions.ConnectionError:
+ 		alt_url = google_dns.alt_service_url(resource_url)
+ 		response = requests.post(alt_url, data=jsonPayload, headers=headers, verify=False)        
+   
+ 	#response = requests.post(resource_url, data=jsonPayload, headers={'content-type': 'application/json'})
+        	
  	if response.status_code == requests.codes.ok:
  		json_response = json.loads(response.text)
  		context = json_response['context_name']
@@ -317,9 +355,16 @@ def get_taxa_context(taxaList):
 #-----------------------------------------------
 #get a list of pre-defined taxonomic contexts from OpenTree
 def get_contexts():
- 	resource_url = "https://api.opentreeoflife.org/v2/tnrs/contexts"    
+ 	resource_url = "https://api.opentreeoflife.org/v3/tnrs/contexts"    
     
- 	response = requests.post(resource_url, headers=headers)
+ 	#----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool due to DNS resolver problem--------------
+ 	try: 
+ 		response = requests.post(resource_url, headers=headers)
+ 	except requests.exceptions.ConnectionError:
+ 		alt_url = google_dns.alt_service_url(resource_url)
+ 		response = requests.post(alt_url, headers=headers, verify=False)        
+   
+ 	#response = requests.post(resource_url, headers={'content-type': 'application/json'})
  	
  	if response.status_code == requests.codes.ok:
  		return response.text

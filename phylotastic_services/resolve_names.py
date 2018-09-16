@@ -205,7 +205,7 @@ def resolve_sn_iplant(scNames, do_fuzzy_match, multi_match):
 
 #~~~~~~~~~~~~~~~~~~~~ (OpenTreeofLife-TNRS)~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def resolve_sn_ot(scNames, do_fuzzy_match, multi_match):
-    opentree_api_url = 'https://api.opentreeoflife.org/v2/tnrs/match_names'
+    opentree_api_url = 'https://api.opentreeoflife.org/v3/tnrs/match_names'
   
     payload = {
         'names': scNames,
@@ -247,7 +247,7 @@ def get_resolved_names(results, do_fuzzy_match, multi_match):
  	resolvedNameslist = []
  	
  	for element in results:
- 		input_name = element['id']
+ 		input_name = element['name']
  		match_list = element['matches']
  		mult_matches_list = []
  		for match_result in match_list:
@@ -256,8 +256,8 @@ def get_resolved_names(results, do_fuzzy_match, multi_match):
  			match_str = match_result['matched_name']
  			match_type = match_result['is_approximate_match']
  			match_score = match_result['score']
- 			ott_id = match_result['ot:ottId']
- 			synonyms = match_result['synonyms']
+ 			ott_id = match_result['taxon']['ott_id']
+ 			synonyms = match_result['taxon']['synonyms']
  			if float(match_score) >= 0.75:	     	
  				namesList['matched_name'] = match_str
  				namesList['search_string'] = search_str	 

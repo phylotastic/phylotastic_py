@@ -8,18 +8,20 @@ import datetime
 import urllib
 from os.path import dirname, abspath
 import ConfigParser
+import config
 
 #----------------------------------------------
 headers = {'content-type': 'application/json'}
 
 #-----------------------------------------
 def get_api_key():
-	config = ConfigParser.ConfigParser()
-	current_dir = dirname(abspath(__file__))
+	#config = ConfigParser.ConfigParser()
+	#current_dir = dirname(abspath(__file__))
 	#config.read(current_dir + "/"+ "service.cfg")
-	config.read(current_dir + "/"+ "config.py")
-	
-	api_key = config.get('EOL', 'api_key')
+	#config.read(current_dir + "/"+ "config.py")
+	#api_key = config.get('EOL', 'api_key')
+	API_KEY_CONFIG = config.API_KEY
+	api_key = API_KEY_CONFIG.EOL
 
 	return api_key
 
@@ -99,7 +101,7 @@ def get_eolurls_species(inputSpecies):
 
 #--------------------------------------------   
 def get_species_info(speciesId):
- 	page_url = "http://eol.org/api/pages/1.0.json" 
+ 	page_url = "http://eol.org/api/pages/1.0/" + str(speciesId) +".json" 
  	EOL_API_Key = get_api_key()     
  	payload = {
  		'key': EOL_API_Key,
@@ -205,14 +207,16 @@ def get_images_species(inputSpecies):
  		else: 	
  		 	species_info_json = get_species_info(species_id)
  			if species_info_json is not None:
- 				species_obj['matched_name'] = species_info_json['scientificName']
+ 				species_obj['matched_name'] = species_info_json[str(species_id)]['scientificName']
  				species_obj['eol_id'] = species_id			
- 				dataObjects_lst = species_info_json['dataObjects'] 
- 				length = len(dataObjects_lst)		
- 				if length != 0:
- 					images_species = get_imageObjects(dataObjects_lst)
- 					species_obj['total_images'] = len(images_species)
-
+ 				try:			
+ 					dataObjects_lst = species_info_json[str(species_id)]['dataObjects']
+ 					length = len(dataObjects_lst)		
+ 					if length != 0:
+ 						images_species = get_imageObjects(dataObjects_lst)
+ 				except KeyError as e:
+ 					images_species = []
+ 		species_obj['total_images'] = len(images_species)
  		species_obj['images'] = images_species
  		outputSpeciesList.append(species_obj)
 	
@@ -227,9 +231,6 @@ def get_images_species(inputSpecies):
  	response['status_code'] = 200
  	response['species'] = outputSpeciesList
  	response['source_urls'] = ["http://eol.org"]
- 	#final_result['source_version'] = "ott2.9draft12"
- 	#response['service_url'] = service_url
- 	#response['service_documentation'] = service_documentation
  	response['input_query'] = inputSpecies
 
  	return json.dumps(response)

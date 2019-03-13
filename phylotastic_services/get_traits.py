@@ -14,14 +14,16 @@ headers = {'content-type': 'application/json'}
 base_url = "http://eol.org/api/"
 #-----------------------------------------
 def get_api_key():
-	config = ConfigParser.ConfigParser()
-	current_dir = dirname(abspath(__file__))
+	#config = ConfigParser.ConfigParser()
+	#current_dir = dirname(abspath(__file__))
 	#config.read(current_dir + "/"+ "service.cfg")
-	config.read(current_dir + "/"+ "config.py")
-
-	api_key = config.get('EOL', 'api_key')
+	#config.read(current_dir + "/"+ "config.py")
+	#api_key = config.get('EOL', 'api_key')
+	API_KEY_CONFIG = config.API_KEY
+	api_key = API_KEY_CONFIG.EOL
 
 	return api_key
+
 
 #----------------------------------------------
 #----------------------------------------------

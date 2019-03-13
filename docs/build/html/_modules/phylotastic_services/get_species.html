@@ -55,7 +55,7 @@
 <span class="c1">#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
 <span class="c1">#Open Tree of Life API</span>
 <span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/&quot;</span>
-<span class="n">api_url</span> <span class="o">=</span> <span class="s2">&quot;https://api.opentreeoflife.org/v2/&quot;</span>
+<span class="n">api_url</span> <span class="o">=</span> <span class="s2">&quot;https://api.opentreeoflife.org/v3/&quot;</span>
 <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;content-type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}</span>
 <span class="c1">#NCBI API</span>
 <span class="n">ncbi_url</span> <span class="o">=</span> <span class="s2">&quot;http://eutils.ncbi.nlm.nih.gov/entrez/eutils/&quot;</span>
@@ -76,14 +76,15 @@
     <span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> 
     <span class="k">else</span><span class="p">:</span> 
-        <span class="k">return</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;matches&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ot:ottId&#39;</span><span class="p">]</span>
+        <span class="n">ott_id</span> <span class="o">=</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;matches&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;taxon&#39;</span><span class="p">][</span><span class="s1">&#39;ott_id&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ott_id</span>
 
 <span class="c1">#-------------------------------------------</span>
 <span class="k">def</span> <span class="nf">get_children</span><span class="p">(</span><span class="n">ottId</span><span class="p">):</span>
-    <span class="n">resource_url</span> <span class="o">=</span> <span class="n">api_url</span> <span class="o">+</span> <span class="s2">&quot;taxonomy/taxon&quot;</span>    
+    <span class="n">resource_url</span> <span class="o">=</span> <span class="n">api_url</span> <span class="o">+</span> <span class="s2">&quot;taxonomy/taxon_info&quot;</span>    
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;ott_id&#39;</span><span class="p">:</span> <span class="n">ottId</span><span class="p">,</span>
-        <span class="s1">&#39;include_children&#39;</span><span class="p">:</span> <span class="s1">&#39;true&#39;</span>    
+        <span class="s1">&#39;include_children&#39;</span><span class="p">:</span> <span class="kc">True</span>    
     <span class="p">}</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">resource_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
       
@@ -95,7 +96,7 @@
     <span class="c1">#get all children of each higherankedChildren    </span>
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">highrankChildren</span><span class="p">:</span> 
  		<span class="n">species_lst</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1">#temp species list</span>
- 		<span class="n">res_json</span> <span class="o">=</span> <span class="n">get_children</span><span class="p">(</span><span class="n">child</span><span class="p">[</span><span class="s1">&#39;ot:ottId&#39;</span><span class="p">])</span>
+ 		<span class="n">res_json</span> <span class="o">=</span> <span class="n">get_children</span><span class="p">(</span><span class="n">child</span><span class="p">[</span><span class="s1">&#39;ott_id&#39;</span><span class="p">])</span>
  		<span class="n">children_lst</span> <span class="o">=</span> <span class="n">res_json</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]</span>
  		<span class="k">if</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;genus&#39;</span><span class="p">:</span>
  		 	<span class="c1">#get all species from genus</span>
@@ -115,7 +116,7 @@
     <span class="c1">#get all species of a genus </span>
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">genusChildren</span><span class="p">:</span>
  		<span class="k">if</span> <span class="n">child</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;species&#39;</span><span class="p">:</span>
- 			<span class="n">species_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">[</span><span class="s1">&#39;ot:ottTaxonName&#39;</span><span class="p">])</span>            
+ 			<span class="n">species_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>            
         
     <span class="k">return</span> <span class="n">species_list</span>
 
@@ -163,7 +164,9 @@
  	<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
  	<span class="n">service_url</span> <span class="o">=</span> <span class="n">base_url</span> <span class="o">+</span> <span class="s2">&quot;all_species?taxon=&quot;</span> <span class="o">+</span> <span class="n">inputTaxon</span>
- 	<span class="n">service_documentation</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-6&quot;</span>
+ 	<span class="c1">#service_documentation = &quot;https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-6&quot;</span>
+ 	<span class="n">large_result</span> <span class="o">=</span> <span class="kc">False</span>
+ 	<span class="n">high_rank</span> <span class="o">=</span> <span class="kc">None</span>
 
  	<span class="n">ott_id</span> <span class="o">=</span> <span class="n">match_taxon</span><span class="p">(</span><span class="n">inputTaxon</span><span class="p">)</span>
  	<span class="k">if</span> <span class="n">ott_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -171,18 +174,23 @@
  		<span class="n">len_splist</span> <span class="o">=</span> <span class="mi">0</span>	
  	<span class="k">else</span><span class="p">:</span> <span class="c1">#taxon name matched	</span>
  		<span class="n">species_list</span> <span class="o">=</span> <span class="p">[]</span>
- 		
+ 		<span class="c1">#print ott_id</span>
  		<span class="n">data_json</span> <span class="o">=</span> <span class="n">get_children</span><span class="p">(</span><span class="n">ott_id</span><span class="p">)</span>
+ 		<span class="c1">#print data_json</span>
  		<span class="k">if</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;species&#39;</span> <span class="ow">or</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;subspecies&#39;</span><span class="p">:</span>
- 			<span class="n">species_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;ot:ottTaxonName&#39;</span><span class="p">])</span>		
+ 			<span class="n">species_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>		
  		<span class="k">elif</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;genus&#39;</span><span class="p">:</span>
  			<span class="n">species_list</span> <span class="o">=</span> <span class="n">get_species_from_genus</span><span class="p">(</span><span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">])</span>
+ 		<span class="k">elif</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span> <span class="ow">in</span><span class="p">[</span><span class="s1">&#39;superorder&#39;</span><span class="p">,</span><span class="s1">&#39;order&#39;</span><span class="p">,</span><span class="s1">&#39;suborder&#39;</span><span class="p">,</span><span class="s1">&#39;infraorder&#39;</span><span class="p">,</span><span class="s1">&#39;parvorder&#39;</span><span class="p">,</span><span class="s1">&#39;class&#39;</span><span class="p">,</span><span class="s1">&#39;superclass&#39;</span><span class="p">,</span><span class="s1">&#39;subclass&#39;</span><span class="p">,</span><span class="s1">&#39;infraclass&#39;</span><span class="p">,</span><span class="s1">&#39;parvclass&#39;</span><span class="p">,</span><span class="s1">&#39;phylum&#39;</span><span class="p">,</span><span class="s1">&#39;kingdom&#39;</span><span class="p">,</span><span class="s1">&#39;domain&#39;</span><span class="p">,</span> <span class="s1">&#39;no rank&#39;</span><span class="p">]:</span>
+ 			<span class="n">large_result</span> <span class="o">=</span> <span class="kc">True</span>
+ 			<span class="n">high_rank</span> <span class="o">=</span> <span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;rank&#39;</span><span class="p">]</span>
  		<span class="k">else</span><span class="p">:</span>
- 			<span class="n">species_list</span> <span class="o">=</span> <span class="n">get_species_from_highrank</span><span class="p">(</span><span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">])</span>
+ 			<span class="n">result</span> <span class="o">=</span> <span class="n">get_species_from_highrank</span><span class="p">(</span><span class="n">data_json</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">],</span> <span class="n">conn</span><span class="p">)</span>
+ 			<span class="k">if</span> <span class="s1">&#39;status_code&#39;</span> <span class="ow">in</span> <span class="n">species_list</span><span class="p">:</span> <span class="c1">#error occured in source web service</span>
+ 				<span class="k">return</span> <span class="n">result</span>
+ 			<span class="n">species_list</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">]</span>
+
  		<span class="n">len_splist</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">species_list</span><span class="p">)</span>
-	
- 		<span class="c1">#print species_list</span>
- 		<span class="c1">#species_list.sort()</span>
  	 	
  	<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
  	<span class="n">execution_time</span> <span class="o">=</span> <span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span>    
@@ -191,16 +199,15 @@
 
  	<span class="k">if</span> <span class="n">len_splist</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
  	 	<span class="n">final_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;taxon&#39;</span><span class="p">:</span> <span class="n">inputTaxon</span><span class="p">,</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="n">species_list</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;Success&#39;</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
- 	<span class="k">elif</span> <span class="n">len_splist</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ott_id</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>	
- 	 	<span class="n">final_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;taxon&#39;</span><span class="p">:</span> <span class="n">inputTaxon</span><span class="p">,</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="n">species_list</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;No species found&#39;</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">204</span><span class="p">}</span>
-
+ 	<span class="k">elif</span> <span class="n">len_splist</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ott_id</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">large_result</span><span class="p">:</span>	
+ 	 	<span class="n">final_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;input_taxon&#39;</span><span class="p">:</span> <span class="n">inputTaxon</span><span class="p">,</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="n">species_list</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s1">&#39;No species found&#39;</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+ 	<span class="k">elif</span> <span class="n">len_splist</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ott_id</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">large_result</span><span class="p">:</span>	
+ 	 	<span class="n">final_result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;input_taxon&#39;</span><span class="p">:</span> <span class="n">inputTaxon</span><span class="p">,</span> <span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="s2">&quot;Currently input taxon with &#39;</span><span class="si">%s</span><span class="s2">&#39; rank is not supported&quot;</span><span class="o">%</span><span class="n">high_rank</span><span class="p">,</span> <span class="s1">&#39;status_code&#39;</span><span class="p">:</span> <span class="mi">403</span><span class="p">}</span>
+ 	
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;creation_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creation_time</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;execution_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:4.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">execution_time</span><span class="p">)</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;total_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">len_splist</span>
  	<span class="n">final_result</span><span class="p">[</span><span class="s1">&#39;source_urls&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy&quot;</span><span class="p">]</span>
- 	<span class="c1">#final_result[&#39;source_version&#39;] = &quot;ott2.9draft12&quot;</span>
- 	<span class="c1">#final_result[&#39;service_url&#39;] = service_url</span>
- 	<span class="c1">#final_result[&#39;service_documentation&#39;] = service_documentation</span>
 
  	<span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span></div>
 
@@ -451,10 +458,10 @@
 <span class="c1">#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
 <span class="c1">#if __name__ == &#39;__main__&#39;:</span>
 
-	<span class="c1">#inputTaxon = &#39;Vulpes&#39; #genus</span>
+<span class="c1">#	inputTaxon = &#39;Vulpes&#39; #genus</span>
  	<span class="c1">#inputTaxon = &#39;Felidae&#39; #family</span>
 	<span class="c1">#country = &#39;Nepal&#39;</span>
-	<span class="c1">#print get_all_species(inputTaxon)</span>
+<span class="c1">#	print get_all_species(inputTaxon)</span>
 	<span class="c1">#print get_country_species(inputTaxon, country)</span>
  	<span class="c1">#print get_genome_species(inputTaxon)</span>
 </pre></div>

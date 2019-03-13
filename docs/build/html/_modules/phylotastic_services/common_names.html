@@ -55,7 +55,7 @@
 <span class="kn">import</span> <span class="nn">ConfigParser</span>
 <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">abspath</span>
-
+<span class="kn">import</span> <span class="nn">config</span>
 
 <span class="c1">#----------------------------------------------</span>
 <span class="n">NCBI_base_url</span> <span class="o">=</span> <span class="s2">&quot;http://eutils.ncbi.nlm.nih.gov/entrez/eutils/&quot;</span>
@@ -270,11 +270,13 @@
 
 <span class="c1">#==================================================</span>
 <span class="k">def</span> <span class="nf">get_api_key</span><span class="p">():</span>
-	<span class="n">config</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
-	<span class="n">current_dir</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-	<span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">current_dir</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span><span class="o">+</span> <span class="s2">&quot;service.cfg&quot;</span><span class="p">)</span>
-	
-	<span class="n">tropicos_api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TROPICOS&#39;</span><span class="p">,</span> <span class="s1">&#39;api_key&#39;</span><span class="p">)</span>
+	<span class="c1">#config = ConfigParser.ConfigParser()</span>
+	<span class="c1">#current_dir = dirname(abspath(__file__))</span>
+	<span class="c1">#config.read(current_dir + &quot;/&quot;+ &quot;service.cfg&quot;)</span>
+	<span class="c1">#config.read(current_dir + &quot;/&quot;+ &quot;config.py&quot;)</span>
+	<span class="c1">#api_key = config.get(&#39;EOL&#39;, &#39;api_key&#39;)</span>
+	<span class="n">API_KEY_CONFIG</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">API_KEY</span>
+	<span class="n">tropicos_api_key</span> <span class="o">=</span> <span class="n">API_KEY_CONFIG</span><span class="o">.</span><span class="n">TROPICOS</span>
 
 	<span class="k">return</span> <span class="n">tropicos_api_key</span>
 

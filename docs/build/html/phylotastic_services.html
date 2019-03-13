@@ -81,6 +81,24 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-phylotastic_services.config">
+<span id="phylotastic-services-config-module"></span><h2>phylotastic_services.config module<a class="headerlink" href="#module-phylotastic_services.config" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="phylotastic_services.config.API_KEY">
+<em class="property">class </em><code class="descclassname">phylotastic_services.config.</code><code class="descname">API_KEY</code><a class="reference internal" href="_modules/phylotastic_services/config.html#API_KEY"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.config.API_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="phylotastic_services.config.API_KEY.EOL">
+<code class="descname">EOL</code><em class="property"> = ‘b6499be78b900c60fb28d38715650e826240ba7b’</em><a class="headerlink" href="#phylotastic_services.config.API_KEY.EOL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="phylotastic_services.config.API_KEY.TROPICOS">
+<code class="descname">TROPICOS</code><em class="property"> = ‘d911118e-2664-457e-bfab-c024b38a7efb’</em><a class="headerlink" href="#phylotastic_services.config.API_KEY.TROPICOS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-phylotastic_services.extract_names">
 <span id="phylotastic-services-extract-names-module"></span><h2>phylotastic_services.extract_names module<a class="headerlink" href="#module-phylotastic_services.extract_names" title="Permalink to this headline">¶</a></h2>
 <p><strong>extract_names</strong> Module is for extracting scientific names from free-form text or URL</p>
@@ -313,32 +331,6 @@
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="phylotastic_services.get_traits.get_traits_EOL">
-<code class="descclassname">phylotastic_services.get_traits.</code><code class="descname">get_traits_EOL</code><span class="sig-paren">(</span><em>inputSpeciesList</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/get_traits.html#get_traits_EOL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.get_traits.get_traits_EOL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets habitat and conservation status of a list of species from EOL traitsbank</p>
-<blockquote>
-<div><p><strong>Note</strong>&gt; maximum <code class="docutils literal"><span class="pre">30</span></code> species allowed as input.</p>
-<p>Example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">get_traits_EOL</span><span class="p">([</span><span class="s2">&quot;Balaenoptera musculus&quot;</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
-<span class="go">{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;meta_data&quot;: {&quot;execution_time&quot;: 0.65, &quot;creation_time&quot;: &quot;2018-06-10T17:01:10.884018&quot;, &quot;source_urls&quot;: [&quot;http://eol.org/traitbank&quot;]}, &quot;species&quot;: [{&quot;habitats&quot;: [&quot;temperate&quot;, &quot;tropical&quot;, &quot;blowhole&quot;, &quot;pelagic zone&quot;, &quot;oceanic zone&quot;, &quot;continental shelf&quot;, &quot;saline water&quot;, &quot;marine habitat&quot;, &quot;aquatic habitat&quot;, &quot;strait&quot;, &quot;ocean&quot;, &quot;coast&quot;, &quot;peninsula&quot;, &quot;plateau&quot;, &quot;sea&quot;, &quot;island&quot;, &quot;marine biome&quot;, &quot;ridge&quot;, &quot;bay&quot;], &quot;searched_name&quot;: &quot;Balaenoptera musculus&quot;, &quot;conservation_status&quot;: &quot;endangered&quot;, &quot;eol_id&quot;: 328574, &quot;matched_name&quot;: &quot;Balaenoptera musculus (Linnaeus, 1758)&quot;}]}</span>
-</pre></div>
-</div>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inputSpeciesList</strong> (<em>A list of strings.</em>) – A list of species for which to get habitat and conservation status.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A json formatted string – with habitat and conservation status of each species.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 <div class="section" id="module-phylotastic_services.get_tree">
 <span id="phylotastic-services-get-tree-module"></span><h2>phylotastic_services.get_tree module<a class="headerlink" href="#module-phylotastic_services.get_tree" title="Permalink to this headline">¶</a></h2>
@@ -352,7 +344,7 @@
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">phylotastic_services</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">phylotastic_services</span><span class="o">.</span><span class="n">get_tree_OpenTree</span><span class="p">(</span><span class="n">taxa</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Setophaga striata&quot;</span><span class="p">,</span><span class="s2">&quot;Setophaga magnolia&quot;</span><span class="p">,</span><span class="s2">&quot;Setophaga angelae&quot;</span><span class="p">,</span><span class="s2">&quot;Setophaga plumbea&quot;</span><span class="p">,</span><span class="s2">&quot;Setophaga virens&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">result</span>
-<span class="go">{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;meta_data&quot;: {&quot;execution_time&quot;: 2.3, &quot;creation_time&quot;: &quot;2018-09-05T16:01:31.981435&quot;, &quot;source_urls&quot;: [&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life&quot;]}, &quot;tree_metadata&quot;: {&quot;alignment_method&quot;: &quot;NA&quot;, &quot;character_matrix&quot;: &quot;NA&quot;, &quot;rooted&quot;: true, &quot;supporting_studies&quot;: [{&quot;PublicationYear&quot;: 2010, &quot;FocalCladeTaxonName&quot;: &quot;Parulidae&quot;, &quot;Publication&quot;: &quot;Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree6024&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1016/j.ympev.2010.07.018&quot;, &quot;DataRepository&quot;: &quot;&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;pg_2591&quot;}, {&quot;PublicationYear&quot;: 2015, &quot;FocalCladeTaxonName&quot;: &quot;Passeriformes&quot;, &quot;Publication&quot;: &quot;Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree1&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1642/auk-14-110.1&quot;, &quot;DataRepository&quot;: &quot;http://datadryad.org/resource/doi:10.5061/dryad.pb787&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;ot_770&quot;}], &quot;anastomosing&quot;: false, &quot;branch_lengths_type&quot;: null, &quot;consensus_type&quot;: &quot;NA&quot;, &quot;inference_method&quot;: &quot;induced_subtree from synthetic tree with ID opentree9.1&quot;, &quot;branch_support_type&quot;: null, &quot;num_tips&quot;: 5, &quot;gene_or_species&quot;: &quot;species&quot;, &quot;topology_id&quot;: &quot;NA&quot;, &quot;synthetic_tree_id&quot;: &quot;opentree9.1&quot;}, &quot;newick&quot;: &quot;(Setophaga_magnolia_ott532751,Setophaga_striata_ott60236,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_virens_ott1014098)Setophaga_ott285198;&quot;}</span>
+<span class="go">{&quot;status_code&quot;: 200, &quot;message&quot;: &quot;Success&quot;, &quot;meta_data&quot;: {&quot;execution_time&quot;: 2.46, &quot;creation_time&quot;: &quot;2019-03-13T16:56:32.243413&quot;, &quot;source_urls&quot;: [&quot;https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life&quot;]}, &quot;tree_metadata&quot;: {&quot;alignment_method&quot;: &quot;NA&quot;, &quot;character_matrix&quot;: &quot;NA&quot;, &quot;rooted&quot;: true, &quot;supporting_studies&quot;: [{&quot;PublicationYear&quot;: 2015, &quot;FocalCladeTaxonName&quot;: &quot;Aves&quot;, &quot;Publication&quot;: &quot;Burleigh, J. Gordon, Rebecca T. Kimball, Edward L. Braun. 2015. Building the avian tree of life using a large-scale, sparse supermatrix. Molecular Phylogenetics and Evolution 84: 53-63&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree1&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1016/j.ympev.2014.12.003&quot;, &quot;DataRepository&quot;: &quot;http://dx.doi.org/10.5061/dryad.r6b87&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;ot_521&quot;}, {&quot;PublicationYear&quot;: 2012, &quot;FocalCladeTaxonName&quot;: &quot;Aves&quot;, &quot;Publication&quot;: &quot;Jetz, W., G. H. Thomas, J. B. Joy, K. Hartmann, A. O. Mooers. 2012. The global diversity of birds in space and time. Nature 491 (7424): 444-448&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree2&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1038/nature11631&quot;, &quot;DataRepository&quot;: &quot;&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;ot_809&quot;}, {&quot;PublicationYear&quot;: 2015, &quot;FocalCladeTaxonName&quot;: &quot;Passeriformes&quot;, &quot;Publication&quot;: &quot;Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree1&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1642/auk-14-110.1&quot;, &quot;DataRepository&quot;: &quot;http://datadryad.org/resource/doi:10.5061/dryad.pb787&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;ot_770&quot;}, {&quot;PublicationYear&quot;: 2010, &quot;FocalCladeTaxonName&quot;: &quot;Parulidae&quot;, &quot;Publication&quot;: &quot;Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.&quot;, &quot;CandidateTreeForSynthesis&quot;: &quot;tree6024&quot;, &quot;PublicationDOI&quot;: &quot;http://dx.doi.org/10.1016/j.ympev.2010.07.018&quot;, &quot;DataRepository&quot;: &quot;&quot;, &quot;Curator&quot;: &quot;Joseph W. Brown&quot;, &quot;PublicationIdentifier&quot;: &quot;pg_2591&quot;}], &quot;anastomosing&quot;: false, &quot;branch_lengths_type&quot;: null, &quot;consensus_type&quot;: &quot;NA&quot;, &quot;inference_method&quot;: &quot;induced_subtree from synthetic tree with ID opentree10.4&quot;, &quot;branch_support_type&quot;: null, &quot;num_tips&quot;: 5, &quot;gene_or_species&quot;: &quot;species&quot;, &quot;topology_id&quot;: &quot;NA&quot;, &quot;synthetic_tree_id&quot;: &quot;opentree10.4&quot;}, &quot;newick&quot;: &quot;((((Setophaga_striata_ott60236)mrcaott22834ott60236)mrcaott22834ott455853)mrcaott22834ott285200,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_magnolia_ott532751,Setophaga_virens_ott1014098)Setophaga_ott285198;&quot;}</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -392,6 +384,24 @@
 </tbody>
 </table>
 </dd></dl>
+
+</div>
+<div class="section" id="module-phylotastic_services.google_dns">
+<span id="phylotastic-services-google-dns-module"></span><h2>phylotastic_services.google_dns module<a class="headerlink" href="#module-phylotastic_services.google_dns" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="phylotastic_services.google_dns.alt_service_url">
+<code class="descclassname">phylotastic_services.google_dns.</code><code class="descname">alt_service_url</code><span class="sig-paren">(</span><em>service_url</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/google_dns.html#alt_service_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.google_dns.alt_service_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.google_dns.get_ip_address">
+<code class="descclassname">phylotastic_services.google_dns.</code><code class="descname">get_ip_address</code><span class="sig-paren">(</span><em>service_root</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/google_dns.html#get_ip_address"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.google_dns.get_ip_address" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="phylotastic_services.google_dns.ip_address_matcher">
+<code class="descclassname">phylotastic_services.google_dns.</code><code class="descname">ip_address_matcher</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/phylotastic_services/google_dns.html#ip_address_matcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#phylotastic_services.google_dns.ip_address_matcher" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-phylotastic_services.list_species">
@@ -867,11 +877,13 @@ consists of data about a particular species.</p>
 <li><a class="reference internal" href="#">phylotastic_services package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.common_names">phylotastic_services.common_names module</a></li>
+<li><a class="reference internal" href="#module-phylotastic_services.config">phylotastic_services.config module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.extract_names">phylotastic_services.extract_names module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.get_info">phylotastic_services.get_info module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.get_species">phylotastic_services.get_species module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.get_traits">phylotastic_services.get_traits module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.get_tree">phylotastic_services.get_tree module</a></li>
+<li><a class="reference internal" href="#module-phylotastic_services.google_dns">phylotastic_services.google_dns module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.list_species">phylotastic_services.list_species module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.resolve_names">phylotastic_services.resolve_names module</a></li>
 <li><a class="reference internal" href="#module-phylotastic_services.study_tree">phylotastic_services.study_tree module</a></li>

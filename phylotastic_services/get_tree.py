@@ -28,7 +28,7 @@ from resolve_names import resolve_names_OT
 megatree_plants = ["R20120829", "smith2011", "zanne2014"]
 megatree_mammals = ["binindaemonds2007"]
 
-api_url = "https://api.opentreeoflife.org/v3/tree_of_life/"
+api_url = "https://api.opentreeoflife.org/v3/"
 headers = {'content-type': 'application/json'}
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
@@ -36,21 +36,15 @@ headers = {'content-type': 'application/json'}
 #input: list (comma separated) of ottids (long)   
 #output: json object with inducedsubtree in newick key and status message in message key
 def get_inducedSubtree(ottIdList):
-    resource_url = api_url + "induced_subtree"    
+    resource_url = api_url + "tree_of_life/induced_subtree"    
     
     payload_data = {
      	'ott_ids': ottIdList
     }
     jsonPayload = json.dumps(payload_data)
     
-    #----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool due to DNS resolver problem--------
-    try: 
-       response = requests.post(resource_url, data=jsonPayload, headers=headers)
-    except requests.exceptions.ConnectionError:
-       alt_url = google_dns.alt_service_url(resource_url)
-       response = requests.post(alt_url, data=jsonPayload, headers=headers, verify=False)        
-    #----------------------------------------------
-
+    response = requests.post(resource_url, data=jsonPayload, headers=headers)
+    
     newick_tree_str = ""
     studies = ""
     inducedtree_info = {}
@@ -154,8 +148,9 @@ def get_tree_OT(resolvedNames):
  			final_result['tree_metadata']['num_tips'] = num_tips
 
  		study_ids = opentree_result['studies']
+ 		#print study_ids
  		study_list = get_supporting_studies(study_ids) 	
- 		final_result['tree_metadata']['supporting_studies'] = study_list['studies']
+ 		final_result['tree_metadata']['supporting_studies'] = study_list
  		 
  	end_time = time.time()
  	execution_time = end_time-start_time
@@ -171,40 +166,95 @@ def get_tree_OT(resolvedNames):
  	return final_result
 
 #--------------------------------------------
-#get supporting studies of the tree from OpenTree
-def get_supporting_studies(studyIdList):
- 	resource_url = "https://phylo.cs.nmsu.edu/phylotastic_ws/md/studies"    
+#------------------------(OpenTree-studies)------------------------------
+def get_study_info(studyid):
+    opentree_method_url = api_url + "studies/find_studies"
     
- 	payload_data = {
- 		'list': studyIdList,
- 		'list_type': "studyids"		
+    payload = {
+        'property': 'ot:studyId',
+        'value': studyid,
+        'verbose': True	
     }
- 	jsonPayload = json.dumps(payload_data)
     
-    #+++++++++++Solution 2++++++++++++++++
- 	try: 
- 		response = requests.post(resource_url, data=jsonPayload, headers=headers)
- 	except requests.exceptions.ConnectionError:
- 		alt_url = google_dns.alt_service_url(resource_url)      
- 		response = requests.post(alt_url, data=jsonPayload, headers=headers, verify=False)        
-    #----------------------------------------------    
+    jsonPayload = json.dumps(payload)
     
- 	studies_info = {}
+    response = requests.post(opentree_method_url, data=jsonPayload, headers=headers)
+    
+    studyinfo_result = {}
+    result_data_json = json.loads(response.text)
 
- 	data_json = json.loads(response.text)  
- 	if response.status_code == requests.codes.ok:	
- 		studies_info['studies'] = data_json['studies']		
- 		studies_info['message'] = data_json['message']
- 		studies_info['status_code'] = data_json['status_code']
- 	else:
- 		studies_info['studies'] = []
- 		if 'message' in data_json:
- 			studies_info['message'] = data_json['message']
- 		else:			
- 			studies_info['message'] = "Error: Response error while getting study info using Phylotastic"
- 		studies_info['status_code'] = response.status_code
+    if response.status_code == requests.codes.ok:    
+        
+        if (len(result_data_json['matched_studies']) == 0):
+           studyinfo_result['message'] =  "No matching study found"
+     	   studyinfo_result['status_code'] = 200
+        else: 
+           if ('ot:studyPublicationReference' in result_data_json['matched_studies'][0]):
+              studyinfo_result['Publication'] = result_data_json['matched_studies'][0]['ot:studyPublicationReference']
+           else:
+              studyinfo_result['Publication'] = ""
+           if ('ot:studyId' in result_data_json['matched_studies'][0]):
+              studyinfo_result['PublicationIdentifier'] = result_data_json['matched_studies'][0]['ot:studyId']
+           else:
+              studyinfo_result['PublicationIdentifier'] = studyid
+           if ('ot:curatorName' in result_data_json['matched_studies'][0]):
+              studyinfo_result['Curator'] = result_data_json['matched_studies'][0]['ot:curatorName']
+           else:
+              studyinfo_result['Curator'] = ""
+           if ('ot:studyYear' in result_data_json['matched_studies'][0]):
+              studyinfo_result['PublicationYear'] = result_data_json['matched_studies'][0]['ot:studyYear']
+           else:
+              studyinfo_result['PublicationYear'] = ""
+           if ('ot:focalCladeOTTTaxonName' in result_data_json['matched_studies'][0]):
+              studyinfo_result['FocalCladeTaxonName'] = result_data_json['matched_studies'][0]['ot:focalCladeOTTTaxonName']
+           else:
+              studyinfo_result['FocalCladeTaxonName'] = ""
+           if ('ot:studyPublication' in result_data_json['matched_studies'][0]):
+              studyinfo_result['PublicationDOI'] = result_data_json['matched_studies'][0]['ot:studyPublication']
+           else:
+              studyinfo_result['PublicationDOI'] = ""
+           if ('ot:dataDeposit' in result_data_json['matched_studies'][0]):
+              studyinfo_result['DataRepository'] = result_data_json['matched_studies'][0]['ot:dataDeposit']
+           else:
+              studyinfo_result['DataRepository'] = ""
+           if ('ot:candidateTreeForSynthesis' in result_data_json['matched_studies'][0]):
+              studyinfo_result['CandidateTreeForSynthesis'] = result_data_json['matched_studies'][0]['ot:candidateTreeForSynthesis']
+           else:
+              studyinfo_result['CandidateTreeForSynthesis'] = ""
+        
+        studyinfo_result['message'] =  "Success"
+     	studyinfo_result['status_code'] = 200
+    else:    
+        if 'message' in result_data_json:
+           studyinfo_result['message'] = "OpenTree Error: "+result_data_json['message']
+        else:
+           studyinfo_result['message'] = "Error: Response error while getting study info from OpenTreeofLife"
+        
+        studyinfo_result['status_code'] = response.status_code
+        
+    #print studyinfo_result
+    return studyinfo_result
 
- 	return studies_info
+#-----------------------------------------
+#get supporting studies of the tree from OpenTree
+def get_supporting_studies(studyid_list):
+    studies_list = []
+    study_ids = [study[:study.find("@")] for study in studyid_list]
+    for studyid in study_ids:
+        study_info = get_study_info(studyid)
+        if study_info['status_code'] == 200:
+           msg = study_info['message']
+           status = study_info['status_code']
+           #delete status keys from dictionary 
+           del study_info['status_code']
+           del study_info['message']
+           studies_list.append(study_info)
+        else:
+           msg = study_info['message']
+           status = study_info['status_code']
+           break    
+
+    return studies_list
 
 #--------------------------------------------
 #find the number of tips in the tree
@@ -235,17 +285,10 @@ def get_num_tips(newick_str):
 
 #-------------------------------------------
 def get_tree_version():
- 	resource_url = api_url + "about"    
+ 	resource_url = api_url + "tree_of_life/about"    
     
- 	#----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool--------------
-    #+++++++++++Solution 2++++++++++++++++
- 	try: 
- 		response = requests.post(resource_url)
- 	except requests.exceptions.ConnectionError:
- 		alt_url = google_dns.alt_service_url(resource_url)
- 		response = requests.post(alt_url, verify=False)                
-    #----------------------------------------------
-        
+ 	response = requests.post(resource_url)
+ 	        
  	metadata = {}
  	if response.status_code == requests.codes.ok:
  		data_json = json.loads(response.text)
@@ -278,7 +321,7 @@ def get_tree_OpenTree(taxa):
 	>>> import phylotastic_services
 	>>> result = phylotastic_services.get_tree_OpenTree(taxa=["Setophaga striata","Setophaga magnolia","Setophaga angelae","Setophaga plumbea","Setophaga virens"])
 	>>> print result
-	{"status_code": 200, "message": "Success", "meta_data": {"execution_time": 2.3, "creation_time": "2018-09-05T16:01:31.981435", "source_urls": ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life"]}, "tree_metadata": {"alignment_method": "NA", "character_matrix": "NA", "rooted": true, "supporting_studies": [{"PublicationYear": 2010, "FocalCladeTaxonName": "Parulidae", "Publication": "Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.", "CandidateTreeForSynthesis": "tree6024", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2010.07.018", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "pg_2591"}, {"PublicationYear": 2015, "FocalCladeTaxonName": "Passeriformes", "Publication": "Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1642/auk-14-110.1", "DataRepository": "http://datadryad.org/resource/doi:10.5061/dryad.pb787", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_770"}], "anastomosing": false, "branch_lengths_type": null, "consensus_type": "NA", "inference_method": "induced_subtree from synthetic tree with ID opentree9.1", "branch_support_type": null, "num_tips": 5, "gene_or_species": "species", "topology_id": "NA", "synthetic_tree_id": "opentree9.1"}, "newick": "(Setophaga_magnolia_ott532751,Setophaga_striata_ott60236,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_virens_ott1014098)Setophaga_ott285198;"}
+	{"status_code": 200, "message": "Success", "meta_data": {"execution_time": 2.46, "creation_time": "2019-03-13T16:56:32.243413", "source_urls": ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life"]}, "tree_metadata": {"alignment_method": "NA", "character_matrix": "NA", "rooted": true, "supporting_studies": [{"PublicationYear": 2015, "FocalCladeTaxonName": "Aves", "Publication": "Burleigh, J. Gordon, Rebecca T. Kimball, Edward L. Braun. 2015. Building the avian tree of life using a large-scale, sparse supermatrix. Molecular Phylogenetics and Evolution 84: 53-63", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2014.12.003", "DataRepository": "http://dx.doi.org/10.5061/dryad.r6b87", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_521"}, {"PublicationYear": 2012, "FocalCladeTaxonName": "Aves", "Publication": "Jetz, W., G. H. Thomas, J. B. Joy, K. Hartmann, A. O. Mooers. 2012. The global diversity of birds in space and time. Nature 491 (7424): 444-448", "CandidateTreeForSynthesis": "tree2", "PublicationDOI": "http://dx.doi.org/10.1038/nature11631", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_809"}, {"PublicationYear": 2015, "FocalCladeTaxonName": "Passeriformes", "Publication": "Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1642/auk-14-110.1", "DataRepository": "http://datadryad.org/resource/doi:10.5061/dryad.pb787", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_770"}, {"PublicationYear": 2010, "FocalCladeTaxonName": "Parulidae", "Publication": "Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.", "CandidateTreeForSynthesis": "tree6024", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2010.07.018", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "pg_2591"}], "anastomosing": false, "branch_lengths_type": null, "consensus_type": "NA", "inference_method": "induced_subtree from synthetic tree with ID opentree10.4", "branch_support_type": null, "num_tips": 5, "gene_or_species": "species", "topology_id": "NA", "synthetic_tree_id": "opentree10.4"}, "newick": "((((Setophaga_striata_ott60236)mrcaott22834ott60236)mrcaott22834ott455853)mrcaott22834ott285200,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_magnolia_ott532751,Setophaga_virens_ott1014098)Setophaga_ott285198;"}
 
     :param taxa: A list of taxa to be used to get a phylogenetic tree. 
     :type taxa: A list of strings.  
@@ -327,7 +370,7 @@ def get_phylomatic_tree(megatree_id, taxa):
 #--------------------------------------------------------
 #infer the taxonomic context from a list of taxonomic names 
 def get_taxa_context(taxaList):
- 	resource_url = "https://api.opentreeoflife.org/v3/tnrs/infer_context"    
+ 	resource_url = api_url+"tnrs/infer_context"    
     
  	payload_data = {
      	'names': taxaList
@@ -335,15 +378,8 @@ def get_taxa_context(taxaList):
 
  	jsonPayload = json.dumps(payload_data)
  
- 	#----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool due to DNS resolver problem--------------
- 	try: 
- 		response = requests.post(resource_url, data=jsonPayload, headers=headers)
- 	except requests.exceptions.ConnectionError:
- 		alt_url = google_dns.alt_service_url(resource_url)
- 		response = requests.post(alt_url, data=jsonPayload, headers=headers, verify=False)        
-   
- 	#response = requests.post(resource_url, data=jsonPayload, headers={'content-type': 'application/json'})
-        	
+ 	response = requests.post(resource_url, data=jsonPayload, headers=headers)
+ 	    	
  	if response.status_code == requests.codes.ok:
  		json_response = json.loads(response.text)
  		context = json_response['context_name']
@@ -355,16 +391,9 @@ def get_taxa_context(taxaList):
 #-----------------------------------------------
 #get a list of pre-defined taxonomic contexts from OpenTree
 def get_contexts():
- 	resource_url = "https://api.opentreeoflife.org/v3/tnrs/contexts"    
+ 	resource_url = api_url+"tnrs/contexts"    
     
- 	#----------TO handle requests.exceptions.ConnectionError: HTTPSConnectionPool due to DNS resolver problem--------------
- 	try: 
- 		response = requests.post(resource_url, headers=headers)
- 	except requests.exceptions.ConnectionError:
- 		alt_url = google_dns.alt_service_url(resource_url)
- 		response = requests.post(alt_url, headers=headers, verify=False)        
-   
- 	#response = requests.post(resource_url, headers={'content-type': 'application/json'})
+ 	response = requests.post(resource_url, headers=headers)
  	
  	if response.status_code == requests.codes.ok:
  		return response.text
@@ -680,8 +709,8 @@ def get_tree_NCBI(taxa):
 #---------------------------------------------
 #if __name__ == '__main__':
 
-    #result = get_inducedSubtree(ott_idlist)
+#    result = get_tree_OpenTree(["Setophaga striata","Setophaga magnolia","Setophaga angelae","Setophaga plumbea","Setophaga virens"])
     #result = get_tree_NCBI(taxa=["Panthera uncia", "Panthera onca", "Panthera leo", "Panthera pardus"])
-    #print result
+#    print result
     
        

@@ -130,9 +130,9 @@ def get_all_species(inputTaxon):
  		len_splist = 0	
  	else: #taxon name matched	
  		species_list = []
- 		print ott_id
+ 		#print ott_id
  		data_json = get_children(ott_id)
- 		print data_json
+ 		#print data_json
  		if data_json['rank'] == 'species' or data_json['rank'] == 'subspecies':
  			species_list.append(data_json['name'])		
  		elif data_json['rank'] == 'genus':
@@ -412,11 +412,11 @@ def get_genome_species(inputTaxon):
 #--------------------------------------------------
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-if __name__ == '__main__':
+#if __name__ == '__main__':
 
-	inputTaxon = 'Vulpes' #genus
+#	inputTaxon = 'Vulpes' #genus
  	#inputTaxon = 'Felidae' #family
 	#country = 'Nepal'
-	print get_all_species(inputTaxon)
+#	print get_all_species(inputTaxon)
 	#print get_country_species(inputTaxon, country)
  	#print get_genome_species(inputTaxon)

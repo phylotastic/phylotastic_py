@@ -8,6 +8,7 @@ import datetime
 from os.path import dirname, abspath
 import ConfigParser
 import xml.etree.ElementTree as ET
+import config
 
 #----------------------------------------------
 headers = {'content-type': 'application/json'}

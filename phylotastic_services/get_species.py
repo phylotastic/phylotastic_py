@@ -11,7 +11,7 @@ import datetime
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #Open Tree of Life API
 base_url = "http://phylo.cs.nmsu.edu:5004/phylotastic_ws/ts/"
-api_url = "https://api.opentreeoflife.org/v2/"
+api_url = "https://api.opentreeoflife.org/v3/"
 headers = {'content-type': 'application/json'}
 #NCBI API
 ncbi_url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -32,14 +32,14 @@ def match_taxon(taxonName):
     if length == 0:
         return -1 
     else: 
-        return data_json['results'][0]['matches'][0]['ot:ottId']
+        ott_id = data_json['results'][0]['matches'][0]['taxon']['ott_id']
 
 #-------------------------------------------
 def get_children(ottId):
-    resource_url = api_url + "taxonomy/taxon"    
+    resource_url = api_url + "taxonomy/taxon_info"    
     payload = {
         'ott_id': ottId,
-        'include_children': 'true'    
+        'include_children': True    
     }
     response = requests.post(resource_url, data=json.dumps(payload), headers=headers)
       
@@ -51,7 +51,7 @@ def get_species_from_highrank(highrankChildren):
     #get all children of each higherankedChildren    
     for child in highrankChildren: 
  		species_lst = []  #temp species list
- 		res_json = get_children(child['ot:ottId'])
+ 		res_json = get_children(child['ott_id'])
  		children_lst = res_json['children']
  		if child['rank'] == 'genus':
  		 	#get all species from genus
@@ -71,7 +71,7 @@ def get_species_from_genus(genusChildren):
     #get all species of a genus 
     for child in genusChildren:
  		if child['rank'] == 'species':
- 			species_list.append(child['ot:ottTaxonName'])            
+ 			species_list.append(child['name'])            
         
     return species_list
 
@@ -119,7 +119,8 @@ def get_all_species(inputTaxon):
  	start_time = time.time()
 
  	service_url = base_url + "all_species?taxon=" + inputTaxon
- 	service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-6"
+ 	#service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-6"
+ 	large_result = False
 
  	ott_id = match_taxon(inputTaxon)
  	if ott_id == -1:
@@ -130,15 +131,19 @@ def get_all_species(inputTaxon):
  		
  		data_json = get_children(ott_id)
  		if data_json['rank'] == 'species' or data_json['rank'] == 'subspecies':
- 			species_list.append(data_json['ot:ottTaxonName'])		
+ 			species_list.append(data_json['name'])		
  		elif data_json['rank'] == 'genus':
  			species_list = get_species_from_genus(data_json['children'])
+ 		elif data_json['rank'] in['superorder','order','suborder','infraorder','parvorder','class','superclass','subclass','infraclass','parvclass','phylum','kingdom','domain', 'no rank']:
+ 			large_result = True
+ 			high_rank = data_json['rank']
  		else:
- 			species_list = get_species_from_highrank(data_json['children'])
+ 			result = get_species_from_highrank(data_json['children'], conn)
+ 			if 'status_code' in species_list: #error occured in source web service
+ 				return result
+ 			species_list = result['species']
+
  		len_splist = len(species_list)
-	
- 		#print species_list
- 		#species_list.sort()
  	 	
  	end_time = time.time()
  	execution_time = end_time-start_time    
@@ -147,16 +152,15 @@ def get_all_species(inputTaxon):
 
  	if len_splist > 0:
  	 	final_result = {'taxon': inputTaxon,'species': species_list, 'message': 'Success', 'status_code': 200}
- 	elif len_splist == 0 and ott_id != -1:	
- 	 	final_result = {'taxon': inputTaxon,'species': species_list, 'message': 'No species found', 'status_code': 204}
-
+ 	elif len_splist == 0 and ott_id != -1 and not large_result:	
+ 	 	final_result = {'input_taxon': inputTaxon,'species': species_list, 'message': 'No species found', 'status_code': 200}
+ 	elif len_splist == 0 and ott_id != -1 and large_result:	
+ 	 	final_result = {'input_taxon': inputTaxon, 'species': [], 'message': "Currently input taxon with '%s' rank is not supported"%high_rank, 'status_code': 403}
+ 	
  	final_result['creation_time'] = creation_time
  	final_result['execution_time'] = "{:4.2f}".format(execution_time)
  	final_result['total_names'] = len_splist
  	final_result['source_urls'] = ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-Taxonomy"]
- 	#final_result['source_version'] = "ott2.9draft12"
- 	#final_result['service_url'] = service_url
- 	#final_result['service_documentation'] = service_documentation
 
  	return json.dumps(final_result)
 

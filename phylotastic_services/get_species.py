@@ -33,6 +33,7 @@ def match_taxon(taxonName):
         return -1 
     else: 
         ott_id = data_json['results'][0]['matches'][0]['taxon']['ott_id']
+        return ott_id
 
 #-------------------------------------------
 def get_children(ottId):
@@ -121,6 +122,7 @@ def get_all_species(inputTaxon):
  	service_url = base_url + "all_species?taxon=" + inputTaxon
  	#service_documentation = "https://github.com/phylotastic/phylo_services_docs/blob/master/ServiceDescription/PhyloServicesDescription.md#web-service-6"
  	large_result = False
+ 	high_rank = None
 
  	ott_id = match_taxon(inputTaxon)
  	if ott_id == -1:
@@ -128,8 +130,9 @@ def get_all_species(inputTaxon):
  		len_splist = 0	
  	else: #taxon name matched	
  		species_list = []
- 		
+ 		print ott_id
  		data_json = get_children(ott_id)
+ 		print data_json
  		if data_json['rank'] == 'species' or data_json['rank'] == 'subspecies':
  			species_list.append(data_json['name'])		
  		elif data_json['rank'] == 'genus':
@@ -409,11 +412,11 @@ def get_genome_species(inputTaxon):
 #--------------------------------------------------
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#if __name__ == '__main__':
+if __name__ == '__main__':
 
-	#inputTaxon = 'Vulpes' #genus
+	inputTaxon = 'Vulpes' #genus
  	#inputTaxon = 'Felidae' #family
 	#country = 'Nepal'
-	#print get_all_species(inputTaxon)
+	print get_all_species(inputTaxon)
 	#print get_country_species(inputTaxon, country)
  	#print get_genome_species(inputTaxon)

@@ -13,9 +13,9 @@ class TestGetInfo(TestCase):
         result_list = json.loads(result)[u'species']
         for result in result_list: 
             if result['searched_name'] == "Panthera leo":
-               self.assertTrue(u'http://eol.org/328672?action=overview&controller=taxa' in result['species_info_link'])
+               self.assertTrue(u'https://eol.org/pages/328672' in result['species_info_link'])
             elif result['searched_name'] == "Panthera onca":
-               self.assertTrue(u'http://eol.org/328606?action=overview&controller=taxa' in result['species_info_link'])
+               self.assertTrue(u'https://eol.org/pages/328606' in result['species_info_link'])
         
 
     def test_get_images_species(self):

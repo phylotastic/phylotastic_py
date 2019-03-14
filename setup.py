@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='phylotastic_services',
-      version='0.1',
+      version='0.2',
       description='Python package for phylotastic services',
       long_description='Python package for phylotastic services',
       classifiers=[

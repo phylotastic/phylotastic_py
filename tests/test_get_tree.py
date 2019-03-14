@@ -13,10 +13,10 @@ class TestGetTree(TestCase):
         self.assertTrue(u'newick' in result)
         #self.assertTrue(u'newick' in result)
         self.assertTrue(u'Setophaga_magnolia_ott532751' in result[u'newick'])
-        self.assertTrue(u'tree_metadata' in result)
-        result_metadata = result[u'tree_metadata']
-        self.assertTrue(u'supporting_studies' in result_metadata)
-        self.assertTrue(len(result_metadata[u'supporting_studies']) >= 2)
+        #self.assertTrue(u'tree_metadata' in result)
+        #result_metadata = result[u'tree_metadata']
+        #self.assertTrue(u'supporting_studies' in result_metadata)
+        #self.assertTrue(len(result_metadata[u'supporting_studies']) >= 2)
 
     #-------------------------------------
     def test_get_tree_Phylomatic(self):

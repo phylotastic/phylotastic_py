@@ -10,7 +10,7 @@ Click on different module links to view the usage of it.
 
 **Installation**
 
-  1. Download the __phylotastic_services-0.1.tar.gz__ file from the *dist* folder.
+  1. Download the __phylotastic_services-0.2.tar.gz__ file from the *dist* folder.
   2. Run the following command to install.
 
 ``

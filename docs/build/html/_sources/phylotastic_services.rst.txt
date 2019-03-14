@@ -12,14 +12,6 @@ phylotastic\_services\.common\_names module
     :undoc-members:
     :show-inheritance:
 
-phylotastic\_services\.config module
-------------------------------------
-
-.. automodule:: phylotastic_services.config
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 phylotastic\_services\.extract\_names module
 --------------------------------------------
 
@@ -56,14 +48,6 @@ phylotastic\_services\.get\_tree module
 ---------------------------------------
 
 .. automodule:: phylotastic_services.get_tree
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-phylotastic\_services\.google\_dns module
------------------------------------------
-
-.. automodule:: phylotastic_services.google_dns
     :members:
     :undoc-members:
     :show-inheritance:

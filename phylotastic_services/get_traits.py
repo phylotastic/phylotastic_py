@@ -8,22 +8,17 @@ import datetime
 from os.path import dirname, abspath
 import ConfigParser
 import xml.etree.ElementTree as ET
-import config
+#import config
 
 #----------------------------------------------
 headers = {'content-type': 'application/json'}
 base_url = "http://eol.org/api/"
 #-----------------------------------------
 def get_api_key():
-	#config = ConfigParser.ConfigParser()
-	#current_dir = dirname(abspath(__file__))
-	#config.read(current_dir + "/"+ "service.cfg")
-	#config.read(current_dir + "/"+ "config.py")
-	#api_key = config.get('EOL', 'api_key')
-	API_KEY_CONFIG = config.API_KEY
-	api_key = API_KEY_CONFIG.EOL
 
-	return api_key
+	EOL_api_key="b6499be78b900c60fb28d38715650e826240ba7b"
+
+	return EOL_api_key
 
 
 #----------------------------------------------

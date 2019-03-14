@@ -8,22 +8,18 @@ import datetime
 import urllib
 from os.path import dirname, abspath
 import ConfigParser
-import config
+#import config
 
 #----------------------------------------------
 headers = {'content-type': 'application/json'}
 
 #-----------------------------------------
 def get_api_key():
-	#config = ConfigParser.ConfigParser()
-	#current_dir = dirname(abspath(__file__))
-	#config.read(current_dir + "/"+ "service.cfg")
-	#config.read(current_dir + "/"+ "config.py")
-	#api_key = config.get('EOL', 'api_key')
-	API_KEY_CONFIG = config.API_KEY
-	api_key = API_KEY_CONFIG.EOL
+	#API_KEY_CONFIG = config.API_KEY
+	#api_key = API_KEY_CONFIG.EOL
+	EOL_api_key="b6499be78b900c60fb28d38715650e826240ba7b"
 
-	return api_key
+	return EOL_api_key
 
 #----------------------------------------------
 def match_species(speciesName):

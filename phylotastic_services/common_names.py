@@ -11,7 +11,7 @@ import urllib
 import ConfigParser
 from bs4 import BeautifulSoup
 from os.path import dirname, abspath
-import config
+#import config
 
 #----------------------------------------------
 NCBI_base_url = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/"

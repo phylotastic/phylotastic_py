@@ -93,7 +93,7 @@ def subtree(ottidList):
 #input: list of resolved scientific names
 #get newick string for tree from OpenTree
 #input: list of resolved scientific names
-def get_tree_OT(resolvedNames):
+def get_tree_OT(resolvedNames, include_metadata=False, include_ottid=True):
  	start_time = time.time() 
  	ListSize = len(resolvedNames)
     
@@ -129,6 +129,13 @@ def get_tree_OT(resolvedNames):
  	newick_str = opentree_result['newick']
  	if newick_str.find(";") == -1:
  		newick_str = newick_str + ";"
+
+ 	if not(include_ottid):
+ 		# Delete ott_ids from tip_labels
+ 		nw_str = newick_str
+ 		nw_str = re.sub('_ott\d+', "", nw_str)
+ 		newick_str = nw_str.replace('_', " ")
+   
  	final_result['newick'] = newick_str#newick_str.encode('ascii', 'ignore').decode('ascii')
  	if opentree_result['status_code'] != 200:	
  		return opentree_result 
@@ -136,21 +143,22 @@ def get_tree_OT(resolvedNames):
  	if opentree_result['newick'] != "":
  		final_result['message'] = "Success"
  		final_result['status_code'] = 200
- 		synth_tree_version = get_tree_version()		
- 		tree_metadata = get_metadata()
- 		tree_metadata['inference_method'] = tree_metadata['inference_method'] + " from synthetic tree with ID "+ synth_tree_version
- 		final_result['tree_metadata'] = tree_metadata
- 		final_result['tree_metadata']['synthetic_tree_id'] = synth_tree_version
- 		#https://wiki.python.org/moin/UnicodeDecodeError
- 		newick_str = newick_str.encode('utf-8', 'ignore')
- 		num_tips = get_num_tips(newick_str)
- 		if num_tips != -1:
- 			final_result['tree_metadata']['num_tips'] = num_tips
 
- 		study_ids = opentree_result['studies']
- 		#print study_ids
- 		study_list = get_supporting_studies(study_ids) 	
- 		final_result['tree_metadata']['supporting_studies'] = study_list
+ 		if include_metadata:
+ 			synth_tree_version = get_tree_version()		
+ 			tree_metadata = get_metadata()
+ 			tree_metadata['inference_method'] = tree_metadata['inference_method'] + " from synthetic tree with ID "+ synth_tree_version
+ 			final_result['tree_metadata'] = tree_metadata
+ 			final_result['tree_metadata']['synthetic_tree_id'] = synth_tree_version
+ 			#https://wiki.python.org/moin/UnicodeDecodeError
+ 			newick_str = newick_str.encode('utf-8', 'ignore')
+ 			num_tips = get_num_tips(newick_str)
+ 			if num_tips != -1:
+ 				final_result['tree_metadata']['num_tips'] = num_tips
+
+ 			study_ids = opentree_result['studies']
+ 			study_list = get_supporting_studies(study_ids) 	
+ 			final_result['tree_metadata']['supporting_studies'] = study_list
  		 
  	end_time = time.time()
  	execution_time = end_time-start_time
@@ -313,7 +321,7 @@ def get_metadata():
  	return tree_metadata
 	
 #--------------------------------------------
-def get_tree_OpenTree(taxa):
+def get_tree_OpenTree(taxa, metadata = False, ottid = True):
  	"""Gets a phylogenetic tree from a list of taxa using Open Tree of Life APIs
     
 	Example:
@@ -324,13 +332,19 @@ def get_tree_OpenTree(taxa):
 	{"status_code": 200, "message": "Success", "meta_data": {"execution_time": 2.46, "creation_time": "2019-03-13T16:56:32.243413", "source_urls": ["https://github.com/OpenTreeOfLife/opentree/wiki/Open-Tree-of-Life-APIs#tree_of_life"]}, "tree_metadata": {"alignment_method": "NA", "character_matrix": "NA", "rooted": true, "supporting_studies": [{"PublicationYear": 2015, "FocalCladeTaxonName": "Aves", "Publication": "Burleigh, J. Gordon, Rebecca T. Kimball, Edward L. Braun. 2015. Building the avian tree of life using a large-scale, sparse supermatrix. Molecular Phylogenetics and Evolution 84: 53-63", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2014.12.003", "DataRepository": "http://dx.doi.org/10.5061/dryad.r6b87", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_521"}, {"PublicationYear": 2012, "FocalCladeTaxonName": "Aves", "Publication": "Jetz, W., G. H. Thomas, J. B. Joy, K. Hartmann, A. O. Mooers. 2012. The global diversity of birds in space and time. Nature 491 (7424): 444-448", "CandidateTreeForSynthesis": "tree2", "PublicationDOI": "http://dx.doi.org/10.1038/nature11631", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_809"}, {"PublicationYear": 2015, "FocalCladeTaxonName": "Passeriformes", "Publication": "Barker, F. Keith, Kevin J. Burns, John Klicka, Scott M. Lanyon, Irby J. Lovette. 2015. New insights into New World biogeography: An integrated view from the phylogeny of blackbirds, cardinals, sparrows, tanagers, warblers, and allies. The Auk 132 (2): 333-348.", "CandidateTreeForSynthesis": "tree1", "PublicationDOI": "http://dx.doi.org/10.1642/auk-14-110.1", "DataRepository": "http://datadryad.org/resource/doi:10.5061/dryad.pb787", "Curator": "Joseph W. Brown", "PublicationIdentifier": "ot_770"}, {"PublicationYear": 2010, "FocalCladeTaxonName": "Parulidae", "Publication": "Lovette, Irby J., Jorge L. P\u00e9rez-Em\u00e1n, John P. Sullivan, Richard C. Banks, Isabella Fiorentino, Sergio C\u00f3rdoba-C\u00f3rdoba, Mar\u00eda Echeverry-Galvis, F. Keith Barker, Kevin J. Burns, John Klicka, Scott M. Lanyon, Eldredge Bermingham. 2010. A comprehensive multilocus phylogeny for the wood-warblers and a revised classification of the Parulidae (Aves). Molecular Phylogenetics and Evolution 57 (2): 753-770.", "CandidateTreeForSynthesis": "tree6024", "PublicationDOI": "http://dx.doi.org/10.1016/j.ympev.2010.07.018", "DataRepository": "", "Curator": "Joseph W. Brown", "PublicationIdentifier": "pg_2591"}], "anastomosing": false, "branch_lengths_type": null, "consensus_type": "NA", "inference_method": "induced_subtree from synthetic tree with ID opentree10.4", "branch_support_type": null, "num_tips": 5, "gene_or_species": "species", "topology_id": "NA", "synthetic_tree_id": "opentree10.4"}, "newick": "((((Setophaga_striata_ott60236)mrcaott22834ott60236)mrcaott22834ott455853)mrcaott22834ott285200,Setophaga_plumbea_ott45750,Setophaga_angelae_ott381849,Setophaga_magnolia_ott532751,Setophaga_virens_ott1014098)Setophaga_ott285198;"}
 
     :param taxa: A list of taxa to be used to get a phylogenetic tree. 
-    :type taxa: A list of strings.  
+    :type taxa: A list of strings. 
+    :param metadata: A boolean value to specify whether to return metadata for tree. By default it is ``False``. If metadata is turned on, then it will return relevant metadata for the tree.
+    :type metadata: boolean.
+    :param ottid: A boolean value to specify whether to keep the ott ids of taxa in tree. By default it is ``True``. 
+    :type ottid: boolean. 
+
     :returns: A json formatted string -- with a phylogenetic tree in newick format as the value of the ``newick`` property. 
 
     """
+ 	
  	nameslist_json = json.loads(resolve_names_OT(taxa))	
  	nameslist = nameslist_json["resolvedNames"]
- 	service_result = get_tree_OT(nameslist)
+ 	service_result = get_tree_OT(nameslist, metadata, ottid)
    
  	return json.dumps(service_result)
 
